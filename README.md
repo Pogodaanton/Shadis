@@ -1,2 +1,3 @@
 # Shadis
-The ShareX custom host system.
+ShareX Distribution System
+TODO: Better README

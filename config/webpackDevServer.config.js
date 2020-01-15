@@ -1,4 +1,4 @@
-'use strict';
+
 
 const errorOverlayMiddleware = require('react-dev-utils/errorOverlayMiddleware');
 const evalSourceMapMiddleware = require('react-dev-utils/evalSourceMapMiddleware');
@@ -87,6 +87,8 @@ module.exports = function(proxy, allowedHost) {
       disableDotRule: true,
     },
     public: allowedHost,
+    // Write to disk for the PHP server
+    writeToDisk: true,
     proxy,
     before(app, server) {
       if (fs.existsSync(paths.proxySetup)) {

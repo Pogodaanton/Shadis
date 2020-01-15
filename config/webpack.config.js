@@ -8,7 +8,6 @@ const PnpWebpackPlugin = require('pnp-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin')
-const WriteFilePlugin = require('write-file-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -516,9 +515,8 @@ module.exports = function(webpackEnv) {
     plugins: [
       // Cleans the output folder each time it compiles
       new CleanWebpackPlugin({
-        protectWebpackAssets: false,
-        //cleanAfterEveryBuildPatterns: ['**/*','!_Files/**/*','!static/**/*'],
-        //cleanOnceBeforeBuildPatterns: ['**/*','!_Files/**/*','!static/**/*']
+        protectWebpackAssets: true,
+        cleanAfterEveryBuildPatterns: ['**/*','!_Files/**/*','!static', '!static/**/*']
       }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
@@ -662,7 +660,6 @@ module.exports = function(webpackEnv) {
           // The formatter is invoked directly in WebpackDevServerUtils during development
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
-        new WriteFilePlugin({ useHashIndex: false, force: true }),
         isEnvDevelopment &&
           new LiveReloadPlugin({
             appendScriptTag: true

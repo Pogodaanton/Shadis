@@ -74,6 +74,7 @@ module.exports = {
   appPublic: resolveApp('src/server'),
   appHtml: resolveApp('src/server/index.html'),
   appIndexJs: resolveModule(resolveApp, 'src/client/index'),
+  appFocusVisibleJs: resolveModule(resolveApp, 'node_modules/focus-visible/dist/focus-visible.min'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src/client'),
   appSrcRoot: resolveApp('src'),

@@ -6,6 +6,7 @@ const webpack = require('webpack');
 const resolve = require('resolve');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
@@ -162,6 +163,7 @@ module.exports = function(webpackEnv) {
       isEnvDevelopment &&
         require.resolve('react-dev-utils/webpackHotDevClient'),
       // Finally, this is your app's code:
+      paths.appFocusVisibleJs,
       paths.appIndexJs,
       // We include the app code last so that if there is a runtime error during
       // initialization, it doesn't blow up the WebpackDevServer client, and
@@ -515,8 +517,8 @@ module.exports = function(webpackEnv) {
     plugins: [
       // Cleans the output folder each time it compiles
       new CleanWebpackPlugin({
-        protectWebpackAssets: true,
-        cleanAfterEveryBuildPatterns: ['**/*','!_Files/**/*','!static', '!static/**/*']
+        cleanStaleWebpackAssets: false,
+        cleanAfterEveryBuildPatterns: ['*hot-update*']
       }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
@@ -660,6 +662,13 @@ module.exports = function(webpackEnv) {
           // The formatter is invoked directly in WebpackDevServerUtils during development
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
+        // Copies all files found in /src/server to the build directory
+        // `index.html` won't be copied, as it is still being modified by webpack by the next plugin
+        new CopyPlugin([{
+          from: 'src/server/',
+          ignore: ['index.html'],
+          force: true
+        }]),
         isEnvDevelopment &&
           new LiveReloadPlugin({
             appendScriptTag: true

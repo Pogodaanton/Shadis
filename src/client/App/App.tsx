@@ -1,12 +1,15 @@
 import React from 'react';
-import { Button, ButtonAppearance } from "@microsoft/fast-components-react-msft";
+import { Button, ButtonAppearance, Background } from "@microsoft/fast-components-react-msft";
+import { PogodaDesignToolkit } from '../_DesignSystem';
 import './App.scss';
 
-const App: React.FC = () => {
-  return (
-    <div className="">
-        <Button appearance={ButtonAppearance.lightweight} href="#" rel="noopener noreferrer">Learn React</Button>
-    </div>
+class App extends React.Component {
+  static contextType = PogodaDesignToolkit
+
+  public render = (): React.ReactNode => (
+    <Background className="container">
+        <Button appearance={ButtonAppearance.justified} onClick={this.context.toggleTheme}>Toggle Theme</Button>
+    </Background>
   );
 }
 

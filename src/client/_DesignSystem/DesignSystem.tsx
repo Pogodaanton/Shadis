@@ -1,7 +1,6 @@
 import React, { ReactNode, Component } from 'react';
 import { DesignSystemProvider } from '@microsoft/fast-jss-manager-react';
-import { StandardLuminance } from "@microsoft/fast-components-styles-msft";
-import { ThemeName, Theme, props, state } from './DesignSystem.props';
+import { StandardLuminance, ThemeName, Theme, props, state } from './DesignSystem.props';
 
 export const PogodaDesignToolkit = React.createContext({});
 
@@ -23,7 +22,7 @@ class PogodaDesignToolkitProvider extends Component<props, state> {
    */
   handleUpdateTheme = (customThemeName?: ThemeName): void => {
     // If ThemeName is given, we don't want to change theme to it's opposite.
-    // To avoid further complications in the code, we just pretend light mode were on if the opposite is the case 
+    // To avoid further complications in the code, we just pretend light mode were on if the opposite is the case
     const isLightMode: boolean = typeof customThemeName === "string"
       ? customThemeName === ThemeName.dark
       : this.state.contextData.theme === ThemeName.light;

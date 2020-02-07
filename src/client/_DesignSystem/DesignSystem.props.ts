@@ -1,13 +1,22 @@
 import {ReactNode} from 'react';
 
 export enum Theme {
-  dark = "#333333",
-  light = "#FFFFFF",
+  dark = "#242424",
+  light = "#ffffff",
 }
 
 export enum ThemeName {
   dark = "dark",
   light = "light",
+}
+
+/**
+ * Values for light and dark mode for `baseLayerLuminance` in the design system.
+ * @enum {number}
+ */
+export enum StandardLuminance {
+  LightMode = 1,
+  DarkMode = 0.14,
 }
 
 interface ContextData {

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App/App';
 import './index.scss';
 import * as serviceWorker from './_setup/serviceWorker';
-import PogodaDesignToolkitProvider from './_DesignSystem/DesignSystem';
+import PogodaDesignToolkitProvider from './_DesignSystem/Toolkit/DesignSystem';
 
 ReactDOM.render((
   <PogodaDesignToolkitProvider>

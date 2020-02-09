@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import { ReactNode } from "react";
 
 export enum Theme {
   dark = "#242424",
@@ -20,9 +20,15 @@ export enum StandardLuminance {
 }
 
 interface ContextData {
-  theme: ThemeName,
-  toggleTheme: Function
+  theme: ThemeName;
+  toggleTheme: Function;
 }
 
-export interface props { children: ReactNode; }
-export interface state { contextData: ContextData, designSystem: Object }
+export interface props {
+  children: ReactNode;
+}
+
+export interface state {
+  contextData: ContextData;
+  designSystem: Object;
+}

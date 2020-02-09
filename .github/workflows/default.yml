@@ -1,0 +1,16 @@
+name: Shadis CI
+on: [push]
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install
+        uses: CultureHQ/actions-yarn@master
+        with:
+          args: install
+      - name: Test
+        uses: CultureHQ/actions-yarn@master
+        with:
+          args: test

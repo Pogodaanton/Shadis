@@ -1,9 +1,10 @@
-import React from "react";
+import React, { Component, ComponentClass } from "react";
 import { Paragraph } from "@microsoft/fast-components-react-msft";
-import { DesignSystem, neutralLayerL4 } from "@microsoft/fast-components-styles-msft";
+import { DesignSystem, neutralLayerL3 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { parseColorHexARGB } from "@microsoft/fast-colors";
 import { HeaderProps, HeaderClassNameContract } from "./Header.props";
+import Logo from "../Assets/Logo";
 
 const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
   header: {
@@ -13,21 +14,29 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
     padding: "0 12px",
     background: (designSystem: DesignSystem): string =>
       `linear-gradient(180deg, ${parseColorHexARGB(
-        neutralLayerL4(designSystem) + "ff"
-      ).toStringHexARGB()} 0%, ${parseColorHexARGB(
-        neutralLayerL4(designSystem) + "ff"
+        neutralLayerL3(designSystem) + "ff"
       ).toStringHexARGB()} 1%, ${parseColorHexARGB(
-        neutralLayerL4(designSystem) + "00"
-      ).toStringHexARGB()} 100%)`,
+        neutralLayerL3(designSystem) + "00"
+      ).toStringHexARGB()} 98%)`,
+  },
+  headerLeft: {
+    display: "flex",
+    alignItems: "center",
+    "&> *": {
+      marginRight: "7px",
+    },
   },
 };
 
-class HeaderBase extends React.Component<HeaderProps> {
+class HeaderBase extends Component<HeaderProps> {
   public render = (): React.ReactNode => (
     <header className={this.props.managedClasses.header}>
-      <Paragraph size={1}>Lorem ipsum, dolor sit amet, etc.</Paragraph>
+      <div className={this.props.managedClasses.headerLeft}>
+        <Logo />
+        <Paragraph size={2}>Shadis</Paragraph>
+      </div>
     </header>
   );
 }
 
-export const Header: React.ComponentClass = manageJss(styles)(HeaderBase);
+export const Header: ComponentClass = manageJss(styles)(HeaderBase);

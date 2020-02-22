@@ -1,13 +1,21 @@
-import React, { ReactNode, Component } from 'react';
-import { DesignSystemProvider } from '@microsoft/fast-jss-manager-react';
-import { StandardLuminance, ThemeName, Theme, props, state } from './DesignSystem.props';
+import React, { ReactNode, Component } from "react";
+import { DesignSystemProvider } from "@microsoft/fast-jss-manager-react";
+import { StandardLuminance, ThemeName, Theme, props, state } from "./DesignSystem.props";
+import { createColorPalette } from "@microsoft/fast-components-styles-msft";
+import { parseColor } from "@microsoft/fast-colors";
 
 export const PogodaDesignToolkit = React.createContext({});
 
 const colorSchemes: { [key: string]: string } = {
-  'dark': '(prefers-color-scheme: dark)',
-  'light': '(prefers-color-scheme: light)'
-}
+  dark: "(prefers-color-scheme: dark)",
+  light: "(prefers-color-scheme: light)",
+};
+
+const accentBaseColor = "#ff6e01";
+const accentColors = {
+  accentBaseColor,
+  accentPalette: createColorPalette(parseColor(accentBaseColor)),
+};
 
 class PogodaDesignToolkitProvider extends Component<props, state> {
   // Dark / Light mode listeners
@@ -23,25 +31,27 @@ class PogodaDesignToolkitProvider extends Component<props, state> {
   handleUpdateTheme = (customThemeName?: ThemeName): void => {
     // If ThemeName is given, we don't want to change theme to it's opposite.
     // To avoid further complications in the code, we just pretend light mode were on if the opposite is the case
-    const isLightMode: boolean = typeof customThemeName === "string"
-      ? customThemeName === ThemeName.dark
-      : this.state.contextData.theme === ThemeName.light;
+    const isLightMode: boolean =
+      typeof customThemeName === "string"
+        ? customThemeName === ThemeName.dark
+        : this.state.contextData.theme === ThemeName.light;
 
     const updatedThemeColor: string = isLightMode ? Theme.dark : Theme.light;
     const updatedLuminance: number = isLightMode
-        ? StandardLuminance.DarkMode
-        : StandardLuminance.LightMode;
+      ? StandardLuminance.DarkMode
+      : StandardLuminance.LightMode;
 
     this.setState({
-        contextData: {
-          ...this.state.contextData,
-          theme: isLightMode ? ThemeName.dark : ThemeName.light
-        },
-        designSystem: {
-          ...this.state.designSystem,
-          baseLayerLuminance: updatedLuminance,
-          backgroundColor: updatedThemeColor,
-        },
+      contextData: {
+        ...this.state.contextData,
+        theme: isLightMode ? ThemeName.dark : ThemeName.light,
+      },
+      designSystem: {
+        ...this.state.designSystem,
+        ...accentColors,
+        baseLayerLuminance: updatedLuminance,
+        backgroundColor: updatedThemeColor,
+      },
     });
   };
 
@@ -54,46 +64,46 @@ class PogodaDesignToolkitProvider extends Component<props, state> {
    */
   private matchMediaListener = (e: MediaQueryListEvent | MediaQueryList): any => {
     if (!e || !e.matches) {
-      return
+      return;
     }
-    const schemeNames = Object.keys(colorSchemes)
+    const schemeNames = Object.keys(colorSchemes);
     for (let i = 0; i < schemeNames.length; i++) {
-      const schemeName = schemeNames[i]
+      const schemeName = schemeNames[i];
       if (e.media === colorSchemes[schemeName]) {
-        this.handleUpdateTheme(schemeName === 'dark' ? ThemeName.dark : ThemeName.light)
-        break
+        this.handleUpdateTheme(schemeName === "dark" ? ThemeName.dark : ThemeName.light);
+        break;
       }
     }
-  }
+  };
 
   // Add OS theme listener
   componentDidMount = () => {
-    if (!window.matchMedia) return
+    if (!window.matchMedia) return;
     Object.keys(colorSchemes).forEach(schemeName => {
-      const mq = window.matchMedia(colorSchemes[schemeName])
-      mq.addListener(this.matchMediaListener)
-      this.activeMatches.push(mq)
-      this.matchMediaListener(mq)
-    })
-  }
+      const mq = window.matchMedia(colorSchemes[schemeName]);
+      mq.addListener(this.matchMediaListener);
+      this.activeMatches.push(mq);
+      this.matchMediaListener(mq);
+    });
+  };
 
   // Remove theme listeners, no memory leaks
   componentWillUnmount = () => {
-    if (!window.matchMedia) return
-    this.activeMatches.forEach(mq => mq.removeListener(this.matchMediaListener))
-    this.activeMatches = []
-  }
+    if (!window.matchMedia) return;
+    this.activeMatches.forEach(mq => mq.removeListener(this.matchMediaListener));
+    this.activeMatches = [];
+  };
 
   state = {
     contextData: {
       theme: ThemeName.light,
-      toggleTheme: this.handleUpdateTheme
+      toggleTheme: this.handleUpdateTheme,
     },
     designSystem: {
       baseLayerLuminance: StandardLuminance.LightMode,
-      backgroundColor: Theme.light
-    }
-  }
+      backgroundColor: Theme.light,
+    },
+  };
 
   render = (): ReactNode => (
     <PogodaDesignToolkit.Provider value={this.state.contextData}>
@@ -101,7 +111,7 @@ class PogodaDesignToolkitProvider extends Component<props, state> {
         {this.props.children}
       </DesignSystemProvider>
     </PogodaDesignToolkit.Provider>
-  )
+  );
 }
 
 export default PogodaDesignToolkitProvider;

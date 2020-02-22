@@ -16,7 +16,7 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
         neutralLayerL4(designSystem) + "ff"
       ).toStringHexARGB()} 0%, ${parseColorHexARGB(
         neutralLayerL4(designSystem) + "ff"
-      ).toStringHexARGB()} 7%, ${parseColorHexARGB(
+      ).toStringHexARGB()} 1%, ${parseColorHexARGB(
         neutralLayerL4(designSystem) + "00"
       ).toStringHexARGB()} 100%)`,
   },

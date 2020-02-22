@@ -1,10 +1,11 @@
-import React, { Component, ComponentClass } from "react";
+import React, { Component } from "react";
 import { Paragraph } from "@microsoft/fast-components-react-msft";
 import { DesignSystem, neutralLayerL3 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { parseColorHexARGB } from "@microsoft/fast-colors";
 import { HeaderProps, HeaderClassNameContract } from "./Header.props";
 import Logo from "../Assets/Logo";
+import { Link } from "react-router-dom";
 
 const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
   header: {
@@ -32,11 +33,13 @@ class HeaderBase extends Component<HeaderProps> {
   public render = (): React.ReactNode => (
     <header className={this.props.managedClasses.header}>
       <div className={this.props.managedClasses.headerLeft}>
-        <Logo />
+        <Link to="/" alt="Go to Homepage">
+          <Logo size="45" />
+        </Link>
         <Paragraph size={2}>Shadis</Paragraph>
       </div>
     </header>
   );
 }
 
-export const Header: ComponentClass = manageJss(styles)(HeaderBase);
+export default manageJss(styles)(HeaderBase);

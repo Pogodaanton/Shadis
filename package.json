@@ -120,7 +120,7 @@
       "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
+      "node_modules/(?!@microsoft|lodash-es|exenv-es6)",
       "^.+\\.module\\.(css|sass|scss)$"
     ],
     "modulePaths": [],
@@ -143,11 +143,6 @@
     "watchPlugins": [
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"
-    ]
-  },
-  "babel": {
-    "presets": [
-      "react-app"
     ]
   }
 }

@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 export enum Theme {
   dark = "#242424",
-  light = "#ffffff",
+  light = "#f7f7f7",
 }
 
 export enum ThemeName {
@@ -15,7 +15,7 @@ export enum ThemeName {
  * @enum {number}
  */
 export enum StandardLuminance {
-  LightMode = 1,
+  LightMode = 0.97,
   DarkMode = 0.14,
 }
 

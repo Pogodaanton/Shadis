@@ -4,7 +4,7 @@ import { DesignSystem, neutralLayerL3 } from "@microsoft/fast-components-styles-
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { parseColorHexARGB } from "@microsoft/fast-colors";
 import { HeaderProps, HeaderClassNameContract } from "./Header.props";
-import Logo from "../Assets/Logo";
+import Logo from "../Logo/Logo";
 import { Link } from "react-router-dom";
 
 const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {

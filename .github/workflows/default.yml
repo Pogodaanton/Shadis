@@ -2,7 +2,7 @@ name: Shadis CI
 on: [push]
 jobs:
   test:
-    name: Test
+    name: Jest Testing
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2

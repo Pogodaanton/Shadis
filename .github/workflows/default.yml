@@ -6,11 +6,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install
-        uses: CultureHQ/actions-yarn@master
-        with:
-          args: install
-      - name: Test
-        uses: CultureHQ/actions-yarn@master
-        with:
-          args: test
+      - name: Run Jest
+        uses: stefanoeb/jest-action@1.0.2

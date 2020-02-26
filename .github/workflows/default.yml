@@ -10,5 +10,5 @@ jobs:
       with:
         node-version: '13.5.x'
     - run: npm install
-    - run: ls -a
+    - run: ls -R ./src
     - run: npx jest

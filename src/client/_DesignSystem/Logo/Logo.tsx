@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+let CustomLogo: React.ComponentClass<any, any> | React.FunctionComponent<any> = undefined;
+
 /**
  * A custom logo can be inserted by creating the module /src/client/_DesignSystem/Assets/Logo.tsx
  *
@@ -8,11 +10,12 @@ import React, { Component } from "react";
  *  - size?: string
  * return: React.ComponentClass | React.FunctionComponent
  */
-const CustomLogoImport: {
-  default?: React.ComponentClass<any, any> | React.FunctionComponent<any>;
-} = require("../Assets/Logo");
-const CustomLogo: React.ComponentClass<any, any> | React.FunctionComponent<any> =
-  CustomLogoImport.default;
+try {
+  const CustomLogoImport: {
+    default?: React.ComponentClass<any, any> | React.FunctionComponent<any>;
+  } = require("../Assets/Logo");
+  CustomLogo = CustomLogoImport.default;
+} catch (error) {}
 
 // Falling back to a filler image if no module can be found
 export default class Logo extends Component<{ size?: string }> {

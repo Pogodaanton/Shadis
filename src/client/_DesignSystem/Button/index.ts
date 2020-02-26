@@ -1,3 +1,7 @@
+/**
+ * Code taken from "@microsoft/fast-components-styles-msft"
+ * Modified to fit the custom design
+ */
 import { ButtonAppearance } from "@microsoft/fast-components-react-msft";
 import manageJss from "@microsoft/fast-jss-manager-react";
 import MSFTButton from "@microsoft/fast-components-react-msft/dist/button/button";
@@ -15,8 +19,6 @@ import {
   DesignSystemResolver,
   applyCornerRadius,
   applyFocusPlaceholderBorder,
-  accentFillActive,
-  accentFillHover,
   accentFillRest,
   accentForegroundActive,
   accentForegroundCut,
@@ -35,7 +37,6 @@ import {
   neutralOutlineHover,
   neutralOutlineRest,
   glyphSize,
-  height,
   horizontalSpacing,
   applyCursorPointer,
   focusOutlineWidth,
@@ -57,17 +58,32 @@ import {
   highContrastOutlineFocus,
   highContrastSelected,
   highContrastSelectedForeground,
-  highContrastSelectedOutline,
   highContrastSelector,
   highContrastStealth,
   applyScaledTypeRamp,
+  accentPalette,
 } from "@microsoft/fast-components-styles-msft";
+import { getSwatch } from "@microsoft/fast-components-styles-msft/dist/utilities/color/palette";
 
 const transparentBackground: CSSRules<DesignSystem> = {
   "background-color": "transparent",
 };
 
 const density: DesignSystemResolver<number> = getDesignSystemValue("density");
+
+const applyAccentBackground: CSSRules<DesignSystem> = {
+  background: ds => getSwatch(45, accentPalette(ds)),
+};
+
+const applyPrimaryShadow = (shadowSize: string): CSSRules<DesignSystem> => {
+  return {
+    "box-shadow": format(
+      "0 {0} 0 0 {1}",
+      () => shadowSize,
+      ds => getSwatch(65, accentPalette(ds))
+    ),
+  };
+};
 
 const applyTransparentBackplateStyles: CSSRules<DesignSystem> = {
   color: accentForegroundRest,
@@ -119,10 +135,6 @@ const applyTransparentBackplateStyles: CSSRules<DesignSystem> = {
   ...highContrastStealth,
 };
 
-/**
- * Code taken from "@microsoft/fast-components-styles-msft"
- * This will be stylised more later
- */
 const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
   button: {
     ...applyScaledTypeRamp("t7"),
@@ -132,11 +144,10 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
     "max-width": "374px",
     "min-width": (designSystem: DesignSystem): string =>
       density(designSystem) <= -2 ? "28px" : "32px",
-    padding: format("0 {0}", horizontalSpacing(focusOutlineWidth)),
+    padding: format("5px {0}", horizontalSpacing(focusOutlineWidth)),
     display: "inline-flex",
     "justify-content": "center",
     "align-items": "center",
-    height: height(),
     ...applyFocusPlaceholderBorder(),
     ...applyCornerRadius(),
     "line-height": "1",
@@ -184,17 +195,40 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
     },
   },
   button__primary: {
-    color: accentForegroundCut,
     fill: accentForegroundCut,
-    background: accentFillRest,
+    color: accentForegroundCut,
+    ...applyAccentBackground,
+    ...applyPrimaryShadow("4px"),
+    "font-weight": "bold",
+    "margin-bottom": "4px",
+    overflow: "visible",
+    position: "relative",
+    // Additional spacing to avoid clipping
+    "&::before": {
+      transition: "inherit",
+      content: "''",
+      height: "2px",
+      width: "calc(100% + 4px)", // + 2px border left/right
+      display: "block",
+      position: "absolute",
+      left: "-2px",
+      top: "-2px", // + 2px border top
+    },
     "&:hover:enabled": {
-      background: accentFillHover,
-      ...highContrastSelectedOutline,
+      ...applyAccentBackground,
+      "margin-top": "2px",
+      "margin-bottom": "2px",
+      "text-decoration": "none",
+      ...applyPrimaryShadow("2px"),
+      "&::before": {
+        top: "-4px",
+      },
     },
     "&:active:enabled": {
-      background: accentFillActive,
+      ...applyAccentBackground,
     },
     ...applyFocusVisible<DesignSystem>({
+      ...applyFocusPlaceholderBorder(),
       "border-color": neutralFocus,
       "box-shadow": format(
         "0 0 0 {0} inset {1}",

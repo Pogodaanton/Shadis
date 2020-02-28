@@ -8,7 +8,7 @@ import {
   CSSRules,
   mergeDesignSystem,
 } from "@microsoft/fast-jss-manager";
-import { directionSwitch, format } from "@microsoft/fast-jss-utilities";
+import { directionSwitch, format, toPx } from "@microsoft/fast-jss-utilities";
 import {
   DesignSystem,
   accentForegroundCut,
@@ -16,7 +16,10 @@ import {
   horizontalSpacing,
   focusOutlineWidth,
   accentPalette,
+  backgroundColor,
 } from "@microsoft/fast-components-styles-msft";
+import { ColorRGBA64, rgbToRelativeLuminance } from "@microsoft/fast-colors";
+import { parseColorString } from "@microsoft/fast-components-styles-msft/dist/utilities/color/common";
 import { getSwatch } from "@microsoft/fast-components-styles-msft/dist/utilities/color/palette";
 import { ButtonStyles as MSFTStyle } from "@microsoft/fast-components-styles-msft";
 
@@ -24,12 +27,18 @@ const applyAccentBackground: CSSRules<DesignSystem> = {
   background: ds => getSwatch(45, accentPalette(ds)),
 };
 
-const applyPrimaryShadow = (shadowSize: string): CSSRules<DesignSystem> => {
+const shadowOpacityMultiple = (des: DesignSystem) =>
+  4 - 3 * rgbToRelativeLuminance(parseColorString(backgroundColor(des))); // white (1) = 1; black (0) = 2;
+
+const applyPrimaryShadow = (shadowSize: number): CSSRules<DesignSystem> => {
   return {
     "box-shadow": format(
-      "0 {0} 0 0 {1}",
-      () => shadowSize,
-      ds => getSwatch(65, accentPalette(ds))
+      "0 {0} 0 0 {1}, 0 {2} {3} 0 {4}",
+      () => toPx(shadowSize),
+      des => getSwatch(65, accentPalette(des)),
+      () => toPx(shadowSize + 2),
+      () => toPx(shadowSize * 1.4 + 4),
+      des => new ColorRGBA64(0, 0, 0, 0.35 * shadowOpacityMultiple(des)).toStringWebRGBA()
     ),
   };
 };
@@ -47,7 +56,7 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
     fill: accentForegroundCut,
     color: accentForegroundCut,
     ...applyAccentBackground,
-    ...applyPrimaryShadow("4px"),
+    ...applyPrimaryShadow(4),
     "font-weight": "bold",
     "margin-bottom": "4px",
     overflow: "visible",
@@ -67,7 +76,7 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
 
     "&:hover:enabled": {
       ...applyAccentBackground,
-      ...applyPrimaryShadow("2px"),
+      ...applyPrimaryShadow(2),
       "margin-top": "2px",
       "margin-bottom": "2px",
       "text-decoration": "none",

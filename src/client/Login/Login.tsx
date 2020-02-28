@@ -15,14 +15,13 @@ const styles: ComponentStyles<LoginClassNameContract, DesignSystem> = {
 };
 
 class Login extends Component<LoginProps> {
-  render() {
+  render(): JSX.Element {
     return (
       <Fragment>
         <div className={this.props.managedClasses.login}>
           <Logo />
           <form>
-            <Button appearance={ButtonAppearance.primary}>
-              <FaHelicopter />
+            <Button appearance={ButtonAppearance.primary} icon={FaHelicopter}>
               Log in
             </Button>
           </form>

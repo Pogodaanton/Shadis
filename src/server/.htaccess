@@ -1,6 +1,6 @@
 ErrorDocument 404 /
 ErrorDocument 403 /
-Options -Indexes
+IndexIgnore *
 
 <IfModule mod_rewrite.c>
   RewriteEngine On

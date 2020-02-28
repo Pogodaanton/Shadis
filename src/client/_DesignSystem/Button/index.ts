@@ -144,7 +144,7 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
     "max-width": "374px",
     "min-width": (designSystem: DesignSystem): string =>
       density(designSystem) <= -2 ? "28px" : "32px",
-    padding: format("5px {0}", horizontalSpacing(focusOutlineWidth)),
+    padding: format("6px {0}", horizontalSpacing(focusOutlineWidth)),
     display: "inline-flex",
     "justify-content": "center",
     "align-items": "center",

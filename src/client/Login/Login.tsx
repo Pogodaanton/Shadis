@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from "react";
-import { Button, ButtonAppearance, Logo } from "../_DesignSystem";
+import { Button, ButtonAppearance, Logo, iconToGlyph } from "../_DesignSystem";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { LoginClassNameContract, LoginProps } from "./Login.props";
-import { FaSignInAlt } from "react-icons/fa";
-import { TextField, TextFieldType } from "@microsoft/fast-components-react-msft";
+import { FaSignInAlt, FaUserAlt, FaKey } from "react-icons/fa";
+import { TextAction, TextFieldType } from "@microsoft/fast-components-react-msft";
 
 const styles: ComponentStyles<LoginClassNameContract, DesignSystem> = {
   login: {
@@ -18,14 +18,14 @@ const styles: ComponentStyles<LoginClassNameContract, DesignSystem> = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    "margin-top": "10px",
+    "margin-top": "15px",
 
     "& > *": {
       width: "100%",
-      "margin-bottom": "4px",
+      "margin-bottom": "8px",
     },
     "& > *:nth-child(2)": {
-      "margin-bottom": "10px",
+      "margin-bottom": "15px",
     },
   },
 };
@@ -37,8 +37,17 @@ class Login extends Component<LoginProps> {
         <div className={this.props.managedClasses.login}>
           <Logo />
           <form className={this.props.managedClasses.login_form}>
-            <TextField placeholder={"Username"} />
-            <TextField placeholder={"Password"} type={TextFieldType.password} />
+            <TextAction
+              name="username"
+              placeholder={"Username"}
+              beforeGlyph={iconToGlyph(FaUserAlt)}
+            />
+            <TextAction
+              name="password"
+              placeholder={"Password"}
+              type={TextFieldType.password}
+              beforeGlyph={iconToGlyph(FaKey)}
+            />
             <Button appearance={ButtonAppearance.primary} icon={FaSignInAlt}>
               Log in
             </Button>

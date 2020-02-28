@@ -30,6 +30,10 @@ const applyAccentBackground: CSSRules<DesignSystem> = {
 const shadowOpacityMultiple = (des: DesignSystem) =>
   4 - 3 * rgbToRelativeLuminance(parseColorString(backgroundColor(des))); // white (1) = 1; black (0) = 2;
 
+/**
+ * Applies shadows to the primary button which give it the pseudo-3d look-and-feel
+ * @param shadowSize Size of the bottom-border and drop-shadow
+ */
 const applyPrimaryShadow = (shadowSize: number): CSSRules<DesignSystem> => {
   return {
     "box-shadow": format(

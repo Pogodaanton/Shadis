@@ -2,11 +2,15 @@ import React from "react";
 import { Background } from "@microsoft/fast-components-react-msft";
 import { DesignSystem, neutralLayerL1 } from "@microsoft/fast-components-styles-msft";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import View from "../View/View";
-import NotFound from "../NotFound/NotFound";
+import loadable from "@loadable/component";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { AppClassNameContract, AppProps } from "./App.props";
 import MainPage from "../MainPage/MainPage";
+
+const NotFound = loadable(() =>
+  import(/* webpackChunkName: "404" */ "../NotFound/NotFound")
+);
+const View = loadable(() => import(/* webpackChunkName: "View" */ "../View/View"));
 
 const styles: ComponentStyles<AppClassNameContract, DesignSystem> = {
   container: {

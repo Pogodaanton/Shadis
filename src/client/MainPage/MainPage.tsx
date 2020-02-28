@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
-import Login from "../Login/Login";
+import loadable from "@loadable/component";
+
+const Login = loadable(() => import(/* webpackChunkName: "Login" */ "../Login/Login"));
 
 /**
  * Route Component which finds out whether the user has been logged in or not

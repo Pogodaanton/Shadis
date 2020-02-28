@@ -51,6 +51,7 @@ class PogodaDesignToolkitProvider extends Component<props, state> {
         ...accentColors,
         baseLayerLuminance: updatedLuminance,
         backgroundColor: updatedThemeColor,
+        cornerRadius: 5,
       },
     });
   };

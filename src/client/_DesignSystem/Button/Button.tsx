@@ -19,6 +19,7 @@ import MSFTButton from "@microsoft/fast-components-react-msft/dist/button/button
 import { classNames } from "@microsoft/fast-web-utilities";
 import { isNil } from "lodash-es";
 import ButtonStyle from "./ButtonStyle";
+import { iconToGlyph } from "../utilities";
 
 class CustomButton extends Foundation<ButtonHandledProps, ButtonUnhandledProps, {}> {
   public static displayName: string = `Button`;
@@ -75,9 +76,9 @@ class CustomButton extends Foundation<ButtonHandledProps, ButtonUnhandledProps, 
   }
 
   private generateIcon = (): React.ReactNode => {
-    return isNil(this.props.icon) ? null : (
-      <this.props.icon className={classNames(this.props.managedClasses.button_icon)} />
-    );
+    return isNil(this.props.icon)
+      ? null
+      : iconToGlyph(this.props.icon)(classNames(this.props.managedClasses.button_icon));
   };
 
   /**

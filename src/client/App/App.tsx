@@ -25,7 +25,7 @@ class App extends React.Component<AppProps> {
     <Background className={this.props.managedClasses.container} value={neutralLayerL1}>
       <Router>
         <Switch>
-          <Route path="/not-found" component={NotFound} />
+          <Route path="/404" component={NotFound} />
           <Route path="/:id" component={View} />
           <Route component={MainPage} />
         </Switch>

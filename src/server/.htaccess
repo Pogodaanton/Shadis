@@ -1,13 +1,17 @@
+ErrorDocument 404 /
+ErrorDocument 403 /
+Options -Indexes
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
   # Don't rewrite files or directories
-  RewriteRule ^index.html$ - [L]
+  RewriteRule ^index.php$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
 
   # Rewrite everything else to index.php to allow html5 state links
-  RewriteRule . /index.html [L]
+  RewriteRule . /index.php [L]
 
 </IfModule>

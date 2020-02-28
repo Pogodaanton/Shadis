@@ -62,9 +62,13 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
     ...applyAccentBackground,
     ...applyPrimaryShadow(4),
     "font-weight": "bold",
-    "margin-bottom": "4px",
     overflow: "visible",
     position: "relative",
+
+    // More css-weighting, so that generic rules don't break the effect
+    "&$button": {
+      "margin-bottom": "4px",
+    },
 
     // Additional spacing to avoid clipping
     "&::before": {

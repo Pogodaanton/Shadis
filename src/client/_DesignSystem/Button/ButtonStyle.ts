@@ -41,7 +41,7 @@ const applyPrimaryShadow = (shadowSize: number): CSSRules<DesignSystem> => {
       () => toPx(shadowSize),
       des => getSwatch(65, accentPalette(des)),
       () => toPx(shadowSize + 2),
-      () => toPx(shadowSize * 1.4 + 4),
+      () => toPx(shadowSize * 1.4),
       des => new ColorRGBA64(0, 0, 0, 0.35 * shadowOpacityMultiple(des)).toStringWebRGBA()
     ),
   };

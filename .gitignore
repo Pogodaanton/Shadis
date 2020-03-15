@@ -17,6 +17,7 @@
 
 # custom assets
 /src/client/_DesignSystem/Assets
+/src/server/protected/config.php
 
 # misc
 .DS_Store

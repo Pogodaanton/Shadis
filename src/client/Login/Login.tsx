@@ -31,22 +31,32 @@ const styles: ComponentStyles<LoginClassNameContract, DesignSystem> = {
 };
 
 class Login extends Component<LoginProps> {
+  onFormSubmit = (e: React.FormEvent): void => {
+    e.preventDefault();
+  };
+
   render(): JSX.Element {
     return (
       <Fragment>
         <div className={this.props.managedClasses.login}>
           <Logo />
-          <form className={this.props.managedClasses.login_form}>
+          <form
+            onSubmit={this.onFormSubmit}
+            className={this.props.managedClasses.login_form}
+          >
             <TextAction
               name="username"
               placeholder={"Username"}
               beforeGlyph={iconToGlyph(FaUserAlt)}
+              autoFocus
+              required
             />
             <TextAction
               name="password"
               placeholder={"Password"}
               type={TextFieldType.password}
               beforeGlyph={iconToGlyph(FaKey)}
+              required
             />
             <Button appearance={ButtonAppearance.primary} icon={FaSignInAlt}>
               Log in

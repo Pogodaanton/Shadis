@@ -12,3 +12,14 @@ export interface LoginClassNameContract {
  * Props for the component
  */
 export interface LoginProps extends ManagedClasses<LoginClassNameContract> {}
+
+/**
+ * Custom change event, since all targets are inputs
+ *
+ * @export
+ * @interface LoginInputChangeEvent
+ * @extends {React.ChangeEvent}
+ */
+export interface LoginInputChangeEvent extends React.ChangeEvent {
+  target: EventTarget & HTMLInputElement;
+}

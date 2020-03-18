@@ -5,7 +5,7 @@ import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { LoginClassNameContract, LoginProps, LoginInputChangeEvent } from "./Login.props";
 import { FaSignInAlt, FaUserAlt, FaKey } from "react-icons/fa";
 import { TextAction, TextFieldType } from "@microsoft/fast-components-react-msft";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import axios, { CustomError } from "../_interceptedAxios";
 
 const styles: ComponentStyles<LoginClassNameContract, DesignSystem> = {

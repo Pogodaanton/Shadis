@@ -6,6 +6,10 @@ require_once "../protected/output.inc.php";
 $username = $_POST["username"];
 $password = $_POST["password"];
 
+if (!empty($_SESSION["u_id"])) {
+    error("You are already logged in!");
+}
+
 if (empty($username) || empty($password)) {
     error("Missing username or password!", 400);
 }
@@ -20,5 +24,5 @@ if (!password_verify($password, $row["password"])) {
 $_SESSION["u_id"] = $row["id"];
 $_SESSION["u_username"] = $row["username"];
 
-success("Successfully logged in!");
+respond("Successfully logged in!");
 exit();

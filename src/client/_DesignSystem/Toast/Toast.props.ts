@@ -16,5 +16,5 @@ export interface ToastClassNameContract {
 export interface ToastProps
   extends ManagedClasses<ToastClassNameContract>,
     OriginalToastProps {
-  title: string;
+  title?: string;
 }

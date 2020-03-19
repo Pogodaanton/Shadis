@@ -1,12 +1,13 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment } from "react";
 import { Button, ButtonAppearance, Logo, iconToGlyph } from "../_DesignSystem";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
-import { LoginClassNameContract, LoginProps, LoginInputChangeEvent } from "./Login.props";
+import { LoginClassNameContract, LoginProps } from "./Login.props";
 import { FaSignInAlt, FaUserAlt, FaKey } from "react-icons/fa";
 import { TextAction, TextFieldType } from "@microsoft/fast-components-react-msft";
 import { AxiosResponse } from "axios";
-import axios, { CustomError } from "../_interceptedAxios";
+import axios from "../_interceptedAxios";
+import { useToasts } from "../_DesignSystem";
 
 const styles: ComponentStyles<LoginClassNameContract, DesignSystem> = {
   login: {
@@ -32,11 +33,8 @@ const styles: ComponentStyles<LoginClassNameContract, DesignSystem> = {
   },
 };
 
-class Login extends Component<LoginProps> {
-  state = {
-    username: "",
-    password: "",
-  };
+const Login: React.FC<LoginProps> = props => {
+  const { addToast } = useToasts();
 
   /**
    * Handles user submitting their login credentials.
@@ -44,71 +42,48 @@ class Login extends Component<LoginProps> {
    *
    * @memberof Login
    */
-  onFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    axios({
-      method: "post",
-      url: window.location.href + "api/login.php",
-      data: formData,
-    })
-      .then((res: AxiosResponse) => {
-        console.log(res);
-      })
-      .catch((err: CustomError) => {
-        console.dir(err.message);
-      });
+    try {
+      let res: AxiosResponse = await axios.post(
+        window.location.href + "api/login.php",
+        formData
+      );
+      addToast(res.data.message, { appearance: "success", title: "Welcome!" });
+    } catch (err) {
+      addToast(err.message, { appearance: "error", title: "Couldn't log you in:" });
+      console.error("User could not log in:\n", `(${err.code}) - ${err.message}`);
+    }
   };
 
-  /**
-   * Handles an input change.
-   * Since each input has a name assigned, we can use that for changing the state, too.
-   *
-   * @memberof Login
-   */
-  onInputChange = (e: LoginInputChangeEvent): void => {
-    const { target } = e;
-    this.setState({
-      [target.name]: target.value,
-    });
-  };
-
-  render(): JSX.Element {
-    return (
-      <Fragment>
-        <div className={this.props.managedClasses.login}>
-          <Logo />
-          <form
-            onSubmit={this.onFormSubmit}
-            className={this.props.managedClasses.login_form}
-          >
-            <TextAction
-              name="username"
-              placeholder={"Username"}
-              beforeGlyph={iconToGlyph(FaUserAlt)}
-              value={this.state.username}
-              onChange={this.onInputChange}
-              autoFocus
-              required
-            />
-            <TextAction
-              name="password"
-              placeholder={"Password"}
-              type={TextFieldType.password}
-              beforeGlyph={iconToGlyph(FaKey)}
-              value={this.state.password}
-              onChange={this.onInputChange}
-              required
-            />
-            <Button appearance={ButtonAppearance.primary} icon={FaSignInAlt}>
-              Log in
-            </Button>
-          </form>
-        </div>
-      </Fragment>
-    );
-  }
-}
+  return (
+    <Fragment>
+      <div className={props.managedClasses.login}>
+        <Logo />
+        <form onSubmit={onFormSubmit} className={props.managedClasses.login_form}>
+          <TextAction
+            name="username"
+            placeholder={"Username"}
+            beforeGlyph={iconToGlyph(FaUserAlt)}
+            autoFocus
+            required
+          />
+          <TextAction
+            name="password"
+            placeholder={"Password"}
+            type={TextFieldType.password}
+            beforeGlyph={iconToGlyph(FaKey)}
+            required
+          />
+          <Button appearance={ButtonAppearance.primary} icon={FaSignInAlt}>
+            Log in
+          </Button>
+        </form>
+      </div>
+    </Fragment>
+  );
+};
 
 export default manageJss(styles)(Login);

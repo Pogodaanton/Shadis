@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Button, ButtonAppearance, Logo, iconToGlyph } from "../_DesignSystem";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
@@ -35,6 +35,7 @@ const styles: ComponentStyles<LoginClassNameContract, DesignSystem> = {
 
 const Login: React.FC<LoginProps> = props => {
   const { addToast } = useToasts();
+  const [isDebounced, setDebounce] = useState(false);
 
   /**
    * Handles user submitting their login credentials.
@@ -42,20 +43,29 @@ const Login: React.FC<LoginProps> = props => {
    *
    * @memberof Login
    */
-  const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
 
-    try {
-      let res: AxiosResponse = await axios.post(
-        window.location.href + "api/login.php",
-        formData
-      );
-      addToast(res.data.message, { appearance: "success", title: "Welcome!" });
-    } catch (err) {
-      addToast(err.message, { appearance: "error", title: "Couldn't log you in:" });
-      console.error("User could not log in:\n", `(${err.code}) - ${err.message}`);
-    }
+    const postOperation = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+      const formData = new FormData(e.currentTarget);
+      try {
+        let res: AxiosResponse = await axios.post(
+          window.location.href + "api/login.php",
+          formData
+        );
+        addToast(res.data.message, { appearance: "success", title: "Welcome!" });
+      } catch (err) {
+        setTimeout(() => {
+          setDebounce(false);
+          addToast(err.message, { appearance: "error", title: "Couldn't log you in:" });
+          console.error("User could not log in:\n", `(${err.code}) - ${err.message}`);
+        }, 1000);
+      }
+    };
+
+    if (isDebounced) return;
+    setDebounce(true);
+    postOperation(e);
   };
 
   return (
@@ -77,7 +87,11 @@ const Login: React.FC<LoginProps> = props => {
             beforeGlyph={iconToGlyph(FaKey)}
             required
           />
-          <Button appearance={ButtonAppearance.primary} icon={FaSignInAlt}>
+          <Button
+            appearance={ButtonAppearance.primary}
+            icon={FaSignInAlt}
+            disabled={isDebounced}
+          >
             Log in
           </Button>
         </form>

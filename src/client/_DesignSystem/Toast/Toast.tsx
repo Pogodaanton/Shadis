@@ -49,6 +49,10 @@ const toastStyles: ComponentStyles<ToastClassNameContract, DesignSystem> = {
 };
 
 const BaseToast = (props: ToastProps) => {
+  let defaultToastProps = { ...props };
+  delete defaultToastProps.managedClasses;
+  delete defaultToastProps.title;
+
   const title = () => {
     switch (props.appearance) {
       case "error":
@@ -64,7 +68,7 @@ const BaseToast = (props: ToastProps) => {
 
   return (
     <div className={props.managedClasses.toast_element}>
-      <DefaultToast {...props}>
+      <DefaultToast {...defaultToastProps}>
         <span className={props.managedClasses.toast_title}>{props.title || title()}</span>
         <span className={props.managedClasses.toast_content}>{props.children}</span>
       </DefaultToast>

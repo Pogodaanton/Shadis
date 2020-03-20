@@ -19,10 +19,17 @@ const toastContainerStyles: ComponentStyles<
   },
 };
 
-const BaseToastContainer = (props: ToastContainerProps) => (
-  <div className={props.managedClasses.toast_container}>
-    <DefaultToastContainer {...props}>{props.children}</DefaultToastContainer>
-  </div>
-);
+const BaseToastContainer = (props: ToastContainerProps) => {
+  let defaultToastContainerProps = { ...props };
+  delete defaultToastContainerProps.managedClasses;
+
+  return (
+    <div className={props.managedClasses.toast_container}>
+      <DefaultToastContainer {...defaultToastContainerProps}>
+        {props.children}
+      </DefaultToastContainer>
+    </div>
+  );
+};
 
 export default manageJss(toastContainerStyles)(BaseToastContainer);

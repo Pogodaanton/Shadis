@@ -654,6 +654,36 @@ module.exports = function(webpackEnv) {
           ignore: ["index.php"],
           force: true,
         },
+        {
+          from: "src/submodules/getID3/getid3/*gif*",
+          to: "protected/getID3",
+          flatten: true,
+        },
+        {
+          from: "src/submodules/getID3/getid3/*jpg*",
+          to: "protected/getID3",
+          flatten: true,
+        },
+        {
+          from: "src/submodules/getID3/getid3/*png*",
+          to: "protected/getID3",
+          flatten: true,
+        },
+        {
+          from: "src/submodules/getID3/getid3/*svg*",
+          to: "protected/getID3",
+          flatten: true,
+        },
+        {
+          from: "src/submodules/getID3/getid3/*getid3*",
+          to: "protected/getID3",
+          flatten: true,
+        },
+        {
+          from: "src/submodules/getID3/getid3/*audio-video.mpeg*",
+          to: "protected/getID3",
+          flatten: true,
+        },
       ]),
       isEnvDevelopment &&
         new LiveReloadPlugin({

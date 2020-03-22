@@ -17,8 +17,10 @@ i18n
   .init({
     fallbackLng: "en",
     debug: true,
+    ns: ["common", "dashboard"],
+    defaultNS: "common",
     backend: {
-      loadPath: "/static/locales/{{lng}}.json",
+      loadPath: "/static/locales/{{lng}}/{{ns}}.json",
     },
 
     interpolation: {

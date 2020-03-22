@@ -27,16 +27,16 @@ const styles: ComponentStyles<DashboardEmptyClassNameContract, DesignSystem> = {
 };
 
 const DashboardEmpty: React.FC<DashboardEmptyProps> = props => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("dashboard");
 
   return (
     <div className={props.managedClasses.dashboardEmpty}>
       <FaFolderOpen className={props.managedClasses.dashboardEmptyIcon} />
       <Heading tag={HeadingTag.h1} size={2}>
-        {t("dashboard_emptyTitle")}
+        {t("emptyTitle")}
       </Heading>
       <Heading tag={HeadingTag.h2} size={5}>
-        {t("dashboard_emptyDescription")}
+        {t("emptyDescription")}
       </Heading>
     </div>
   );

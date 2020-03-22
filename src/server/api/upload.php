@@ -14,14 +14,14 @@ if ((!isset($secret) || $secret !== UPLOAD_TOKEN) && !$loggedIn) {
   error("Unauthorized", 401);
 }
 
-// Generic upload error
-if ($file["error"] > 0) {
-  error("An unexpected error happened, upload did not succeed. Info: " . $file["error"]);
-}
-
 // Size must not exceed 2gb
 if ($file["size"] > 1.342e+8) {
   error("That file is to big!");
+}
+
+// Generic upload error
+if ($file["error"] > 0) {
+  error("An unexpected error happened, upload did not succeed. Info: " . $file["error"]);
 }
 
 // Check if file format is supported

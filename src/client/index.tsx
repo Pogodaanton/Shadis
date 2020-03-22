@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App/App";
 import "./index.scss";
+import "./_setup/i18n";
 import * as serviceWorker from "./_setup/serviceWorker";
 import PogodaDesignToolkitProvider from "./_DesignSystem/Toolkit/DesignSystem";
 import { ToastProvider } from "react-toast-notifications";

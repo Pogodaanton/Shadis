@@ -10,6 +10,7 @@ import {
   DashboardEmptyProps,
 } from "./DashboardEmpty.props";
 import { FaFolderOpen } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 const styles: ComponentStyles<DashboardEmptyClassNameContract, DesignSystem> = {
   dashboardEmpty: {
@@ -26,14 +27,16 @@ const styles: ComponentStyles<DashboardEmptyClassNameContract, DesignSystem> = {
 };
 
 const DashboardEmpty: React.FC<DashboardEmptyProps> = props => {
+  const { t } = useTranslation("dashboard");
+
   return (
     <div className={props.managedClasses.dashboardEmpty}>
       <FaFolderOpen className={props.managedClasses.dashboardEmptyIcon} />
       <Heading tag={HeadingTag.h1} size={2}>
-        You haven't uploaded anything yet!
+        {t("emptyTitle")}
       </Heading>
       <Heading tag={HeadingTag.h2} size={5}>
-        You can drag-and-drop an image into here in order to upload it.
+        {t("emptyDescription")}
       </Heading>
     </div>
   );

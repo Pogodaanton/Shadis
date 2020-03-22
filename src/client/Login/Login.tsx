@@ -5,7 +5,6 @@ import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { LoginClassNameContract, LoginProps } from "./Login.props";
 import { FaSignInAlt, FaUserAlt, FaKey } from "react-icons/fa";
 import { TextAction, TextFieldType } from "@microsoft/fast-components-react-msft";
-import { AxiosResponse } from "axios";
 import axios from "../_interceptedAxios";
 import { useToasts } from "../_DesignSystem";
 
@@ -49,11 +48,8 @@ const Login: React.FC<LoginProps> = props => {
     const postOperation = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
       const formData = new FormData(e.currentTarget);
       try {
-        let res: AxiosResponse = await axios.post(
-          window.location.href + "api/login.php",
-          formData
-        );
-        addToast(res.data.message, { appearance: "success", title: "Welcome!" });
+        await axios.post(window.location.href + "api/login.php", formData);
+        window.location.reload();
       } catch (err) {
         setTimeout(() => {
           setDebounce(false);

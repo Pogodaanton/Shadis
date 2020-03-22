@@ -503,6 +503,7 @@ module.exports = function(webpackEnv) {
       new CleanWebpackPlugin({
         cleanStaleWebpackAssets: false,
         cleanAfterEveryBuildPatterns: ["*hot-update*"],
+        cleanOnceBeforeBuildPatterns: ["*", "!uploads"],
       }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
@@ -681,6 +682,11 @@ module.exports = function(webpackEnv) {
         },
         {
           from: "src/submodules/getID3/getid3/*audio-video.mpeg*",
+          to: "protected/getID3",
+          flatten: true,
+        },
+        {
+          from: "src/submodules/getID3/getid3/*tag*",
           to: "protected/getID3",
           flatten: true,
         },

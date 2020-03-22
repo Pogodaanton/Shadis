@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment } from "react";
 import { Heading, HeadingTag } from "@microsoft/fast-components-react-msft";
 import {
   DesignSystem,
@@ -22,23 +22,21 @@ const styles: ComponentStyles<NotFoundClassNameContract, DesignSystem> = {
   },
 };
 
-class NotFound extends Component<NotFoundProps> {
-  render() {
-    return (
-      <Fragment>
-        <Header />
-        <div className={this.props.managedClasses.notFound}>
-          <FaHeartBroken className={this.props.managedClasses.notFoundIcon} />
-          <Heading tag={HeadingTag.h1} size={2}>
-            Nothing to see here!
-          </Heading>
-          <Heading tag={HeadingTag.h2} size={5}>
-            This page has either been removed or never existed before.
-          </Heading>
-        </div>
-      </Fragment>
-    );
-  }
-}
+const NotFound: React.FC<NotFoundProps> = props => {
+  return (
+    <Fragment>
+      <Header />
+      <div className={props.managedClasses.notFound}>
+        <FaHeartBroken className={props.managedClasses.notFoundIcon} />
+        <Heading tag={HeadingTag.h1} size={2}>
+          Nothing to see here!
+        </Heading>
+        <Heading tag={HeadingTag.h2} size={5}>
+          This page has either been removed or never existed before.
+        </Heading>
+      </div>
+    </Fragment>
+  );
+};
 
 export default manageJss(styles)(NotFound);

@@ -22,7 +22,7 @@ if (!password_verify($password, $row["password"])) {
 }
 
 $_SESSION["u_id"] = $row["id"];
-$_SESSION["u_username"] = $row["username"];
+$_SESSION["u_name"] = $row["username"];
 
 respond("Successfully logged in!");
 exit();

@@ -33,7 +33,7 @@ class db
         $stmt = mysqli_stmt_init($this->con);
 
         if (!mysqli_stmt_prepare($stmt, $sql_stmt)) {
-            error("An error happened while trying to prepare the MySQLi statement.");
+            error(mysqli_stmt_errno($stmt) . ":" . mysqli_stmt_error($stmt));
         }
 
         mysqli_stmt_bind_param($stmt, $types, ...$args);
@@ -59,6 +59,24 @@ class db
     {
         $sql = $exec . " FROM " . $GLOBALS["table_prefix"] . "users WHERE " . $column . "=?";
         $result = $this->request($sql, "s", $value);
+        return $result;
+    }
+
+    /**
+     * Requests a new row in the files table
+     *
+     * @param string $uid Unique ID of the file.
+     * @param string $token Unique ID for editing the file.
+     * @param string $extension File type (Supported: gif, jpg, png).
+     * @param string $timestamp Timestamp of last modification
+     * @param string $title Image title that will be shown on the page
+     * @param string $width Image width
+     * @param string $height Image height
+     */
+    public function request_upload($uid, $token, $extension, $timestamp, $title, $width, $height)
+    {
+        $sql = "INSERT INTO " . $GLOBALS["table_prefix"] . "files (id, token, extension, width, height, timestamp, title) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $result = $this->request($sql, "sssssss", $uid, $token, $extension, $width, $height, $timestamp, $title);
         return $result;
     }
 }

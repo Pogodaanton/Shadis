@@ -3,6 +3,7 @@ import axios, { AxiosInstance, AxiosError } from "axios";
 export interface CustomError {
   code: number;
   message: string;
+  i18n: string;
 }
 
 const interceptedAxios: AxiosInstance = axios.create();

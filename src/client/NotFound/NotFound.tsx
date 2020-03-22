@@ -8,6 +8,7 @@ import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { NotFoundClassNameContract, NotFoundProps } from "./NotFound.props";
 import { Header } from "../_DesignSystem";
 import { FaHeartBroken } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 const styles: ComponentStyles<NotFoundClassNameContract, DesignSystem> = {
   notFound: {
@@ -23,16 +24,18 @@ const styles: ComponentStyles<NotFoundClassNameContract, DesignSystem> = {
 };
 
 const NotFound: React.FC<NotFoundProps> = props => {
+  const { t } = useTranslation("common");
+
   return (
     <Fragment>
       <Header />
       <div className={props.managedClasses.notFound}>
         <FaHeartBroken className={props.managedClasses.notFoundIcon} />
         <Heading tag={HeadingTag.h1} size={2}>
-          Nothing to see here!
+          {t("notFound.title")}
         </Heading>
         <Heading tag={HeadingTag.h2} size={5}>
-          This page has either been removed or never existed before.
+          {t("notFound.description")}
         </Heading>
       </div>
     </Fragment>

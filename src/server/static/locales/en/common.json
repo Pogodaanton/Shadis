@@ -1,0 +1,14 @@
+{
+  "loginButton": "Log in",
+  "username": "Username",
+  "password": "Password",
+  "error": {
+    "loginGeneric": "Couldn't log you in",
+    "loginMissingData": "Username or password missing!",
+    "loginInvalidData": "Invalid username or password!"
+  },
+  "notFound": {
+    "title": "Nothing to see here!",
+    "description": "This page has either been removed or never existed before."
+  }
+}

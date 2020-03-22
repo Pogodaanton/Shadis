@@ -7,11 +7,11 @@ require_once "config.php";
  * @param string $message A custom message
  * @param int $code An http code to respond with
  */
-function respond($message = "Request successful", $code = 200)
+function respond($message = "Request successful", $code = 200, $i18n_id = "")
 {
     header("Content-type: application/json");
     http_response_code($code);
-    die(json_encode(array("code" => $code, "message" => $message)));
+    die(json_encode(array("code" => $code, "message" => $message, "i18n" => $i18n_id)));
 }
 
 /**
@@ -20,9 +20,9 @@ function respond($message = "Request successful", $code = 200)
  * @param string $message A custom error message
  * @param int $code An http error code to respond with
  */
-function error($message = "An unexpected error happened!", $code = 500)
+function error($message = "An unexpected error happened!", $code = 500, $i18n_id = "")
 {
-    respond($message, $code);
+    respond($message, $code, $i18n_id);
 }
 
 /**

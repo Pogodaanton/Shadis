@@ -22,4 +22,4 @@ interceptedAxios.interceptors.response.use(
   }
 );
 
-export default interceptedAxios;
+export { interceptedAxios as axios };

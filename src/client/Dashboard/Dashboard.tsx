@@ -3,7 +3,7 @@ import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { DashboardClassNameContract, DashboardProps } from "./Dashboard.props";
 import { Header } from "../_DesignSystem";
-import DashboardEmpty from "./DashboardEmpty";
+import DashboardEmpty from "./views/DashboardEmpty";
 import { withDropzone } from "../FullscreenDropzone/FullscreenDropzone";
 
 const styles: ComponentStyles<DashboardClassNameContract, DesignSystem> = {

@@ -26,7 +26,7 @@ const styles: ComponentStyles<DashboardEmptyClassNameContract, DesignSystem> = {
   },
 };
 
-const DashboardEmpty: React.FC<DashboardEmptyProps> = props => {
+const DashboardEmpty: React.FC<DashboardEmptyProps> = React.memo(props => {
   const { t } = useTranslation("dashboard");
 
   return (
@@ -40,6 +40,6 @@ const DashboardEmpty: React.FC<DashboardEmptyProps> = props => {
       </Heading>
     </div>
   );
-};
+});
 
 export default manageJss(styles)(DashboardEmpty);

@@ -2,6 +2,8 @@
 require_once dirname(__FILE__) . "/../db.inc.php";
 require_once dirname(__FILE__) . "/../output.inc.php";
 
+$base_folder = dirname(__FILE__) . "/../../uploads/";
+
 class ImageUpload
 {
   public $file;
@@ -90,17 +92,34 @@ class ImageUpload
   }
 
   /**
+   * Generates a thumbnail for the image.
+   * The function assumes that the image has already been put to the uploads directory.
+   */
+  private function generate_thumbnail()
+  {
+    $type = substr($this->file["type"], 6);
+    $image_path = $GLOBALS["base_folder"] . $this->file_id . "." . $this->file_extension;
+    $thumbnail_path = $GLOBALS["base_folder"] . $this->file_id . ".thumb.jpg";
+    exec($GLOBALS["imagick_path"] . " convert -define " . $type . ":size=" . $this->file_width . "x" . $this->file_height . " " . $image_path . " -thumbnail '200x200>' -background white -alpha Background " . $thumbnail_path . " 2>&1");
+    return true;
+  }
+
+  /**
    * Moves the uploaded file into its appropriate location
    * and adds a new row to the files table 
    */
   public function upload()
   {
-    $base_folder = dirname(__FILE__) . "/../../uploads/";
+    $base_folder = $GLOBALS["base_folder"];
     $target_name = $base_folder . $this->file_id . "." . $this->file_extension;
 
     mkdir($base_folder);
     if (!move_uploaded_file($this->file["tmp_name"], $target_name)) {
       error("Uploading image did not succeed. Check whether the destination is writeable.");
+    }
+
+    if (!$this->generate_thumbnail()) {
+      error("Generating image thumbnail did not succeed.");
     }
 
     $this->db->request_upload($this->file_id, $this->file_token, $this->file_extension, $this->file_modification_time, $this->file_title, $this->file_width, $this->file_height);

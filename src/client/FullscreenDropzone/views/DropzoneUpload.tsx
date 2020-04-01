@@ -103,13 +103,12 @@ const DropzoneUpload = (props: DropzoneUploadProps) => {
         onUploadProgress,
       });
       setResData(res.data);
-      return setTimeout(props.onRemoveRequest, 10000);
     } catch (err) {
       console.log("An error happened!\n", err);
       setErrorMessage(err.code ? t(err.code) : err.message || "Unknkown Error!");
       return null;
     }
-  }, [props.file, props.onRemoveRequest, t]);
+  }, [props.file, t]);
 
   // onMount
   useEffect(() => {

@@ -119,9 +119,10 @@ const DropzoneUpload = (props: DropzoneUploadProps) => {
     }
 
     // Uploading process
+    if (resData.id) return () => {};
     uploadFile();
     return () => {};
-  }, [props.onRemoveRequest, props.rejected, uploadFile]);
+  }, [props.onRemoveRequest, props.rejected, resData.id, uploadFile]);
 
   return (
     <div className={props.managedClasses.dropzoneUpload}>

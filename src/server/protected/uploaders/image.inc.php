@@ -129,7 +129,7 @@ class ImageUpload
 
       switch ($this->file_extension) {
         case "png":
-          $parent_data = $analyzed_data[$format]["IHDR"];
+          $parent_data = $analyzed_data[$this->file_extension]["IHDR"];
           $this->file_width = $parent_data["width"];
           $this->file_height = $parent_data["height"];
           break;

@@ -15,8 +15,8 @@ if ((!isset($secret) || $secret !== UPLOAD_TOKEN) && !$loggedIn) {
 }
 
 // Size must not exceed 2gb
-if ($file["size"] > 1.342e+8) {
-  error("That file is to big!");
+if ($file["size"] > 1.342e+8 || !isset($file["size"])) {
+  error("Either no file was provided or the size exceeded the predefined limit of the server.");
 }
 
 // Generic upload error

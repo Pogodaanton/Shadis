@@ -36,3 +36,22 @@ define("UPLOAD_TOKEN", "your_secret_upload_token_here");
  * Accepts only numbers, letters, and underscores
  */
 $table_prefix = "shadis_";
+
+/**
+ * Base directory of Shadis
+ *
+ * If you put Shadis in a location other than root,
+ * modify this variable to the specific subdirectory.
+ */
+$base_directory = "/";
+
+/**
+ * Path to ImageMagick executable
+ * Make sure the given path is really the right one.
+ *
+ * Since the binary is called differently on macOS
+ * than on other platforms, you also need to append
+ * the name of the executable.
+ * 
+ */
+$imagick_path = "/usr/local/bin/magick";

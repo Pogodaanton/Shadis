@@ -28,7 +28,7 @@ class db
      * @param string $types A string that contains one or more characters which specify the types for the corresponding bind variables. Refer to mysqli_smt_bind_param()
      * @param mixed ...$args Matching arguments for the statement.
      */
-    public function request($sql_stmt, $types, ...$args)
+    public function request($sql_stmt, $types = null, ...$args)
     {
         $stmt = mysqli_stmt_init($this->con);
 
@@ -36,7 +36,11 @@ class db
             error(mysqli_stmt_errno($stmt) . ":" . mysqli_stmt_error($stmt));
         }
 
-        mysqli_stmt_bind_param($stmt, $types, ...$args);
+        // Checking whether stmt parameters need to be appended
+        if (!is_null($types)) {
+            mysqli_stmt_bind_param($stmt, $types, ...$args);
+        }
+
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
@@ -72,11 +76,12 @@ class db
      * @param string $title Image title that will be shown on the page
      * @param string $width Image width
      * @param string $height Image height
+     * @param string $thumb_height Thumbnail height
      */
-    public function request_upload($uid, $token, $extension, $timestamp, $title, $width, $height)
+    public function request_upload($uid, $token, $extension, $timestamp, $title, $width, $height, $thumb_height)
     {
-        $sql = "INSERT INTO " . $GLOBALS["table_prefix"] . "files (id, token, extension, width, height, timestamp, title) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $result = $this->request($sql, "sssssss", $uid, $token, $extension, $width, $height, $timestamp, $title);
+        $sql = "INSERT INTO " . $GLOBALS["table_prefix"] . "files (id, token, extension, width, height, thumb_height, timestamp, title) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $result = $this->request($sql, "sssiisis", $uid, $token, $extension, $width, $height, $thumb_height, $timestamp, $title);
         return $result;
     }
 }

@@ -11,7 +11,8 @@ class ImageUpload
   public $file_extension;
   public $file_width;
   public $file_height;
-  public $file_modification_time;
+  public $thumbnail_height;
+  public $timestamp;
   public $file_title;
   public $file_id;
   public $file_token;
@@ -20,7 +21,7 @@ class ImageUpload
   public function __construct($file, $title, $timestamp)
   {
     $this->file = $file;
-    $this->file_modification_time = $timestamp ?: filemtime($file["tmp_name"]);
+    $this->timestamp = $timestamp ?: time();
     $this->file_title = $title ?: "Untitled Image";
     $this->db = new db();
 
@@ -100,7 +101,8 @@ class ImageUpload
     $type = substr($this->file["type"], 6);
     $image_path = $GLOBALS["base_folder"] . $this->file_id . "." . $this->file_extension;
     $thumbnail_path = $GLOBALS["base_folder"] . $this->file_id . ".thumb.jpg";
-    exec($GLOBALS["imagick_path"] . " convert -define " . $type . ":size=" . $this->file_width . "x" . $this->file_height . " " . $image_path . " -thumbnail '200x200>' -background white -alpha Background " . $thumbnail_path . " 2>&1");
+    exec($GLOBALS["imagick_path"] . " convert -define " . $type . ":size=" . $this->file_width . "x" . $this->file_height . " " . $image_path . " -thumbnail '200>' -background white -alpha Background " . $thumbnail_path . " 2>&1");
+    $this->thumbnail_height = exec($GLOBALS["imagick_path"] . " identify -ping -format '%h' " . $thumbnail_path);
     return true;
   }
 
@@ -122,7 +124,7 @@ class ImageUpload
       error("Generating image thumbnail did not succeed.");
     }
 
-    $this->db->request_upload($this->file_id, $this->file_token, $this->file_extension, $this->file_modification_time, $this->file_title, $this->file_width, $this->file_height);
+    $this->db->request_upload($this->file_id, $this->file_token, $this->file_extension, $this->timestamp, $this->file_title, $this->file_width, $this->file_height, $this->thumbnail_height);
     return true;
   }
 

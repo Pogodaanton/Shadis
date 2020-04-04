@@ -17,9 +17,9 @@ if (!isset($_SESSION['u_id'])) {
 $since = $_GET["since"];
 
 if (isset($since)) {
-  $result = $db->request("SELECT id, thumb_height, timestamp, title FROM `" . $table_prefix . "files` WHERE timestamp > " . $since . " ORDER BY timestamp");
+  $result = $db->request("SELECT id, thumb_height, timestamp, title FROM `" . $table_prefix . "files` WHERE timestamp > " . $since . " ORDER BY timestamp DESC");
 } else {
-  $result = $db->request("SELECT id, thumb_height, timestamp, title FROM `" . $table_prefix . "files` ORDER BY timestamp");
+  $result = $db->request("SELECT id, thumb_height, timestamp, title FROM `" . $table_prefix . "files` ORDER BY timestamp DESC");
 }
 
 header('Content-type: application/json');

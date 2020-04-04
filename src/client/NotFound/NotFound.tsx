@@ -19,7 +19,7 @@ const styles: ComponentStyles<NotFoundClassNameContract, DesignSystem> = {
   },
   notFoundIcon: {
     fontSize: "4em",
-    color: (designSystem: DesignSystem): string => neutralForegroundRest(designSystem),
+    color: neutralForegroundRest,
   },
 };
 

@@ -7,7 +7,8 @@ export interface HeaderClassNameContract {
   /**
    * Root of the header component
    */
-  header?: string;
+  header: string;
+  header_fixed?: string;
   /**
    * Left-side logo section
    */
@@ -22,4 +23,6 @@ export interface HeaderClassNameContract {
 /**
  * Props for the header component
  */
-export interface HeaderProps extends ManagedClasses<HeaderClassNameContract> {}
+export interface HeaderProps extends ManagedClasses<HeaderClassNameContract> {
+  fixed?: boolean;
+}

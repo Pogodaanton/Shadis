@@ -6,12 +6,14 @@ import { parseColorHexARGB } from "@microsoft/fast-colors";
 import { HeaderProps, HeaderClassNameContract } from "./Header.props";
 import Logo from "../Logo/Logo";
 import { Link } from "react-router-dom";
+import { classNames } from "@microsoft/fast-web-utilities";
 
 const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
   header: {
     height: "64px",
     display: "flex",
     alignItems: "center",
+    width: "100%",
     padding: "0 12px",
     background: (designSystem: DesignSystem): string =>
       `linear-gradient(180deg, ${parseColorHexARGB(
@@ -19,6 +21,12 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
       ).toStringHexARGB()} 1%, ${parseColorHexARGB(
         neutralLayerL3(designSystem) + "00"
       ).toStringHexARGB()} 98%)`,
+  },
+  header_fixed: {
+    position: "fixed",
+    "& ~ *": {
+      paddingTop: "64px",
+    },
   },
   headerLeft: {
     display: "flex",
@@ -29,10 +37,15 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
   },
 };
 
-class HeaderBase extends Component<HeaderProps> {
-  public render = (): React.ReactNode => (
-    <header className={this.props.managedClasses.header}>
-      <div className={this.props.managedClasses.headerLeft}>
+const HeaderBase: React.FC<HeaderProps> = props => {
+  return (
+    <header
+      className={classNames(props.managedClasses.header, [
+        props.managedClasses.header_fixed,
+        props.fixed,
+      ])}
+    >
+      <div className={props.managedClasses.headerLeft}>
         <Link to="/" alt="Go to Homepage">
           <Logo size="45" />
         </Link>
@@ -40,6 +53,6 @@ class HeaderBase extends Component<HeaderProps> {
       </div>
     </header>
   );
-}
+};
 
 export default manageJss(styles)(HeaderBase);

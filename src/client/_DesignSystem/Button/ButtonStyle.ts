@@ -17,6 +17,7 @@ import {
   focusOutlineWidth,
   accentPalette,
   backgroundColor,
+  accentFillHover,
 } from "@microsoft/fast-components-styles-msft";
 import { ColorRGBA64, rgbToRelativeLuminance } from "@microsoft/fast-colors";
 import { parseColorString } from "@microsoft/fast-components-styles-msft/dist/utilities/color/common";
@@ -115,6 +116,26 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
   button__hasIconAndContent: {
     "& $button_icon": {
       ...applyBeforeMargin,
+    },
+  },
+  button__justified: {
+    "& span": {
+      position: "relative",
+      "&::before": {
+        content: "''",
+        position: "absolute",
+        backgroundColor: accentFillHover,
+        width: "100%",
+        height: "2px",
+        bottom: "-4px",
+        transform: "scaleX(0)",
+        transformOrigin: "right",
+        transition: "transform .3s",
+      },
+    },
+    "&:hover span::before": {
+      transform: "scaleX(1)",
+      transformOrigin: "left",
     },
   },
 };

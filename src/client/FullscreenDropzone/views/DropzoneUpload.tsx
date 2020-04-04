@@ -105,7 +105,7 @@ const DropzoneUpload = (props: DropzoneUploadProps) => {
       setResData(res.data);
     } catch (err) {
       console.log("An error happened!\n", err);
-      setErrorMessage(err.code ? t(err.code) : err.message || "Unknkown Error!");
+      setErrorMessage(err.i18n ? t(err.i18n) : err.message || "Unknkown Error!");
       return null;
     }
   }, [props.file, t]);
@@ -119,10 +119,10 @@ const DropzoneUpload = (props: DropzoneUploadProps) => {
     }
 
     // Uploading process
-    if (resData.id) return () => {};
+    if (resData.id || errorMessage) return () => {};
     uploadFile();
     return () => {};
-  }, [props.onRemoveRequest, props.rejected, resData.id, uploadFile]);
+  }, [errorMessage, props.onRemoveRequest, props.rejected, resData.id, uploadFile]);
 
   return (
     <div className={props.managedClasses.dropzoneUpload}>

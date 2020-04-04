@@ -5,7 +5,6 @@ import { ManagedClasses } from "@microsoft/fast-jss-manager-react";
  */
 export interface DashboardListClassNameContract {
   dashboardList: string;
-  dashboardListCell: string;
 }
 
 /**

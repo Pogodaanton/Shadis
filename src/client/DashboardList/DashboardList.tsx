@@ -4,27 +4,21 @@ import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import {
   DashboardListClassNameContract,
   DashboardListProps,
-  ListDataItem,
 } from "./DashboardList.props";
-import { useTranslation } from "react-i18next";
 import {
-  CellMeasurer,
   CellMeasurerCache,
   createMasonryCellPositioner,
   Masonry,
-  CellRenderer,
   WindowScroller,
   AutoSizer,
 } from "react-virtualized";
-import { TFunction } from "i18next";
 import { debounce } from "lodash-es";
+import DashboardListCell from "./views/DashboardListCell";
 
 const styles: ComponentStyles<DashboardListClassNameContract, DesignSystem> = {
-  dashboardList: {},
-  dashboardListCell: {
-    "& > h4": {
-      position: "absolute",
-      bottom: "0px",
+  dashboardList: {
+    "& .ReactVirtualized__Masonry, & .ReactVirtualized__Masonry__innerScrollContainer": {
+      outline: "none",
     },
   },
 };
@@ -36,6 +30,7 @@ const spacer = 10;
 // Default sizes help Masonry decide how many images to batch-measure
 const cache = new CellMeasurerCache({
   defaultHeight: 250,
+  minHeight: 45,
   defaultWidth: 200,
   fixedWidth: true,
 });
@@ -48,35 +43,10 @@ const cellPositioner = createMasonryCellPositioner({
   spacer: 10,
 });
 
-const cellRenderer = (
-  listData: ListDataItem[],
-  t: TFunction,
-  className: string
-): CellRenderer => ({ index, key, parent, style }) => {
-  const { id, title, thumb_height } = listData[index];
-
-  return (
-    <CellMeasurer cache={cache} index={index} key={key} parent={parent}>
-      <div className={className} style={style}>
-        <img
-          src={`${window.location.origin}/uploads/${id}.thumb.jpg`}
-          alt={"Thumbnail for image with title: " + t(title, title)}
-          style={{
-            height: thumb_height,
-            width: "200px",
-          }}
-        />
-        <h4>{t(title, title)}</h4>
-      </div>
-    </CellMeasurer>
-  );
-};
-
 const calculateColumnCount = (width: number): number =>
   Math.floor((width + spacer) / (columnWidth + spacer));
 
 const DashboardList: React.FC<DashboardListProps> = ({ listData, managedClasses }) => {
-  const { t } = useTranslation("dashboard");
   const masonryRef = useRef(null);
   const onResizeRef = useRef(null);
   const [masonryBounds, setMasonryBounds] = useState({
@@ -100,6 +70,7 @@ const DashboardList: React.FC<DashboardListProps> = ({ listData, managedClasses 
     setMasonryBounds({ width, left });
   };
 
+  // A debounced function must not be redefined on each rerender
   const debouncedOnResize = () => {
     if (onResizeRef.current === null) {
       onResizeRef.current = debounce(onResize, 100);
@@ -120,15 +91,18 @@ const DashboardList: React.FC<DashboardListProps> = ({ listData, managedClasses 
                   cellCount={listData.length}
                   cellMeasurerCache={cache}
                   cellPositioner={cellPositioner}
-                  cellRenderer={cellRenderer(
-                    listData,
-                    t,
-                    managedClasses.dashboardListCell
+                  cellRenderer={props => (
+                    <DashboardListCell
+                      {...props}
+                      cache={cache}
+                      data={listData[props.index]}
+                    />
                   )}
                   autoHeight={true}
                   height={height}
                   scrollTop={scrollTop}
                   width={masonryBounds.width}
+                  overscanByPixels={100}
                   style={{ left: masonryBounds.left }}
                 />
               )}

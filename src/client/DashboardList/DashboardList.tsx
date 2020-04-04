@@ -83,21 +83,6 @@ const DashboardList: React.FC<DashboardListProps> = ({ listData, managedClasses 
     width: 0,
     left: 0,
   });
-  /*
-  return (
-    <div className={props.managedClasses.dashboardList}>
-      {props.listData !== null &&
-        props.listData.length > 0 &&
-        props.listData.map(({ id, title }) => (
-          <img
-            key={id}
-            src={`${window.location.origin}/uploads/${id}.thumb.jpg`}
-            alt={"Thumbnail for image with title: " + t(title, title)}
-          />
-        ))}
-    </div>
-  );
-  */
 
   const onResize = ({ width: pageWidth }) => {
     const columnCount = calculateColumnCount(pageWidth);

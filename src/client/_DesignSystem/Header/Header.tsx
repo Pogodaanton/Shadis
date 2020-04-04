@@ -53,7 +53,7 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
   },
   header_fixed: {
     position: "fixed",
-    zIndex: "100",
+    zIndex: "1",
     "& ~ *": {
       paddingTop: "64px",
     },

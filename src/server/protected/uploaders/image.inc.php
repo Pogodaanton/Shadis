@@ -176,7 +176,7 @@ class ImageUpload
     $base_url = dirname(dirname(url_origin($_SERVER) . $_SERVER["REQUEST_URI"])) . "/";
     return array(
       "id" => $this->file_id,
-      "file_url" => $base_url . $this->file_id . "/?token=" . $this->file_token,
+      "file_url" => $base_url . $this->file_id . "/",
       "file_editable_url" => $base_url . $this->file_id . "/?token=" . $this->file_token,
       "file_direct_url" => $base_url . $this->file_id . "." . $this->file_extension,
       "file_delete_url" => $base_url . "api/edit.php?action=delete&token=" . $this->file_token

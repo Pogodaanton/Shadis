@@ -1,6 +1,7 @@
 {
   "emptyTitle": "You haven't uploaded anything yet!",
   "emptyDescription": "You can drag-and-drop an image into here in order to upload it.",
+  "untitled": "Untitled Image",
   "upload": {
     "title": "Upload a file",
     "select": "Select File",
@@ -15,5 +16,8 @@
     "aria": {
       "dialogLabel": "Upload dialog"
     }
+  },
+  "error": {
+    "listGeneric": "Couldn't retrieve file list"
   }
 }

@@ -22,7 +22,7 @@ class ImageUpload
   {
     $this->file = $file;
     $this->timestamp = $timestamp ?: time();
-    $this->file_title = $title ?: "Untitled Image";
+    $this->file_title = $title ?: "untitled";
     $this->db = new db();
 
     $this->file_id = $this->loop_through_random_string(8);
@@ -101,7 +101,7 @@ class ImageUpload
     $type = substr($this->file["type"], 6);
     $image_path = $GLOBALS["base_folder"] . $this->file_id . "." . $this->file_extension;
     $thumbnail_path = $GLOBALS["base_folder"] . $this->file_id . ".thumb.jpg";
-    exec($GLOBALS["imagick_path"] . " convert -define " . $type . ":size=" . $this->file_width . "x" . $this->file_height . " " . $image_path . " -thumbnail '200>' -background white -alpha Background " . $thumbnail_path . " 2>&1");
+    exec($GLOBALS["imagick_path"] . " convert -define " . $type . ":size=" . $this->file_width . "x" . $this->file_height . " " . $image_path . " -thumbnail '180>' -background white -alpha Background " . $thumbnail_path . " 2>&1");
     $this->thumbnail_height = exec($GLOBALS["imagick_path"] . " identify -ping -format '%h' " . $thumbnail_path);
     return true;
   }

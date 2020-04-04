@@ -37,7 +37,7 @@ const applyBackdropBackground = (): CSSRules<DesignSystem> => {
   const customApplyAcrylic: CustomApplyAcrylic<DesignSystem> = applyAcrylic;
   return customApplyAcrylic({
     textureImage: acrylicNoise,
-    backgroundColor: background("bf"),
+    backgroundColor: background("b0"),
     fallbackBackgroundColor: background("f7"),
   });
 };

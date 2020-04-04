@@ -38,6 +38,25 @@ const Dashboard: React.FC<DashboardProps> = props => {
     updateFileList();
   }, [addToast, t]);
 
+  const onDeleteSelected = async (selectedItems: string[]) => {
+    try {
+      /*
+      await axios.post(window.location.origin + "/api/editMultiple.php", {
+        items: selectedItems,
+        action: "delete",
+      });*/
+      setListData(
+        listData.filter(obj => selectedItems.findIndex(id => id === obj.id) === -1)
+      );
+    } catch (err) {
+      addToast(t(err.i18n, err.message), {
+        appearance: "error",
+        title: t("error.listGeneric") + ":",
+      });
+      console.log(`${t("error.listGeneric")}:\n`, `(${err.code}) - ${err.message}`);
+    }
+  };
+
   return (
     <Fragment>
       <Header fixed />
@@ -49,7 +68,7 @@ const Dashboard: React.FC<DashboardProps> = props => {
           We haven't come to this point yet. TODO: Do this part.
         </div>
         */
-        <DashboardList listData={listData} />
+        <DashboardList listData={listData} onDeleteSelected={onDeleteSelected} />
       )}
     </Fragment>
   );

@@ -22,4 +22,7 @@ export interface DashboardListCellProps
     MasonryCellProps {
   cache: CellMeasurerCache;
   data: ListDataItem;
+  selected: boolean;
+  selectMode: boolean;
+  onSelect: (selected: boolean) => void;
 }

@@ -3,13 +3,14 @@ import {
   DashboardListCellProps,
   DashboardListCellClassNameContract,
 } from "./DashboardListCell.props";
-import React, { useState } from "react";
+import React from "react";
 import {
   neutralLayerL2,
   applyCornerRadius,
   DesignSystem,
   backgroundColor,
   accentFillSelected,
+  neutralForegroundRest,
 } from "@microsoft/fast-components-styles-msft";
 import { useTranslation } from "react-i18next";
 import {
@@ -38,6 +39,8 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     width: "200px",
     objectFit: "contain",
     background: neutralLayerL2,
+    userDrag: "none",
+    userSelect: "none",
   },
   dashboardListCell_metadata: {
     position: "absolute",
@@ -71,8 +74,11 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     width: "100%",
     height: "100%",
     boxSizing: "border-box",
-    border: "#fff 2px solid",
+    borderWidth: "2px",
+    borderStyle: "solid",
+    borderColor: neutralForegroundRest,
     zIndex: "1",
+    outline: "none",
     ...applyCornerRadius(),
     background: (des: DesignSystem) =>
       parseColorHexRGBA(accentFillSelected(des) + "aa").toStringWebRGBA(),
@@ -104,7 +110,6 @@ const checkboxStyle: ComponentStyles<CheckboxClassNameContract, DesignSystem> = 
  */
 const CellRenderer: React.FC<DashboardListCellProps> = props => {
   const { id, title, thumb_height } = props.data;
-  const [isSelected, setSelection] = useState(false);
   const { t } = useTranslation("dashboard");
 
   // We already know the thumbnail size, so we take over the work of <CellMeasurer />
@@ -122,8 +127,9 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
   }
 
   const onCheckmarkChange = ({ currentTarget }) => {
-    if (typeof currentTarget.checked !== "undefined") setSelection(!isSelected);
-    else if (isSelected) setSelection(false);
+    if (typeof currentTarget.checked !== "undefined" || props.selectMode) {
+      props.onSelect(!props.selected);
+    }
   };
 
   return (
@@ -131,7 +137,7 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
       key={props.key}
       className={classNames(props.managedClasses.dashboardListCell, [
         props.managedClasses.dashboardListCell__checked,
-        isSelected,
+        props.selected,
       ])}
       onClick={onCheckmarkChange}
       style={{
@@ -155,7 +161,7 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
         className={props.managedClasses.dashboardListCell_checkbox}
         onChange={onCheckmarkChange}
         jssStyleSheet={checkboxStyle}
-        checked={isSelected}
+        checked={props.selected}
       />
       <div className={props.managedClasses.dashboardListCell_overlay} />
       <footer className={props.managedClasses.dashboardListCell_metadata} tabIndex={0}>

@@ -2,6 +2,7 @@
   "emptyTitle": "You haven't uploaded anything yet!",
   "emptyDescription": "You can drag-and-drop an image into here in order to upload it.",
   "untitled": "Untitled Image",
+  "deleteItems": "Delete selected items",
   "upload": {
     "title": "Upload a file",
     "select": "Select File",

@@ -23,4 +23,5 @@ export interface ListDataItem {
 export interface DashboardListProps
   extends ManagedClasses<DashboardListClassNameContract> {
   listData: ListDataItem[];
+  onDeleteSelected: (selectedItems: string[]) => void;
 }

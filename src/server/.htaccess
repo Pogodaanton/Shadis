@@ -6,6 +6,12 @@ IndexIgnore *
   RewriteEngine On
   RewriteBase /
 
+  # Rewrite jpg/png/gif/webp file access to uploads folder
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{DOCUMENT_ROOT}/uploads/$1.$2 -f
+  RewriteRule ^(.+)\.(jpg|png|gif|webp)$ uploads/$1.$2 [L]
+
   # Don't rewrite files or directories
   RewriteRule ^index.php$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f

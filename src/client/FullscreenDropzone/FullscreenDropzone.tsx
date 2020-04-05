@@ -34,6 +34,8 @@ const FullscreenDropzoneStyles: ComponentStyles<
     width: "100%",
     height: "100%",
     background: "rgba(0,0,0,0.3)",
+    zIndex: "3",
+    paddingTop: "0",
   },
   // The dialog can also be opened with a button
   fullscreenDropzone_visisble: {

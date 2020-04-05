@@ -6,11 +6,13 @@ import {
 import React from "react";
 import {
   neutralLayerL2,
-  applyCornerRadius,
   DesignSystem,
   backgroundColor,
   accentFillSelected,
   neutralForegroundRest,
+  applyElevation,
+  ElevationMultiplier,
+  applyElevatedCornerRadius,
 } from "@microsoft/fast-components-styles-msft";
 import { useTranslation } from "react-i18next";
 import {
@@ -25,7 +27,8 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
   dashboardListCell: {
     background: neutralLayerL2,
     overflow: "hidden",
-    ...applyCornerRadius(),
+    ...applyElevatedCornerRadius(),
+    ...applyElevation(ElevationMultiplier.e4),
     cursor: "pointer",
     "&:hover $dashboardListCell_metadata": {
       transform: "translateY(0%)",
@@ -41,6 +44,8 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     background: neutralLayerL2,
     userDrag: "none",
     userSelect: "none",
+    opacity: "0",
+    transition: "opacity .1s",
   },
   dashboardListCell_metadata: {
     position: "absolute",
@@ -79,7 +84,7 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     borderColor: neutralForegroundRest,
     zIndex: "1",
     outline: "none",
-    ...applyCornerRadius(),
+    ...applyElevatedCornerRadius(),
     background: (des: DesignSystem) =>
       parseColorHexRGBA(accentFillSelected(des) + "aa").toStringWebRGBA(),
   },
@@ -103,6 +108,14 @@ const checkboxStyle: ComponentStyles<CheckboxClassNameContract, DesignSystem> = 
       },
     },
   },
+};
+
+const onImageLoaded: React.ReactEventHandler<HTMLImageElement> = ({ currentTarget }) => {
+  currentTarget.style.opacity = "1";
+};
+
+const onImageError: React.ReactEventHandler<HTMLImageElement> = ({ currentTarget }) => {
+  currentTarget.style.display = "none";
 };
 
 /**
@@ -147,11 +160,10 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
     >
       <img
         className={props.managedClasses.dashboardListCell_image}
-        src={`${window.location.origin}/uploads/${id}.thumb.jpg`}
+        src={`${window.location.origin}/${id}.thumb.jpg`}
         alt={t(title, title)}
-        onError={({ currentTarget }) => {
-          currentTarget.style.display = "none";
-        }}
+        onError={onImageError}
+        onLoad={onImageLoaded}
         style={{
           height: thumb_height,
         }}

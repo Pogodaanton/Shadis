@@ -4,13 +4,13 @@ require_once "../protected/output.inc.php";
 session_start();
 
 // Request can only be GET
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-  error('Only GET request allowed!', 401);
+if ($_SERVER["REQUEST_METHOD"] !== "GET") {
+  error("Only GET request allowed!", 401);
 }
 
 // Login check
-if (!isset($_SESSION['u_id'])) {
-  error('Unauthorized', 401);
+if (!isset($_SESSION["u_id"])) {
+  error("Unauthorized", 401);
 }
 
 // Retrieve everything above this timestamp
@@ -22,5 +22,5 @@ if (isset($since)) {
   $result = $db->request("SELECT id, thumb_height, timestamp, title FROM `" . $table_prefix . "files` ORDER BY timestamp DESC");
 }
 
-header('Content-type: application/json');
+header("Content-type: application/json");
 echo json_encode($result->fetch_all(MYSQLI_ASSOC));

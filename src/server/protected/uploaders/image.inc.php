@@ -98,10 +98,38 @@ class ImageUpload
    */
   private function generate_thumbnail()
   {
+    // We need to use type from the file array directly, since jpg !== jpeg
     $type = substr($this->file["type"], 6);
     $image_path = $GLOBALS["base_folder"] . $this->file_id . "." . $this->file_extension;
     $thumbnail_path = $GLOBALS["base_folder"] . $this->file_id . ".thumb.jpg";
-    exec($GLOBALS["imagick_path"] . " convert -define " . $type . ":size=" . $this->file_width . "x" . $this->file_height . " " . $image_path . " -thumbnail '200>' -background white -alpha Background " . $thumbnail_path . " 2>&1");
+
+    // Using an array to make this part more readable
+    $exec_array = array(
+      $GLOBALS["imagick_path"],
+      "convert",
+      $image_path,
+      "-filter Triangle",
+      "-define " . $type . ":size=" . $this->file_width . "x" . $this->file_height,
+      "-thumbnail '200>'",
+      "-background white",
+      "-alpha Background",
+      "-unsharp 0.25x0.25+8+0.065",
+      "-dither None",
+      "-sampling-factor 4:2:0",
+      "-quality 82",
+      "-define jpeg:fancy-upsampling=off",
+      "-interlace none",
+      "-colorspace RGB",
+      "",
+      "-strip",
+      $thumbnail_path,
+      "2>&1",
+    );
+
+    // Combining arguments into exec string
+    exec(implode(" ", $exec_array));
+
+    // Setting the thumbnail_height according to the newly generated image
     $this->thumbnail_height = exec($GLOBALS["imagick_path"] . " identify -ping -format '%h' " . $thumbnail_path);
     return true;
   }

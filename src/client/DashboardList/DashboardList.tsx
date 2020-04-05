@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import {
@@ -28,6 +28,7 @@ const styles: ComponentStyles<DashboardListClassNameContract, DesignSystem> = {
 // Defaults for masonry cells
 const columnWidth = 200;
 const spacer = 10;
+let currentColumnCount = 0;
 
 // Default sizes help Masonry decide how many images to batch-measure
 const cache = new CellMeasurerCache({
@@ -45,8 +46,16 @@ const cellPositioner = createMasonryCellPositioner({
   spacer: 10,
 });
 
-const calculateColumnCount = (width: number): number =>
-  Math.floor((width + spacer) / (columnWidth + spacer));
+/**
+ * Calculates the amount of columns in a Masonry based on the given available width.
+ * After a specific width, the Masonry won't become wider, as that would reduce usability.
+ *
+ * @param availableWidth Width to fit the Masonry columns in.
+ */
+const calculateMasonryDimensions = (availableWidth: number): number => {
+  if (availableWidth > 1300) availableWidth = 1300;
+  return Math.floor((availableWidth + spacer) / (columnWidth + spacer));
+};
 
 const DashboardList: React.FC<DashboardListProps> = ({
   listData,
@@ -63,27 +72,19 @@ const DashboardList: React.FC<DashboardListProps> = ({
     pageWidth: 0,
   });
 
-  useEffect(() => {
-    if (localListData !== listData) {
-      setLocalListData(listData);
-      if (masonryRef.current) {
-        cache.clearAll();
-        masonryRef.current.clearCellPositions();
-        onResize({ width: masonryBounds.pageWidth });
-      }
+  const onResize = ({ width: pageWidth }, forceUpdate?: boolean) => {
+    const columnCount = calculateMasonryDimensions(pageWidth);
+
+    if (columnCount !== currentColumnCount || forceUpdate) {
+      cellPositioner.reset({
+        columnCount: columnCount,
+        columnWidth,
+        spacer,
+      });
+
+      masonryRef.current.recomputeCellPositions();
+      currentColumnCount = columnCount;
     }
-  }, [listData, localListData, masonryBounds]);
-
-  const onResize = ({ width: pageWidth }) => {
-    const columnCount = calculateColumnCount(pageWidth);
-
-    cellPositioner.reset({
-      columnCount: columnCount,
-      columnWidth,
-      spacer,
-    });
-
-    masonryRef.current.recomputeCellPositions();
 
     const width = columnCount * (columnWidth + spacer) - spacer;
     const left = Math.floor((pageWidth - width) / 2);
@@ -93,11 +94,22 @@ const DashboardList: React.FC<DashboardListProps> = ({
   // A debounced function must not be redefined on each rerender
   const debouncedOnResize = () => {
     if (onResizeRef.current === null) {
-      onResizeRef.current = debounce(onResize, 100);
+      onResizeRef.current = debounce(onResize, 80);
       return onResize;
     }
     return onResizeRef.current;
   };
+
+  useEffect(() => {
+    if (localListData !== listData) {
+      setLocalListData(listData);
+      if (masonryRef.current) {
+        cache.clearAll();
+        masonryRef.current.clearCellPositions();
+        onResize({ width: masonryBounds.pageWidth }, true);
+      }
+    }
+  }, [listData, localListData, masonryBounds]);
 
   // Selection occurs in a <DashboardListCell/>
   const selectItem = (id: string) => (selected: boolean) => {

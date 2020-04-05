@@ -120,7 +120,6 @@ class ImageUpload
       "-define jpeg:fancy-upsampling=off",
       "-interlace none",
       "-colorspace RGB",
-      "",
       "-strip",
       $thumbnail_path,
       "2>&1",

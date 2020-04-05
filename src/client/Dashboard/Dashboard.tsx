@@ -38,22 +38,26 @@ const Dashboard: React.FC<DashboardProps> = props => {
     updateFileList();
   }, [addToast, t]);
 
-  const onDeleteSelected = async (selectedItems: string[]) => {
+  const onDeleteSelected = async (selection: string[]) => {
     try {
-      /*
       await axios.post(window.location.origin + "/api/editMultiple.php", {
-        items: selectedItems,
+        selection,
         action: "delete",
-      });*/
+      });
+
+      addToast("", {
+        appearance: "success",
+        title: t("itemsDeleted", { count: selection.length }),
+      });
       setListData(
-        listData.filter(obj => selectedItems.findIndex(id => id === obj.id) === -1)
+        listData.filter(obj => selection.findIndex(id => id === obj.id) === -1)
       );
     } catch (err) {
       addToast(t(err.i18n, err.message), {
         appearance: "error",
-        title: t("error.listGeneric") + ":",
+        title: t("error.requestGeneric") + ":",
       });
-      console.log(`${t("error.listGeneric")}:\n`, `(${err.code}) - ${err.message}`);
+      console.log(`${t("error.requestGeneric")}:\n`, `(${err.code}) - ${err.message}`);
     }
   };
 

@@ -3,6 +3,8 @@
   "emptyDescription": "You can drag-and-drop an image into here in order to upload it.",
   "untitled": "Untitled Image",
   "deleteItems": "Delete selected items",
+  "itemsDeleted": "Successfully deleted {{count}} item",
+  "itemsDeleted_plural": "Successfully deleted {{count}} items",
   "upload": {
     "title": "Upload a file",
     "select": "Select File",
@@ -19,6 +21,7 @@
     }
   },
   "error": {
+    "requestGeneric": "Couldn't execute request",
     "listGeneric": "Couldn't retrieve file list"
   }
 }

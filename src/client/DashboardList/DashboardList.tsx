@@ -52,7 +52,7 @@ const cellPositioner = createMasonryCellPositioner({
  *
  * @param availableWidth Width to fit the Masonry columns in.
  */
-const calculateMasonryDimensions = (availableWidth: number): number => {
+const calculateMasonryColumnCount = (availableWidth: number): number => {
   if (availableWidth > 1300) availableWidth = 1300;
   return Math.floor((availableWidth + spacer) / (columnWidth + spacer));
 };
@@ -73,7 +73,7 @@ const DashboardList: React.FC<DashboardListProps> = ({
   });
 
   const onResize = ({ width: pageWidth }, forceUpdate?: boolean) => {
-    const columnCount = calculateMasonryDimensions(pageWidth);
+    const columnCount = calculateMasonryColumnCount(pageWidth);
 
     if (columnCount !== currentColumnCount || forceUpdate) {
       cellPositioner.reset({

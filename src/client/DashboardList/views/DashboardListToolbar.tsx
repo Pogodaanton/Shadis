@@ -20,7 +20,7 @@ const styles: ComponentStyles<DashboardListToolbarClassNameContract, DesignSyste
     transition: "transform .2s cubic-bezier(0.9, 0.1, 1, 0.2)",
   },
   dashboardListToolbar__visible: {
-    transform: "translateX(-50%) translateY(13px)",
+    transform: "translateX(-50%) translateY(15px)",
     transition: "transform .2s cubic-bezier(0.1, 0.9, 0.2, 1)",
   },
 };

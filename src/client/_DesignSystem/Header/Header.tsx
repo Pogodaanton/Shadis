@@ -49,6 +49,7 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
     alignItems: "center",
     width: "100%",
     padding: "0 12px",
+    boxSizing: "border-box",
     ...applyBackdropBackground(),
   },
   header_fixed: {

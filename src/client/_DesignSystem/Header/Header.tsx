@@ -76,8 +76,8 @@ const HeaderBase: React.FC<HeaderProps> = props => {
       ])}
     >
       <div className={props.managedClasses.headerLeft}>
-        <Link to="/" alt="Go to Homepage">
-          <Logo size="45" />
+        <Link to="/">
+          <Logo size="45" alt="Go to Homepage" />
         </Link>
         <Paragraph size={2}>Shadis</Paragraph>
       </div>

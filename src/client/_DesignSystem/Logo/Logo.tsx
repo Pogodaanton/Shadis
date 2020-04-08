@@ -17,8 +17,12 @@ try {
   CustomLogo = CustomLogoImport.default;
 } catch (error) {}
 
+interface LogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+  size?: string;
+}
+
 // Falling back to a filler image if no module can be found
-export default class Logo extends Component<{ size?: string }> {
+export default class Logo extends Component<LogoProps> {
   render() {
     return typeof CustomLogo !== "undefined" ? (
       <CustomLogo {...this.props} />
@@ -27,7 +31,7 @@ export default class Logo extends Component<{ size?: string }> {
         src={
           "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQBAMAAAB8P++eAAAAG1BMVEXMzMyWlpa+vr6cnJy3t7fFxcWjo6OxsbGqqqqN7EKtAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAcklEQVRIiWNgGAWjYBSMglEwsoCysUJzAxoLKzBiMi9oR2NhBSYhxgHBDOVsClAWTqAoqMjAyMDsAWPhBOnhiUBpFlEYCycQZRUGWsguBGPhBCks6UAvBKvBWDhBmFkAMFBa2BygrFEwCkbBKBgFgxoAAFYVFqKYGZ7+AAAAAElFTkSuQmCC"
         }
-        alt="Logo"
+        alt={this.props.alt || "Logo"}
         width={this.props.size || "80"}
         height={this.props.size || "80"}
       />

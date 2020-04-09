@@ -23,7 +23,7 @@ import {
 } from "@microsoft/fast-components-styles-msft";
 import { parseColorHexRGBA } from "@microsoft/fast-colors";
 import { ProgressIcon } from "../../_DesignSystem";
-import { axios } from "../../_interceptedAxios";
+import axios from "../../_interceptedAxios";
 
 const DropzoneUploadStyles: ComponentStyles<
   DropzoneUploadClassNameContract,

@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosError } from "axios";
+import axiosInstance, { AxiosInstance, AxiosError } from "axios";
 
 export interface CustomError {
   code: number;
@@ -6,8 +6,8 @@ export interface CustomError {
   i18n: string;
 }
 
-const interceptedAxios: AxiosInstance = axios.create();
-interceptedAxios.interceptors.response.use(
+const axios: AxiosInstance = axiosInstance.create();
+axios.interceptors.response.use(
   res => res,
   (err: AxiosError) => {
     if (
@@ -22,4 +22,4 @@ interceptedAxios.interceptors.response.use(
   }
 );
 
-export { interceptedAxios as axios };
+export default axios;

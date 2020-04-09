@@ -5,7 +5,7 @@ import { DashboardClassNameContract, DashboardProps } from "./Dashboard.props";
 import { Header, useToasts } from "../_DesignSystem";
 import DashboardEmpty from "./views/DashboardEmpty";
 import { withDropzone } from "../FullscreenDropzone/FullscreenDropzone";
-import { axios } from "../_interceptedAxios";
+import axios from "../_interceptedAxios";
 import { useTranslation } from "react-i18next";
 import { ListDataItem } from "../DashboardList/DashboardList.props";
 import { FullscreenLoader } from "../Loader";

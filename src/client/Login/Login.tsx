@@ -5,7 +5,7 @@ import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { LoginClassNameContract, LoginProps } from "./Login.props";
 import { FaSignInAlt, FaUserAlt, FaKey } from "react-icons/fa";
 import { TextAction, TextFieldType } from "@microsoft/fast-components-react-msft";
-import { axios } from "../_interceptedAxios";
+import axios from "../_interceptedAxios";
 import { useToasts } from "../_DesignSystem";
 import { useTranslation } from "react-i18next";
 

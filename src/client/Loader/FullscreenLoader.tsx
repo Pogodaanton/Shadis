@@ -21,6 +21,7 @@ const styles: ComponentStyles<
     background: new ColorRGBA64(0, 0, 0, 0.6).toStringWebRGBA(),
     width: "100%",
     height: "100%",
+    zIndex: "100",
     "& span": {
       "font-size": "2em",
     },
@@ -41,7 +42,7 @@ class FullscreenLoadingIndicator extends React.Component<
 
 const StyledFullscreenLoadingIndicator = manageJss(styles)(FullscreenLoadingIndicator);
 
-export const FullscreenLoader = (promise: Promise<any>) =>
-  loadable(() => promise, {
+export const FullscreenLoader = <T extends unknown>(promise: Promise<any>) =>
+  loadable<T>(() => promise, {
     fallback: <StyledFullscreenLoadingIndicator />,
   });

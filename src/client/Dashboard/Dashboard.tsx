@@ -7,10 +7,13 @@ import DashboardEmpty from "./views/DashboardEmpty";
 import { withDropzone } from "../FullscreenDropzone/FullscreenDropzone";
 import axios from "../_interceptedAxios";
 import { useTranslation } from "react-i18next";
-import { ListDataItem } from "../DashboardList/DashboardList.props";
+import { ListDataItem, DashboardListProps } from "../DashboardList/DashboardList.props";
 import { FullscreenLoader } from "../Loader";
+import { LoadableComponent } from "@loadable/component";
 
-const DashboardList = FullscreenLoader(import("../DashboardList/DashboardList"));
+const DashboardList: LoadableComponent<DashboardListProps> = FullscreenLoader(
+  import("../DashboardList/DashboardList")
+);
 
 const styles: ComponentStyles<DashboardClassNameContract, DesignSystem> = {
   dashboard: {},

@@ -34,7 +34,7 @@ export const ViewLink: React.FC<ViewLinkProps> = props => {
 
   return (
     <>
-      <Link {...props} title={"Go to " + id} onClick={onClick} />
+      <Link {...props} title={t("goto", { name: id })} onClick={onClick} />
       {shouldRedirect && <Redirect push to={props.to as LocationDescriptor} />}
     </>
   );

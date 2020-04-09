@@ -2,6 +2,7 @@
   "loginButton": "Log in",
   "username": "Username",
   "password": "Password",
+  "goto": "Go to page {{name}}",
   "error": {
     "loginGeneric": "Couldn't log you in",
     "loginMissingData": "Username or password missing!",

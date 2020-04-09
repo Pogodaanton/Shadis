@@ -22,6 +22,7 @@ import {
 } from "@microsoft/fast-components-react-msft";
 import { parseColorHexRGBA } from "@microsoft/fast-colors";
 import { classNames } from "@microsoft/fast-web-utilities";
+import { ViewLink } from "./ViewLink";
 
 const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> = {
   dashboardListCell: {
@@ -58,6 +59,8 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     background: des => parseColorHexRGBA(backgroundColor(des) + "cc").toStringWebRGBA(),
     transform: "translateY(100%)",
     transition: "transform .2s cubic-bezier(0.9, 0.1, 1, 0.2)",
+    outline: "none",
+    cursor: "default",
     "& > label": {
       overflow: "hidden",
       textOverflow: "ellipsis",
@@ -139,8 +142,10 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
     }
   }
 
-  const onCheckmarkChange = ({ currentTarget }) => {
-    if (typeof currentTarget.checked !== "undefined" || props.selectMode) {
+  const onCheckmarkChange = (
+    e: React.ChangeEvent<HTMLInputElement> & React.MouseEvent
+  ) => {
+    if (typeof e.currentTarget.checked !== "undefined" || props.selectMode) {
       props.onSelect(!props.selected);
     }
   };
@@ -158,16 +163,18 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
         height: thumb_height,
       }}
     >
-      <img
-        className={props.managedClasses.dashboardListCell_image}
-        src={`${window.location.origin}/${id}.thumb.jpg`}
-        alt={t(title, title)}
-        onError={onImageError}
-        onLoad={onImageLoaded}
-        style={{
-          height: thumb_height,
-        }}
-      />
+      <ViewLink to={`/${id}/`} disabled={props.selectMode}>
+        <img
+          className={props.managedClasses.dashboardListCell_image}
+          src={`${window.location.origin}/${id}.thumb.jpg`}
+          alt={t(title, title)}
+          onError={onImageError}
+          onLoad={onImageLoaded}
+          style={{
+            height: thumb_height,
+          }}
+        />
+      </ViewLink>
       <Checkbox
         inputId={id}
         className={props.managedClasses.dashboardListCell_checkbox}

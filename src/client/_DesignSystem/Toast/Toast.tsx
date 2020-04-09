@@ -11,6 +11,7 @@ import {
   applyFontWeightBold,
 } from "@microsoft/fast-components-styles-msft";
 import { ToastProps, ToastClassNameContract } from "./Toast.props";
+import { useTranslation } from "react-i18next";
 
 const toastStyles: ComponentStyles<ToastClassNameContract, DesignSystem> = {
   toast_element: {
@@ -49,6 +50,8 @@ const toastStyles: ComponentStyles<ToastClassNameContract, DesignSystem> = {
 };
 
 const BaseToast = (props: ToastProps) => {
+  const { t } = useTranslation("common");
+
   let defaultToastProps = { ...props };
   delete defaultToastProps.managedClasses;
   delete defaultToastProps.title;
@@ -56,13 +59,11 @@ const BaseToast = (props: ToastProps) => {
   const title = () => {
     switch (props.appearance) {
       case "error":
-        return "Error:";
-      case "success":
-        return "Success:";
+        return t("notification.error");
       case "warning":
-        return "Warning:";
+        return t("notification.warning");
       default:
-        return "Info:";
+        return t("notification.info");
     }
   };
 

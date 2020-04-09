@@ -31,7 +31,8 @@ class App extends React.Component<AppProps> {
         <Switch>
           <Route path="/404" component={NotFound} />
           <Route path="/:id" component={View} />
-          <Route component={MainPage} />
+          <Route path="/" exact component={MainPage} />
+          <Route component={NotFound} />
         </Switch>
       </Router>
     </Background>

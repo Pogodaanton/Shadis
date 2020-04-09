@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import {
@@ -57,120 +57,116 @@ const calculateMasonryColumnCount = (availableWidth: number): number => {
   return Math.floor((availableWidth + spacer) / (columnWidth + spacer));
 };
 
-const DashboardList: React.FC<DashboardListProps> = ({
-  listData,
-  managedClasses,
-  onDeleteSelected,
-}) => {
-  const masonryRef = useRef(null);
-  const onResizeRef = useRef(null);
-  const [localListData, setLocalListData] = useState<ListDataItem[]>([]);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [masonryBounds, setMasonryBounds] = useState({
-    width: 0,
-    left: 0,
-    pageWidth: 0,
-  });
+const DashboardList: React.FC<DashboardListProps> = React.memo(
+  ({ listData, managedClasses, onDeleteSelected }) => {
+    const masonryRef = useRef(null);
+    const onResizeRef = useRef(null);
+    const [localListData, setLocalListData] = useState<ListDataItem[]>([]);
+    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const [masonryBounds, setMasonryBounds] = useState({
+      width: 0,
+      left: 0,
+      pageWidth: 0,
+    });
 
-  const onResize = ({ width: pageWidth }, forceUpdate?: boolean) => {
-    const columnCount = calculateMasonryColumnCount(pageWidth);
+    const onResize = ({ width: pageWidth }, forceUpdate?: boolean) => {
+      const columnCount = calculateMasonryColumnCount(pageWidth);
 
-    if (columnCount !== currentColumnCount || forceUpdate) {
-      cellPositioner.reset({
-        columnCount: columnCount,
-        columnWidth,
-        spacer,
-      });
+      if (columnCount !== currentColumnCount || forceUpdate) {
+        cellPositioner.reset({
+          columnCount: columnCount,
+          columnWidth,
+          spacer,
+        });
 
-      masonryRef.current.recomputeCellPositions();
-      currentColumnCount = columnCount;
-    }
-
-    const width = columnCount * (columnWidth + spacer) - spacer;
-    const left = Math.floor((pageWidth - width) / 2);
-    setMasonryBounds({ width, left, pageWidth });
-  };
-
-  // A debounced function must not be redefined on each rerender
-  const debouncedOnResize = () => {
-    if (onResizeRef.current === null) {
-      onResizeRef.current = debounce(onResize, 80);
-      return onResize;
-    }
-    return onResizeRef.current;
-  };
-
-  useEffect(() => {
-    if (localListData !== listData) {
-      setLocalListData(listData);
-      if (masonryRef.current) {
-        cache.clearAll();
-        masonryRef.current.clearCellPositions();
-        onResize({ width: masonryBounds.pageWidth }, true);
+        if (masonryRef.current) masonryRef.current.recomputeCellPositions();
+        currentColumnCount = columnCount;
       }
-    }
-  }, [listData, localListData, masonryBounds]);
 
-  // Selection occurs in a <DashboardListCell/>
-  const selectItem = (id: string) => (selected: boolean) => {
-    if (!selected) setSelectedItems(selectedItems.filter(item => item !== id));
-    else setSelectedItems([...selectedItems, id]);
-  };
+      const width = columnCount * (columnWidth + spacer) - spacer;
+      const left = Math.floor((pageWidth - width) / 2);
+      setMasonryBounds({ width, left, pageWidth });
+    };
 
-  // We need to clear the selection list beforehand
-  const onDelete = () => {
-    onDeleteSelected(selectedItems);
-    setSelectedItems([]);
-  };
+    // A debounced function must not be redefined on each rerender
+    const debouncedOnResize = () => {
+      if (onResizeRef.current === null) {
+        onResizeRef.current = debounce(onResize, 80);
+        return onResize;
+      }
+      return onResizeRef.current;
+    };
 
-  // If one or more is selected, we enter select mode
-  const inSelectMode = selectedItems.length > 0;
+    useEffect(() => {
+      if (localListData !== listData) {
+        setLocalListData(listData);
+        cache.clearAll();
+        onResize({ width: masonryBounds.pageWidth }, true);
+        if (masonryRef.current) masonryRef.current.clearCellPositions();
+      }
+    }, [listData, localListData, masonryBounds]);
 
-  return (
-    <div className={managedClasses.dashboardList}>
-      <DashboardListToolbar visible={inSelectMode} onDelete={onDelete} />
-      {localListData !== null && localListData.length > 0 && (
-        <WindowScroller>
-          {({ height, scrollTop }) => (
-            <AutoSizer disableHeight height={height} onResize={debouncedOnResize()}>
-              {() => (
-                <Masonry
-                  ref={masonryRef}
-                  cellCount={localListData.length}
-                  cellMeasurerCache={cache}
-                  cellPositioner={cellPositioner}
-                  cellRenderer={props => {
-                    const data = localListData[props.index];
-                    if (typeof data === "undefined") {
-                      console.log(localListData);
-                      console.log(props.index);
-                      return null;
-                    }
-                    return (
-                      <DashboardListCell
-                        {...props}
-                        cache={cache}
-                        data={data}
-                        onSelect={selectItem(data.id)}
-                        selected={selectedItems.findIndex(i => i === data.id) > -1}
-                        selectMode={inSelectMode}
-                      />
-                    );
-                  }}
-                  autoHeight={true}
-                  height={height}
-                  scrollTop={scrollTop}
-                  width={masonryBounds.width}
-                  overscanByPixels={100}
-                  style={{ left: masonryBounds.left }}
-                />
-              )}
-            </AutoSizer>
-          )}
-        </WindowScroller>
-      )}
-    </div>
-  );
-};
+    // Selection occurs in a <DashboardListCell/>
+    const selectItem = (id: string) => (selected: boolean) => {
+      if (!selected) setSelectedItems(selectedItems.filter(item => item !== id));
+      else setSelectedItems([...selectedItems, id]);
+    };
+
+    // We need to clear the selection list beforehand
+    const onDelete = () => {
+      onDeleteSelected(selectedItems);
+      setSelectedItems([]);
+    };
+
+    // If one or more is selected, we enter select mode
+    const inSelectMode = selectedItems.length > 0;
+
+    return (
+      <div className={managedClasses.dashboardList}>
+        <DashboardListToolbar visible={inSelectMode} onDelete={onDelete} />
+        {localListData !== null && localListData.length > 0 && (
+          <WindowScroller>
+            {({ height, scrollTop }) => (
+              <AutoSizer disableHeight height={height} onResize={debouncedOnResize()}>
+                {() => (
+                  <Masonry
+                    ref={masonryRef}
+                    cellCount={localListData.length}
+                    cellMeasurerCache={cache}
+                    cellPositioner={cellPositioner}
+                    cellRenderer={props => {
+                      const data = localListData[props.index];
+                      if (typeof data === "undefined") {
+                        console.log(localListData);
+                        console.log(props.index);
+                        return null;
+                      }
+                      return (
+                        <DashboardListCell
+                          {...props}
+                          cache={cache}
+                          data={data}
+                          onSelect={selectItem(data.id)}
+                          selected={selectedItems.findIndex(i => i === data.id) > -1}
+                          selectMode={inSelectMode}
+                        />
+                      );
+                    }}
+                    autoHeight={true}
+                    height={height}
+                    scrollTop={scrollTop}
+                    width={masonryBounds.width}
+                    overscanByPixels={100}
+                    style={{ left: masonryBounds.left }}
+                  />
+                )}
+              </AutoSizer>
+            )}
+          </WindowScroller>
+        )}
+      </div>
+    );
+  }
+);
 
 export default manageJss(styles)(DashboardList);

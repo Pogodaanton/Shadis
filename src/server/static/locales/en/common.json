@@ -5,7 +5,13 @@
   "error": {
     "loginGeneric": "Couldn't log you in",
     "loginMissingData": "Username or password missing!",
-    "loginInvalidData": "Invalid username or password!"
+    "loginInvalidData": "Invalid username or password!",
+    "requestFile": "Couldn't find \"{{id}}\" in database!"
+  },
+  "notification": {
+    "error": "Error:",
+    "warning": "Warning:",
+    "info": "Info:"
   },
   "notFound": {
     "title": "Nothing to see here!",

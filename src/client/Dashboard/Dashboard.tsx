@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import { ListDataItem, DashboardListProps } from "../DashboardList/DashboardList.props";
 import { FullscreenLoader } from "../Loader";
 import { LoadableComponent } from "@loadable/component";
-import { motion } from "framer-motion";
 
 const DashboardList: LoadableComponent<DashboardListProps> = FullscreenLoader(
   import("../DashboardList/DashboardList")
@@ -20,9 +19,6 @@ const styles: ComponentStyles<DashboardClassNameContract, DesignSystem> = {
   dashboard__frozen: {
     pointerEvents: "none",
     overflow: "hidden",
-    body: {
-      overflow: "hidden",
-    },
   },
 };
 
@@ -81,10 +77,7 @@ const Dashboard: React.FC<DashboardProps> = props => {
   };
 
   return (
-    <motion.div
-      exit={{ opacity: 0 }}
-      className={isFrozen ? props.managedClasses.dashboard__frozen : ""}
-    >
+    <div className={isFrozen ? props.managedClasses.dashboard__frozen : ""}>
       <Header fixed />
       {listData === null ? null : listData.length === 0 ? (
         <DashboardEmpty />
@@ -95,7 +88,7 @@ const Dashboard: React.FC<DashboardProps> = props => {
           frozen={props.frozen}
         />
       )}
-    </motion.div>
+    </div>
   );
 };
 

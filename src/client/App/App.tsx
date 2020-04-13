@@ -1,18 +1,12 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Background } from "@microsoft/fast-components-react-msft";
 import { DesignSystem, neutralLayerL1 } from "@microsoft/fast-components-styles-msft";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { FullscreenLoader } from "../Loader";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
-import { AppClassNameContract, AppProps } from "./App.props";
-import MainPage from "../MainPage/MainPage";
+import { AppContainerClassNameContract, AppContainerProps } from "./App.props";
+import AnimatedRoutes from "./AnimatedRoutes";
 
-const NotFound = FullscreenLoader(
-  import(/* webpackChunkName: "NotFound" */ "../NotFound/NotFound")
-);
-const View = FullscreenLoader(import(/* webpackChunkName: "View" */ "../View/View"));
-
-const styles: ComponentStyles<AppClassNameContract, DesignSystem> = {
+const styles: ComponentStyles<AppContainerClassNameContract, DesignSystem> = {
   container: {
     display: "flex",
     width: "100%",
@@ -24,19 +18,16 @@ const styles: ComponentStyles<AppClassNameContract, DesignSystem> = {
   },
 };
 
-class App extends React.Component<AppProps> {
+class AppContainer extends React.Component<AppContainerProps> {
   public render = (): React.ReactNode => (
     <Background className={this.props.managedClasses.container} value={neutralLayerL1}>
       <Router>
-        <Switch>
-          <Route path="/404" component={NotFound} />
-          <Route path="/:id" component={View} />
-          <Route path="/" exact component={MainPage} />
-          <Route component={NotFound} />
-        </Switch>
+        <Suspense fallback={null}>
+          <Route path={["/:id", "/"]} render={props => <AnimatedRoutes {...props} />} />
+        </Suspense>
       </Router>
     </Background>
   );
 }
 
-export default manageJss(styles)(App);
+export default manageJss(styles)(AppContainer);

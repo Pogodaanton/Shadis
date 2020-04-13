@@ -1,10 +1,9 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import {
   DashboardListClassNameContract,
   DashboardListProps,
-  ListDataItem,
 } from "./DashboardList.props";
 import {
   CellMeasurerCache,
@@ -58,10 +57,9 @@ const calculateMasonryColumnCount = (availableWidth: number): number => {
 };
 
 const DashboardList: React.FC<DashboardListProps> = React.memo(
-  ({ listData, managedClasses, onDeleteSelected }) => {
+  ({ listData, managedClasses, onDeleteSelected, frozen }) => {
     const masonryRef = useRef(null);
     const onResizeRef = useRef(null);
-    const [localListData, setLocalListData] = useState<ListDataItem[]>([]);
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const [masonryBounds, setMasonryBounds] = useState({
       width: 0,
@@ -69,6 +67,7 @@ const DashboardList: React.FC<DashboardListProps> = React.memo(
       pageWidth: 0,
     });
 
+    // Positions the masonry to the centre of the page.
     const onResize = ({ width: pageWidth }, forceUpdate?: boolean) => {
       const columnCount = calculateMasonryColumnCount(pageWidth);
 
@@ -94,17 +93,10 @@ const DashboardList: React.FC<DashboardListProps> = React.memo(
         onResizeRef.current = debounce(onResize, 80);
         return onResize;
       }
-      return onResizeRef.current;
-    };
 
-    useEffect(() => {
-      if (localListData !== listData) {
-        setLocalListData(listData);
-        cache.clearAll();
-        onResize({ width: masonryBounds.pageWidth }, true);
-        if (masonryRef.current) masonryRef.current.clearCellPositions();
-      }
-    }, [listData, localListData, masonryBounds]);
+      // We don't want to update the component unnecessarily if there is no need to
+      if (!frozen) return onResizeRef.current;
+    };
 
     // Selection occurs in a <DashboardListCell/>
     const selectItem = (id: string) => (selected: boolean) => {
@@ -124,23 +116,19 @@ const DashboardList: React.FC<DashboardListProps> = React.memo(
     return (
       <div className={managedClasses.dashboardList}>
         <DashboardListToolbar visible={inSelectMode} onDelete={onDelete} />
-        {localListData !== null && localListData.length > 0 && (
+        {listData !== null && listData.length > 0 && (
           <WindowScroller>
             {({ height, scrollTop }) => (
               <AutoSizer disableHeight height={height} onResize={debouncedOnResize()}>
                 {() => (
                   <Masonry
                     ref={masonryRef}
-                    cellCount={localListData.length}
+                    cellCount={listData.length}
                     cellMeasurerCache={cache}
                     cellPositioner={cellPositioner}
                     cellRenderer={props => {
-                      const data = localListData[props.index];
-                      if (typeof data === "undefined") {
-                        console.log(localListData);
-                        console.log(props.index);
-                        return null;
-                      }
+                      const data = listData[props.index];
+                      if (typeof data === "undefined") return null;
                       return (
                         <DashboardListCell
                           {...props}

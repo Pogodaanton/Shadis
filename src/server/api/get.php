@@ -14,7 +14,7 @@ if (!isset($id)) {
   error("Missing argument \"id\".", 401);
 }
 
-$result = $db->request("SELECT id, width, height, extension, title, timestamp FROM `" . $table_prefix . "files` WHERE id=?", "s", $id);
+$result = $db->request("SELECT id, width, height, thumb_height, extension, title, timestamp FROM `" . $table_prefix . "files` WHERE id=?", "s", $id);
 
 header("Content-type: application/json");
 echo json_encode($result->fetch_assoc());

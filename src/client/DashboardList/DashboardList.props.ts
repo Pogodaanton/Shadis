@@ -24,4 +24,5 @@ export interface DashboardListProps
   extends ManagedClasses<DashboardListClassNameContract> {
   listData: ListDataItem[];
   onDeleteSelected: (selectedItems: string[]) => void;
+  frozen?: boolean;
 }

@@ -1,8 +1,8 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { DashboardClassNameContract, DashboardProps } from "./Dashboard.props";
-import { Header, useToasts } from "../_DesignSystem";
+import { useToasts, Header } from "../_DesignSystem";
 import DashboardEmpty from "./views/DashboardEmpty";
 import { withDropzone } from "../FullscreenDropzone/FullscreenDropzone";
 import axios from "../_interceptedAxios";
@@ -10,19 +10,35 @@ import { useTranslation } from "react-i18next";
 import { ListDataItem, DashboardListProps } from "../DashboardList/DashboardList.props";
 import { FullscreenLoader } from "../Loader";
 import { LoadableComponent } from "@loadable/component";
+import { motion } from "framer-motion";
 
 const DashboardList: LoadableComponent<DashboardListProps> = FullscreenLoader(
   import("../DashboardList/DashboardList")
 );
 
 const styles: ComponentStyles<DashboardClassNameContract, DesignSystem> = {
-  dashboard: {},
+  dashboard__frozen: {
+    pointerEvents: "none",
+    overflow: "hidden",
+    body: {
+      overflow: "hidden",
+    },
+  },
 };
 
 const Dashboard: React.FC<DashboardProps> = props => {
   const [listData, setListData] = useState<ListDataItem[]>(null);
+  const [isFrozen, setFrozenState] = useState<boolean>(false);
   const { addToast } = useToasts();
   const { t } = useTranslation("dashboard");
+
+  /**
+   * If the view component is loaded, this component stays in the background.
+   * We halt all computations in this component as long as that is the case.
+   */
+  useEffect(() => {
+    if (props.frozen !== isFrozen) setFrozenState(props.frozen);
+  }, [isFrozen, props.frozen]);
 
   useEffect(() => {
     const updateFileList = async () => {
@@ -65,19 +81,21 @@ const Dashboard: React.FC<DashboardProps> = props => {
   };
 
   return (
-    <Fragment>
+    <motion.div
+      exit={{ opacity: 0 }}
+      className={isFrozen ? props.managedClasses.dashboard__frozen : ""}
+    >
       <Header fixed />
       {listData === null ? null : listData.length === 0 ? (
         <DashboardEmpty />
       ) : (
-        /*
-        <div className={props.managedClasses.dashboard}>
-          We haven't come to this point yet. TODO: Do this part.
-        </div>
-        */
-        <DashboardList listData={listData} onDeleteSelected={onDeleteSelected} />
+        <DashboardList
+          listData={listData}
+          onDeleteSelected={onDeleteSelected}
+          frozen={props.frozen}
+        />
       )}
-    </Fragment>
+    </motion.div>
   );
 };
 

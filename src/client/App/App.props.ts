@@ -3,7 +3,7 @@ import { ManagedClasses } from "@microsoft/fast-jss-manager-react";
 /**
  * Class name contract for the component
  */
-export interface AppClassNameContract {
+export interface AppContainerClassNameContract {
   /**
    * Root of the component
    */
@@ -13,4 +13,5 @@ export interface AppClassNameContract {
 /**
  * Props for the component
  */
-export interface AppProps extends ManagedClasses<AppClassNameContract> {}
+export interface AppContainerProps
+  extends ManagedClasses<AppContainerClassNameContract> {}

@@ -3,7 +3,7 @@ import {
   DashboardListCellProps,
   DashboardListCellClassNameContract,
 } from "./DashboardListCell.props";
-import React from "react";
+import React, { useRef } from "react";
 import {
   neutralLayerL2,
   DesignSystem,
@@ -22,7 +22,8 @@ import {
 } from "@microsoft/fast-components-react-msft";
 import { parseColorHexRGBA } from "@microsoft/fast-colors";
 import { classNames } from "@microsoft/fast-web-utilities";
-import { ViewLink } from "./ViewLink";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> = {
   dashboardListCell: {
@@ -37,6 +38,9 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     },
     "&$dashboardListCell__checked $dashboardListCell_metadata": {
       transform: "translateY(0%)",
+    },
+    "& > a": {
+      display: "block",
     },
   },
   dashboardListCell_image: {
@@ -115,10 +119,12 @@ const checkboxStyle: ComponentStyles<CheckboxClassNameContract, DesignSystem> = 
 
 const onImageLoaded: React.ReactEventHandler<HTMLImageElement> = ({ currentTarget }) => {
   currentTarget.style.opacity = "1";
+  currentTarget.style.pointerEvents = "none";
 };
 
 const onImageError: React.ReactEventHandler<HTMLImageElement> = ({ currentTarget }) => {
   currentTarget.style.display = "none";
+  currentTarget.style.pointerEvents = "none";
 };
 
 /**
@@ -127,6 +133,7 @@ const onImageError: React.ReactEventHandler<HTMLImageElement> = ({ currentTarget
 const CellRenderer: React.FC<DashboardListCellProps> = props => {
   const { id, title, thumb_height } = props.data;
   const { t } = useTranslation("dashboard");
+  const cellRef = useRef<HTMLDivElement>(null);
 
   // We already know the thumbnail size, so we take over the work of <CellMeasurer />
   if (!props.cache.has(props.index, 0)) {
@@ -150,31 +157,44 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
     }
   };
 
+  const onAnimationStart = () => {
+    if (cellRef.current) cellRef.current.style.zIndex = "400";
+  };
+
+  const onAnimationEnd = () => {
+    if (cellRef.current) cellRef.current.style.zIndex = "auto";
+  };
+
+  const shouldExecuteclick: React.MouseEventHandler<HTMLAnchorElement> = e => {
+    props.selectMode && e.preventDefault();
+  };
+
   return (
-    <div
+    <motion.div
       key={props.key}
+      layoutId={`card-image-container-${id}`}
       className={classNames(props.managedClasses.dashboardListCell, [
         props.managedClasses.dashboardListCell__checked,
         props.selected,
       ])}
+      onAnimationStart={onAnimationStart}
+      onAnimationComplete={onAnimationEnd}
       onClick={onCheckmarkChange}
+      ref={cellRef}
       style={{
         ...props.style,
         height: thumb_height,
       }}
     >
-      <ViewLink to={`/${id}/`} disabled={props.selectMode}>
+      <Link to={`/${id}/`} onClick={shouldExecuteclick}>
         <img
           className={props.managedClasses.dashboardListCell_image}
           src={`${window.location.origin}/${id}.thumb.jpg`}
           alt={t(title, title)}
           onError={onImageError}
           onLoad={onImageLoaded}
-          style={{
-            height: thumb_height,
-          }}
         />
-      </ViewLink>
+      </Link>
       <Checkbox
         inputId={id}
         className={props.managedClasses.dashboardListCell_checkbox}
@@ -186,7 +206,7 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
       <footer className={props.managedClasses.dashboardListCell_metadata} tabIndex={0}>
         <Label tabIndex={-1}>{t(title, title)}</Label>
       </footer>
-    </div>
+    </motion.div>
   );
 };
 

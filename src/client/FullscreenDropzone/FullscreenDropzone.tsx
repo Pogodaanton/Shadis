@@ -167,7 +167,7 @@ const FullscreenDropzone = (
 
     return (
       <Fragment>
-        <WrappedComponent />
+        <WrappedComponent {...props} />
         <div
           className={classNames(props.managedClasses.fullscreenDropzone, [
             props.managedClasses.fullscreenDropzone_visisble,

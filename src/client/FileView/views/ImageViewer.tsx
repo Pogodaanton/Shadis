@@ -175,11 +175,19 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
 
     // Handling slider change
     const onSliderChange = (newVal: number) => {
-      if (dragY.get() < dragConstraints.top || dragY.get() > dragConstraints.bottom)
+      if (newVal < sliderVal) {
         dragY.set(0);
-      if (dragX.get() < dragConstraints.left || dragX.get() > dragConstraints.right)
         dragX.set(0);
+      }
       setSliderVal(newVal);
+    };
+
+    const onImageWheel: React.WheelEventHandler<HTMLDivElement> = ({ deltaY }) => {
+      const newVal = sliderVal + deltaY * -1;
+      if (newVal < maxValue && newVal >= 100) onSliderChange(newVal);
+      if ((newVal > 100 && !inTransformMode) || (newVal <= 100 && inTransformMode)) {
+        setTransformMode(!inTransformMode);
+      }
     };
 
     // Resize image based on range slider change
@@ -210,6 +218,7 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
           onDragEnd={() => setDragMode(false)}
           dragConstraints={dragConstraints}
           dragElastic={0.2}
+          onWheel={onImageWheel}
           style={{
             x: inTransformMode ? dragX : defaultX,
             y: inTransformMode ? dragY : defaultY,

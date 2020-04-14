@@ -169,27 +169,31 @@ class ImageUpload
       $getID3 = new getID3();
       $analyzed_data = $getID3->analyze($filename);
 
-      if (isset($analyzed_data["error"])) {
-        error("An error happened while using getID3: " . json_encode($analyzed_data["error"]));
-      }
+      try {
+        $this->file_extension = $analyzed_data["fileformat"];
 
-      $this->file_extension = $analyzed_data["fileformat"];
-
-      switch ($this->file_extension) {
-        case "png":
-          $parent_data = $analyzed_data[$this->file_extension]["IHDR"];
-          $this->file_width = $parent_data["width"];
-          $this->file_height = $parent_data["height"];
-          break;
-        case "jpg":
-        case "gif":
-          $parent_data = $analyzed_data["video"];
-          $this->file_width = $parent_data["resolution_x"];
-          $this->file_height = $parent_data["resolution_y"];
-          break;
+        switch ($this->file_extension) {
+          case "png":
+            $parent_data = $analyzed_data[$this->file_extension]["IHDR"];
+            $this->file_width = $parent_data["width"];
+            $this->file_height = $parent_data["height"];
+            break;
+          case "jpg":
+          case "gif":
+            $parent_data = $analyzed_data["video"];
+            $this->file_width = $parent_data["resolution_x"];
+            $this->file_height = $parent_data["resolution_y"];
+            break;
+        }
+      } catch (ErrorException $ee) {
+        if (isset($analyzed_data["error"])) {
+          error("An error happened while using getID3: " . json_encode($analyzed_data["error"]));
+        } else {
+          error("An unknown error happened while trying to get the file dimensions: " . $ee);
+        }
       }
     } catch (ErrorException $th) {
-      error($th);
+      error("An error happened while trying to set up getID3: " . $th);
     }
   }
 

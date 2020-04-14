@@ -27,6 +27,13 @@ const styles: ComponentStyles<ImageViewerClassNameContract, DesignSystem> = {
   },
 };
 
+/**
+ * @see window.userData
+ */
+const isLoggedIn =
+  typeof window.userData !== "undefined" &&
+  typeof window.userData.username !== "undefined";
+
 // Used to determine whether user clicked or panned
 let lastDragPoint = { x: 0, y: 0 };
 
@@ -197,7 +204,12 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
     ]);
 
     return (
-      <>
+      <motion.div
+        initial={!isLoggedIn && { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ default: 0.1 }}
+        exit={!isLoggedIn && { opacity: 0 }}
+      >
         <motion.div
           className={classNames(
             managedClasses.imageViewer,
@@ -241,7 +253,7 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
           maxValue={maxValue}
           onValueChange={onSliderChange}
         />
-      </>
+      </motion.div>
     );
   }
 );

@@ -82,7 +82,7 @@ const AnimatedRoutes: React.FC<RouteChildrenProps<{ id: string }>> = ({ match })
    * connected animations if there is nothing to connect them to.
    */
   useEffect(() => {
-    if (isLoggedIn && !ViewRef.current) {
+    if (!ViewRef.current) {
       FileView.load().then((exported: any) => {
         ViewRef.current = exported.default;
         setViewLoaded(true);
@@ -90,24 +90,14 @@ const AnimatedRoutes: React.FC<RouteChildrenProps<{ id: string }>> = ({ match })
     }
   }, []);
 
-  /**
-   * We don't need AnimateSharedLayout if we don't have access to the dashboard
-   */
-  if (!isLoggedIn) {
-    return (
-      <AnimatePresence>
-        {match.params.id && fileData ? <FileView fileData={fileData} /> : <Login />}
-      </AnimatePresence>
-    );
-  }
-
   return (
     <AnimateSharedLayout>
-      <Dashboard key="dashboard" frozen={!!match.params.id} />
+      {isLoggedIn && <Dashboard key="dashboard" frozen={!!match.params.id} />}
       <AnimatePresence>
         {match.params.id && viewLoaded && ViewRef.current && fileData && (
           <ViewRef.current fileData={fileData} key={match.params.id} />
         )}
+        {!match.params.id && !isLoggedIn && <Login key="login" />}
       </AnimatePresence>
     </AnimateSharedLayout>
   );

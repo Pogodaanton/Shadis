@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { FileViewClassNameContract, FileViewProps } from "./FileView.props";
 import {
@@ -9,6 +9,7 @@ import {
 import { motion } from "framer-motion";
 import { Header } from "../_DesignSystem";
 import { HeaderClassNameContract } from "../_DesignSystem/Header/Header.props";
+import ImageViewer from "./views/ImageViewer";
 
 const styles: ComponentStyles<FileViewClassNameContract, DesignSystem> = {
   fileView: {
@@ -29,11 +30,12 @@ const styles: ComponentStyles<FileViewClassNameContract, DesignSystem> = {
   },
   fileViewContainer: {
     position: "absolute",
-    top: "0",
+    top: "64px",
     left: "0",
     right: "0",
     bottom: "0",
     margin: "auto",
+    cursor: "zoom-in",
   },
   fileViewIcon: {
     fontSize: "4em",
@@ -47,11 +49,16 @@ const headerStyles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
   },
 };
 
+let largeImage: HTMLImageElement = null;
+
 const FileView: React.FC<FileViewProps> = ({
   managedClasses,
   fileData,
 }: FileViewProps) => {
-  const { id, thumb_height, title } = fileData || window.fileData;
+  fileData = fileData || window.fileData;
+  const { id, extension } = fileData || window.fileData;
+  const onImageLoaded = useRef<() => void>(null);
+  const [largeImageLoaded, setLargeImageLoadedState] = useState(false);
 
   /**
    * Image manipulation involves overflowing the body
@@ -64,6 +71,30 @@ const FileView: React.FC<FileViewProps> = ({
     };
   }, []);
 
+  /**
+   * Setting up imageLoad event handler for large image
+   */
+  useEffect(() => {
+    onImageLoaded.current = () => setLargeImageLoadedState(true);
+    return () => {
+      if (largeImage) largeImage.removeEventListener("load", onImageLoaded.current);
+    };
+  }, []);
+
+  /**
+   * Load image in background before rendering
+   */
+  const loadLargeImage = () => {
+    largeImage = new Image();
+    largeImage.addEventListener("load", onImageLoaded.current);
+    largeImage.src = `${window.location.origin}/${id}.${extension}`;
+  };
+
+  // imageURL for <ImageViewer/>
+  const imageURL = `${window.location.origin}/${id}.${
+    largeImageLoaded ? extension : "thumb.jpg"
+  }`;
+
   return (
     <div className={managedClasses.fileView}>
       <motion.div
@@ -72,28 +103,11 @@ const FileView: React.FC<FileViewProps> = ({
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}
         exit={{ opacity: 0 }}
+        onAnimationComplete={loadLargeImage}
       >
         <Header fixed jssStyleSheet={headerStyles} />
       </motion.div>
-      <motion.div
-        className={managedClasses.fileViewContainer}
-        layoutId={`card-image-container-${id}`}
-        animate
-        style={{
-          width: 200,
-          height: thumb_height,
-        }}
-      >
-        <img
-          alt={title}
-          src={`${window.location.origin}/${id}.thumb.jpg`}
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "inline-block",
-          }}
-        />
-      </motion.div>
+      <ImageViewer imageURL={imageURL} fileData={fileData} />
     </div>
   );
 };

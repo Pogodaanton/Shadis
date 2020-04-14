@@ -61,7 +61,7 @@ const ImageViewerSlider: React.ComponentType<ImageViewerSliderProps> = memo(
      */
     const isLargeImage = maxValue > 300;
     const shouldShowLabel =
-      value < 120 || (value > maxValue - 130 && value < maxValue - 70);
+      value < 120 || (value > maxValue - 120 && value < maxValue - 80);
 
     return (
       <motion.div
@@ -85,6 +85,7 @@ const ImageViewerSlider: React.ComponentType<ImageViewerSliderProps> = memo(
             className={managedClasses.imageViewerSlider_label}
             initial={{ opacity: 1 }}
             animate={{ opacity: shouldShowLabel ? 0 : 1 }}
+            transition={{ default: 0.1 }}
           >
             <SliderLabel
               label={

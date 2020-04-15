@@ -56,12 +56,28 @@ const labelStyle: ComponentStyles<SliderLabelClassNameContract, DesignSystem> = 
 const ImageViewerSlider: React.ComponentType<ImageViewerSliderProps> = memo(
   ({ managedClasses, show, value, maxValue, onValueChange }) => {
     /**
-     * If `maxValue` is not bigger than 300 we can assume
-     * that the image is already full-size
+     * Defines the point where the image
+     * is in its original size
      */
-    const isLargeImage = maxValue > 300;
+    const ogPos = maxValue - 200;
+
+    /**
+     * If ogPos is 100, we know that
+     * the image is already in its original form.
+     */
+    const isLargeImage = ogPos > 100;
+
+    /**
+     * Decides whether showing the label would be
+     * intrusive or unfitting.
+     */
     const shouldShowLabel =
-      value < 120 || (value > maxValue - 120 && value < maxValue - 80);
+      value > 105 && value < maxValue - 5 && (value < ogPos - 20 || value > ogPos + 20);
+
+    /**
+     * Determines where the fixed label should be positioned
+     */
+    const fixedLabelPos = isLargeImage ? ogPos : maxValue - 100;
 
     return (
       <motion.div
@@ -76,21 +92,19 @@ const ImageViewerSlider: React.ComponentType<ImageViewerSliderProps> = memo(
         >
           <SliderLabel
             label={isLargeImage ? "100%" : "200%"}
-            valuePositionBinding={maxValue - 100}
+            valuePositionBinding={fixedLabelPos}
             showTickmark={true}
-            onClick={() => onValueChange(maxValue - 100)}
+            onClick={() => onValueChange(fixedLabelPos)}
             jssStyleSheet={labelStyle}
           />
           <motion.div
             className={managedClasses.imageViewerSlider_label}
             initial={{ opacity: 1 }}
-            animate={{ opacity: shouldShowLabel ? 0 : 1 }}
+            animate={{ opacity: shouldShowLabel ? 1 : 0 }}
             transition={{ default: 0.1 }}
           >
             <SliderLabel
-              label={
-                Math.floor((value * (isLargeImage ? 100 : 200)) / (maxValue - 100)) + "%"
-              }
+              label={Math.floor((value * (isLargeImage ? 100 : 200)) / ogPos) + "%"}
               valuePositionBinding={SliderTrackItemAnchor.selectedRangeMax}
               showTickmark={true}
             />

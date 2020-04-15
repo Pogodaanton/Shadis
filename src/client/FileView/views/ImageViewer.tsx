@@ -106,7 +106,7 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
         }
 
         // Setting max value for <Slider/>
-        const ogFactor = Math.max((initialWidth / width) * 100, 200) + 100;
+        const ogFactor = (initialWidth / width) * 100 + 200;
         if (ogFactor !== maxValue) setMaxValue(ogFactor);
 
         width *= sliderVal / 100;

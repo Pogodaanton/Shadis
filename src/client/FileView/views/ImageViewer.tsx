@@ -119,6 +119,12 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
     );
     const [imageDimensions, setImageDimensions] = useState(calcImageSize(fileData));
 
+    // Resize image based on range slider change
+    useEffect(() => setImageDimensions(calcImageSize(fileData)), [
+      calcImageSize,
+      fileData,
+    ]);
+
     /**
      * Resize image if window resizes
      */
@@ -150,7 +156,9 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
         if (!inTransformMode) setSliderVal(120);
         else {
           setSliderVal(100);
+          dragX.stop();
           dragX.set(0);
+          dragY.stop();
           dragY.set(0);
         }
 
@@ -166,13 +174,14 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
       const { width, height } = imageDimensions;
       const overflowX = Math.max(width - window.innerWidth, 0);
       const overflowY = Math.max(height - (window.innerHeight - 64), 0);
-
-      return {
+      const constraints = {
         top: -1 * (overflowY / 2),
         bottom: overflowY / 2,
         left: -1 * (overflowX / 2),
         right: overflowX / 2,
       };
+
+      return constraints;
     }, [imageDimensions]);
 
     // Automatically update constraints after imageDimensions update
@@ -180,28 +189,41 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
       setDragConstraints(calculateDragConstraints());
     }, [calculateDragConstraints, imageDimensions]);
 
-    // Handling slider change
-    const onSliderChange = (newVal: number) => {
-      if (newVal < sliderVal) {
-        dragY.set(0);
-        dragX.set(0);
-      }
-      setSliderVal(newVal);
-    };
-
+    // Resizes the image based on the wheel direction
     const onImageWheel: React.WheelEventHandler<HTMLDivElement> = ({ deltaY }) => {
-      const newVal = sliderVal + deltaY * -1;
-      if (newVal < maxValue && newVal >= 100) onSliderChange(newVal);
+      const newVal = Math.min(Math.max(sliderVal + deltaY * -1, 100), maxValue);
+      setSliderVal(newVal);
+
+      // Toggle transform mode automatically on scroll
       if ((newVal > 100 && !inTransformMode) || (newVal <= 100 && inTransformMode)) {
         setTransformMode(!inTransformMode);
       }
     };
 
-    // Resize image based on range slider change
-    useEffect(() => setImageDimensions(calcImageSize(fileData)), [
-      calcImageSize,
-      fileData,
-    ]);
+    // Move image back to constraints if it is overflowing
+    // This can be the case when scaling down the image
+    useEffect(() => {
+      const { top, bottom, left, right } = dragConstraints;
+      const y = dragY.get();
+      const x = dragX.get();
+      let newY = y;
+      let newX = x;
+
+      if (y < top) newY = top;
+      if (y > bottom) newY = bottom;
+      if (x < left) newX = left;
+      if (x > right) newX = right;
+
+      if (newY !== y) {
+        dragY.stop();
+        dragY.set(newY);
+      }
+
+      if (newX !== x) {
+        dragX.stop();
+        dragX.set(newX);
+      }
+    }, [dragConstraints, dragX, dragY]);
 
     return (
       <motion.div
@@ -251,7 +273,7 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
           show={inTransformMode}
           value={sliderVal}
           maxValue={maxValue}
-          onValueChange={onSliderChange}
+          onValueChange={setSliderVal}
         />
       </motion.div>
     );

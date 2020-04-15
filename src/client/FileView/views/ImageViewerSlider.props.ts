@@ -1,5 +1,4 @@
 import { ManagedClasses } from "@microsoft/fast-jss-manager-react";
-import { SliderHandledProps } from "@microsoft/fast-components-react-msft";
 
 /**
  * Class name contract for the component
@@ -17,5 +16,5 @@ export interface ImageViewerSliderProps
   show: boolean;
   maxValue: number;
   value: number;
-  onValueChange: SliderHandledProps["onValueChange"];
+  onValueChange: (value: number) => any;
 }

@@ -47,6 +47,7 @@ const headerStyles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
   header: {
     zIndex: "40",
   },
+  header_left: {},
 };
 
 let largeImage: HTMLImageElement = null;
@@ -105,7 +106,7 @@ const FileView: React.FC<FileViewProps> = ({
         exit={{ opacity: 0 }}
         onAnimationComplete={loadLargeImage}
       >
-        <Header fixed jssStyleSheet={headerStyles} />
+        <Header position="absolute" jssStyleSheet={headerStyles} />
       </motion.div>
       <ImageViewer imageURL={imageURL} fileData={fileData} />
     </div>

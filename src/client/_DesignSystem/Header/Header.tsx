@@ -35,14 +35,18 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
     boxSizing: "border-box",
     ...applyBackdropGradient,
   },
-  header_fixed: {
+  header__fixed: {
     position: "fixed",
     zIndex: "1",
     "& ~ *": {
       paddingTop: "64px",
     },
   },
-  headerLeft: {
+  header__absolute: {
+    position: "absolute",
+    zIndex: "1",
+  },
+  header_left: {
     display: "flex",
     alignItems: "center",
     "&> *": {
@@ -54,17 +58,30 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
 const HeaderBase: React.FC<HeaderProps> = props => {
   return (
     <header
-      className={classNames(props.managedClasses.header, [
-        props.managedClasses.header_fixed,
-        props.fixed,
-      ])}
+      className={classNames(
+        props.managedClasses.header,
+        [props.managedClasses.header__fixed, props.position === "fixed"],
+        [props.managedClasses.header__absolute, props.position === "absolute"]
+      )}
     >
-      <div className={props.managedClasses.headerLeft}>
+      <div className={props.managedClasses.header_left}>
         <Link to="/">
           <Logo size="45" alt="Go to Homepage" />
         </Link>
         <Paragraph size={2}>Shadis</Paragraph>
       </div>
+      {props.centerContent && (
+        <div
+          className={props.managedClasses.header_center}
+          children={props.centerContent}
+        />
+      )}
+      {props.rightSideContent && (
+        <div
+          className={props.managedClasses.header_right}
+          children={props.rightSideContent}
+        />
+      )}
     </header>
   );
 };

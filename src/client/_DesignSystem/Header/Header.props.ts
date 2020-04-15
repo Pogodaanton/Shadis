@@ -1,4 +1,4 @@
-import { DesignSystem } from "@microsoft/fast-components-styles-msft";
+import { ReactNode } from "react";
 import {
   ManagedClasses,
   CSSRules,
@@ -14,23 +14,45 @@ export interface HeaderClassNameContract {
    * Root of the header component
    */
   header: string;
-  header_fixed?: string;
+  header__fixed?: string;
+  header__absolute?: string;
   /**
    * Left-side logo section
    */
-  headerLeft?: string;
+  header_left: string;
   /**
-   * Left-side info which could be used for simple notifications.
-   * Currently it has no other use than being a fancy title for the app.
+   * Center section of the header
    */
-  headerLeftInfo?: string;
+  header_center?: string;
+  /**
+   * Right-side section of the header
+   */
+  header_right?: string;
 }
 
 /**
  * Props for the header component
  */
 export interface HeaderProps extends ManagedClasses<HeaderClassNameContract> {
-  fixed?: boolean;
+  /**
+   * Changes the position parameter
+   * of the main `<header/>` tag
+   *
+   * In `fixed` mode, all items below
+   * the header will receive a `padding-top`
+   * in the same size as the header
+   */
+  position?: "fixed" | "absolute";
+  /**
+   * Content for the center section
+   * of the header
+   */
+  centerContent?: ReactNode;
+  /**
+   * Content for the right-side section
+   * of the header
+   */
+  rightSideContent?: ReactNode;
 }
 
 /**

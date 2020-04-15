@@ -78,7 +78,7 @@ const Dashboard: React.FC<DashboardProps> = props => {
 
   return (
     <div className={isFrozen ? props.managedClasses.dashboard__frozen : ""}>
-      <Header fixed />
+      <Header position="fixed" />
       {listData === null ? null : listData.length === 0 ? (
         <DashboardEmpty />
       ) : (

@@ -44,6 +44,11 @@ export interface HeaderProps extends ManagedClasses<HeaderClassNameContract> {
    */
   position?: "fixed" | "absolute";
   /**
+   * Content for the left-side section
+   * of the header
+   */
+  leftContent?: ReactNode;
+  /**
    * Content for the center section
    * of the header
    */

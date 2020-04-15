@@ -53,6 +53,17 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
       marginRight: "7px",
     },
   },
+  header_center: {
+    position: "absolute",
+    left: "0",
+    right: "0",
+    zIndex: "-1",
+    margin: "auto",
+    maxWidth: "50%",
+    maxHeight: "70%",
+    overflow: "hidden",
+    textAlign: "center",
+  },
 };
 
 const HeaderBase: React.FC<HeaderProps> = props => {
@@ -69,6 +80,7 @@ const HeaderBase: React.FC<HeaderProps> = props => {
           <Logo size="45" alt="Go to Homepage" />
         </Link>
         <Paragraph size={2}>Shadis</Paragraph>
+        {props.leftContent || null}
       </div>
       {props.centerContent && (
         <div

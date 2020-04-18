@@ -61,6 +61,7 @@ const FileView: React.FC<FileViewProps> = ({
   fileData = fileData || window.fileData;
   const { id, extension } = fileData || window.fileData;
   const onImageLoaded = useRef<() => void>(null);
+  const onMagnify = useRef<React.MouseEventHandler>(() => {});
   const [largeImageLoaded, setLargeImageLoadedState] = useState(false);
 
   /**
@@ -98,6 +99,8 @@ const FileView: React.FC<FileViewProps> = ({
     largeImageLoaded ? extension : "thumb.jpg"
   }`;
 
+  const setZoomRef = (ref: React.MouseEventHandler) => (onMagnify.current = ref);
+
   return (
     <div className={managedClasses.fileView}>
       <motion.div
@@ -112,10 +115,10 @@ const FileView: React.FC<FileViewProps> = ({
           position="absolute"
           jssStyleSheet={headerStyles}
           centerContent={<HeaderCenterContent fileData={fileData} />}
-          rightSideContent={<HeaderRightContent fileData={fileData} />}
+          rightSideContent={<HeaderRightContent onMagnify={onMagnify.current} />}
         />
       </motion.div>
-      <ImageViewer imageURL={imageURL} fileData={fileData} />
+      <ImageViewer imageURL={imageURL} fileData={fileData} zoomRef={setZoomRef} />
     </div>
   );
 };

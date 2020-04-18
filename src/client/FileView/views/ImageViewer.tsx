@@ -44,7 +44,7 @@ const springConfig: SpringProps = {
 };
 
 const ImageViewer: React.FC<ImageViewerProps> = memo(
-  ({ managedClasses, fileData, imageURL }: ImageViewerProps) => {
+  ({ managedClasses, fileData, imageURL, zoomRef }: ImageViewerProps) => {
     fileData = fileData || window.fileData;
     const { id, title } = fileData;
     const onWindowResize = useRef<() => void>(null);
@@ -138,6 +138,32 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
     }, [calcImageSize, fileData]);
 
     /**
+     * Toggles transform mode and resets the x and y coordinates
+     * to center the image.
+     */
+    const handleToggle = useCallback(() => {
+      if (!inTransformMode) setSliderVal(120);
+      else {
+        setSliderVal(100);
+        dragX.stop();
+        dragX.set(0);
+        dragY.stop();
+        dragY.set(0);
+      }
+
+      setTransformMode(!inTransformMode);
+    }, [dragX, dragY, inTransformMode]);
+
+    /**
+     * Calling ref function prop to pass on the handleToggle
+     * function as a way to externally toggle the transform mode
+     */
+    useEffect(() => {
+      zoomRef(handleToggle);
+      return () => zoomRef(() => {});
+    }, [handleToggle, zoomRef, inTransformMode]);
+
+    /**
      * Caches the lastDragPoint for onImageTap
      */
     const onImageTapStart: TapHandlers["onTapStart"] = (_e, { point }) => {
@@ -147,23 +173,9 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
     /**
      * Toggles the transform mode based on whether
      * the user dragged the image.
-     *
-     * It then proceeds to reset the x and y coordinates
-     * to center the image.
      */
     const onImageTap: TapHandlers["onTap"] = (_e, { point }) => {
-      if (point.x === lastDragPoint.x && point.y === lastDragPoint.y) {
-        if (!inTransformMode) setSliderVal(120);
-        else {
-          setSliderVal(100);
-          dragX.stop();
-          dragX.set(0);
-          dragY.stop();
-          dragY.set(0);
-        }
-
-        setTransformMode(!inTransformMode);
-      }
+      if (point.x === lastDragPoint.x && point.y === lastDragPoint.y) handleToggle();
     };
 
     /**

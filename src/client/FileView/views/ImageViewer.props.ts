@@ -15,4 +15,5 @@ export interface ImageViewerClassNameContract {
 export interface ImageViewerProps extends ManagedClasses<ImageViewerClassNameContract> {
   imageURL: string;
   fileData: Window["fileData"];
+  zoomRef?: (ref: Function) => void;
 }

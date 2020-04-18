@@ -10,5 +10,7 @@ export interface HeaderRightContentClassNameContract {}
  */
 export interface HeaderRightContentProps
   extends ManagedClasses<HeaderRightContentClassNameContract> {
-  fileData: Window["fileData"];
+  onMagnify?: React.MouseEventHandler;
+  onShare?: React.MouseEventHandler;
+  onSidebarOpen?: React.MouseEventHandler;
 }

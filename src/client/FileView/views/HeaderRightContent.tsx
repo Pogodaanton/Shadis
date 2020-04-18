@@ -1,12 +1,9 @@
 import { ButtonAppearance } from "@microsoft/fast-components-react-msft";
-import {
-  DesignSystem,
-  neutralForegroundHint,
-} from "@microsoft/fast-components-styles-msft";
+import { DesignSystem, baseLayerLuminance } from "@microsoft/fast-components-styles-msft";
 import { ComponentStyles } from "@microsoft/fast-jss-manager-react";
-import React from "react";
+import React, { useContext } from "react";
 import { FaAdjust, FaCaretLeft, FaSearchPlus, FaShareAlt, FaInfo } from "react-icons/fa";
-import { Button } from "../../_DesignSystem";
+import { Button, DesignToolkit } from "../../_DesignSystem";
 import { ButtonClassNameContract } from "../../_DesignSystem/Button/Button.props";
 import { HeaderRightContentProps } from "./HeaderRightContent.props";
 
@@ -15,30 +12,49 @@ import { HeaderRightContentProps } from "./HeaderRightContent.props";
  */
 const customCaretStyle: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
   button: {
-    marginRight: "-23px",
-    borderRadius: "0",
-    borderTopLeftRadius: "20px",
-    borderBottomLeftRadius: "20px",
-    paddingRight: "33px",
-    paddingLeft: "8px",
     paddingTop: "6px",
-    border: "1px solid",
-    borderColor: neutralForegroundHint,
-    "&:hover": {
-      transform: "translateX(-3px)",
-    },
+    paddingLeft: "6px",
+    margin: "0",
     "& svg:first-child": {
       paddingTop: "2px",
     },
   },
 };
 
-export const HeaderRightContent: React.ComponentType<HeaderRightContentProps> = () => {
+const customThemeSwitcherStyle: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
+  button: {
+    transform: des => {
+      const luminance: number = baseLayerLuminance(des);
+      return `rotate(${luminance > 0.5 ? 180 : 0}deg)`;
+    },
+    transition: "transform .3s",
+  },
+};
+
+export const HeaderRightContent: React.ComponentType<HeaderRightContentProps> = ({
+  onMagnify,
+  onShare,
+  onSidebarOpen,
+}) => {
+  const themeCtx = useContext(DesignToolkit);
   return (
     <>
-      <Button appearance={ButtonAppearance.lightweight} icon={FaAdjust} />
-      <Button appearance={ButtonAppearance.lightweight} icon={FaSearchPlus} />
-      <Button appearance={ButtonAppearance.lightweight} icon={FaShareAlt} />
+      <Button
+        appearance={ButtonAppearance.lightweight}
+        icon={FaSearchPlus}
+        onClick={onMagnify}
+      />
+      <Button
+        appearance={ButtonAppearance.lightweight}
+        icon={FaAdjust}
+        onClick={themeCtx.toggleTheme}
+        jssStyleSheet={customThemeSwitcherStyle}
+      />
+      <Button
+        appearance={ButtonAppearance.lightweight}
+        icon={FaShareAlt}
+        onClick={onShare}
+      />
       <Button
         beforeContent={classname => (
           <>
@@ -46,6 +62,7 @@ export const HeaderRightContent: React.ComponentType<HeaderRightContentProps> = 
             <FaInfo className={classname} />
           </>
         )}
+        onClick={onSidebarOpen}
         jssStyleSheet={customCaretStyle}
       />
     </>

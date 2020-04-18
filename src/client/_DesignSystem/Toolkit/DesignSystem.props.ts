@@ -19,9 +19,9 @@ export enum StandardLuminance {
   DarkMode = 0.14,
 }
 
-interface ContextData {
+export interface ContextData {
   theme: ThemeName;
-  toggleTheme: Function;
+  toggleTheme: () => void;
 }
 
 export interface props {

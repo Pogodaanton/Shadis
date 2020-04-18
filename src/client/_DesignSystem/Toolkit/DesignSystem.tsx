@@ -1,10 +1,17 @@
 import React, { ReactNode, Component } from "react";
 import { DesignSystemProvider } from "@microsoft/fast-jss-manager-react";
-import { StandardLuminance, ThemeName, Theme, props, state } from "./DesignSystem.props";
+import {
+  StandardLuminance,
+  ThemeName,
+  Theme,
+  props,
+  state,
+  ContextData,
+} from "./DesignSystem.props";
 import { createColorPalette } from "@microsoft/fast-components-styles-msft";
 import { parseColor } from "@microsoft/fast-colors";
 
-export const DesignToolkit = React.createContext({});
+export const DesignToolkit = React.createContext<ContextData>(null);
 
 const colorSchemes: { [key: string]: string } = {
   dark: "(prefers-color-scheme: dark)",

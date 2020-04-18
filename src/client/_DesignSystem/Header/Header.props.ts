@@ -51,6 +51,9 @@ export interface HeaderProps extends ManagedClasses<HeaderClassNameContract> {
   /**
    * Content for the center section
    * of the header
+   *
+   * Keep in mind that this part will be
+   * invisible for mobile users due to space constraints.
    */
   centerContent?: ReactNode;
   /**

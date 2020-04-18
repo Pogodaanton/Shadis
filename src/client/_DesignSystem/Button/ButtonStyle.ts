@@ -1,14 +1,19 @@
+import {
+  neutralForegroundHover,
+  neutralForegroundActive,
+} from "@microsoft/fast-components-styles-msft";
 /**
  * Code taken from "@microsoft/fast-components-styles-msft"
  * Modified to fit the custom design
  */
 import { ButtonClassNameContract } from "@microsoft/fast-components-class-name-contracts-msft";
+import { ComponentStyles, CSSRules } from "@microsoft/fast-jss-manager";
 import {
-  ComponentStyles,
-  CSSRules,
-  mergeDesignSystem,
-} from "@microsoft/fast-jss-manager";
-import { directionSwitch, format, toPx } from "@microsoft/fast-jss-utilities";
+  directionSwitch,
+  format,
+  toPx,
+  applyFocusVisible,
+} from "@microsoft/fast-jss-utilities";
 import {
   DesignSystem,
   accentForegroundCut,
@@ -18,12 +23,24 @@ import {
   accentPalette,
   backgroundColor,
   accentFillHover,
+  applyPillCornerRadius,
+  neutralForegroundRest,
+  neutralFillHover,
+  highContrastSelected,
+  highContrastSelectedForeground,
+  highContrastOutlineFocus,
+  neutralFocus,
 } from "@microsoft/fast-components-styles-msft";
 import { ColorRGBA64, rgbToRelativeLuminance } from "@microsoft/fast-colors";
 import { parseColorString } from "@microsoft/fast-components-styles-msft/dist/utilities/color/common";
 import { getSwatch } from "@microsoft/fast-components-styles-msft/dist/utilities/color/palette";
 import { ButtonStyles as MSFTStyle } from "@microsoft/fast-components-styles-msft";
+import { mergeDesignSystem } from "@microsoft/fast-jss-manager-react";
 
+/**
+ * This color should be unaffected by the changes
+ * between light/dark mode
+ */
 const applyAccentBackground: CSSRules<DesignSystem> = {
   background: ds => getSwatch(45, accentPalette(ds)),
 };
@@ -56,6 +73,7 @@ const applyBeforeMargin: CSSRules<DesignSystem> = {
 const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
   button: {
     padding: format("6px {0}", horizontalSpacing(focusOutlineWidth)),
+    background: "transparent",
   },
   button__primary: {
     fill: accentForegroundCut,
@@ -99,9 +117,6 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
       ...applyAccentBackground,
     },
   },
-  button_beforeContent: {
-    ...applyBeforeMargin,
-  },
   button_afterContent: {
     "margin-right": directionSwitch("", horizontalSpacing(4)),
     "margin-left": directionSwitch(horizontalSpacing(4), ""),
@@ -114,7 +129,7 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
     "flex-shrink": "0",
   },
   button__hasIconAndContent: {
-    "& $button_icon": {
+    "& $button_beforeContent, & $button_icon": {
       ...applyBeforeMargin,
     },
   },
@@ -136,6 +151,37 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
     "&:hover span::before": {
       transform: "scaleX(1)",
       transformOrigin: "left",
+    },
+  },
+  button__lightweight: {
+    background: "transparent",
+    color: neutralForegroundRest,
+    fill: neutralForegroundRest,
+    "&:hover:enabled, a&:not($button__disabled):hover": {
+      background: neutralFillHover,
+      color: neutralForegroundHover,
+      ...highContrastSelected,
+      "& $button_beforeContent, & $button_afterContent": {
+        ...highContrastSelectedForeground,
+      },
+    },
+    "&:active:enabled, a&:not($button__disabled):active": {
+      color: neutralForegroundActive,
+      background: "transparent",
+    },
+    ...applyFocusVisible<DesignSystem>({
+      ...highContrastOutlineFocus,
+      "border-color": neutralFocus,
+    }),
+  },
+  button__iconOnly: {
+    padding: "8px",
+    margin: "5px",
+    height: "auto",
+    ...applyPillCornerRadius(),
+    "& $button_icon": {
+      width: "17px",
+      height: "17px",
     },
   },
 };

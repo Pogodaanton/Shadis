@@ -1,7 +1,7 @@
 /**
  * Code taken from "@microsoft/fast-components-react-msft"
  *
- * This component is similar to the original button component from the library. Changes made:
+ * This component is similar to the original <Button/> component from the library. Changes made:
  *  - An "icon" prop was added, so that it is easier to prepend an icon to the button.
  *  - Custom style from "ButtonStyle.ts" is applied
  */
@@ -60,6 +60,7 @@ class CustomButton extends Foundation<ButtonHandledProps, ButtonUnhandledProps, 
       button,
       button__disabled,
       button__hasIconAndContent,
+      button__iconOnly,
     }: ButtonClassNameContract = this.props.managedClasses;
 
     return super.generateClassNames(
@@ -70,14 +71,16 @@ class CustomButton extends Foundation<ButtonHandledProps, ButtonUnhandledProps, 
           this.props.managedClasses[`button__${this.props.appearance}`],
           typeof this.props.appearance === "string",
         ],
-        [button__hasIconAndContent, this.hasIconAndContent()]
+        [button__hasIconAndContent, this.hasIconAndContent()],
+        [button__iconOnly, this.isIconOnly()]
       )
     );
   }
 
   private generateIcon = (): React.ReactNode => {
     return isNil(this.props.icon)
-      ? null
+      ? !isNil(this.props.beforeContent) &&
+          this.props.beforeContent(classNames(this.props.managedClasses.button_icon))
       : iconToGlyph(this.props.icon)(classNames(this.props.managedClasses.button_icon));
   };
 
@@ -86,6 +89,17 @@ class CustomButton extends Foundation<ButtonHandledProps, ButtonUnhandledProps, 
    */
   private hasIconAndContent(): boolean {
     return !isNil(this.props.icon) && !isNil(this.props.children);
+  }
+
+  /**
+   * Checks whether the button is displaying only an icon.
+   * We assume that beforeContent is used for multiple icons.
+   */
+  private isIconOnly(): boolean {
+    return (
+      (!isNil(this.props.icon) || !isNil(this.props.beforeContent)) &&
+      isNil(this.props.children)
+    );
   }
 }
 

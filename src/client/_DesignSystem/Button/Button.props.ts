@@ -22,6 +22,11 @@ export interface ButtonClassNameContract extends MSFTButtonClassNameContract {
    * Class name used when checking icon and content
    */
   button__hasIconAndContent?: string;
+
+  /**
+   * Class name used when there is no other content but the icon
+   */
+  button__iconOnly?: string;
 }
 
 export interface ButtonManagedClasses extends ManagedClasses<ButtonClassNameContract> {}

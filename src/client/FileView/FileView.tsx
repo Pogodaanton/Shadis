@@ -10,6 +10,8 @@ import { motion } from "framer-motion";
 import { Header } from "../_DesignSystem";
 import { HeaderClassNameContract } from "../_DesignSystem/Header/Header.props";
 import ImageViewer from "./views/ImageViewer";
+import { HeaderCenterContent } from "./views/HeaderCenterContent";
+import { HeaderRightContent } from "./views/HeaderRightContent";
 
 const styles: ComponentStyles<FileViewClassNameContract, DesignSystem> = {
   fileView: {
@@ -106,7 +108,12 @@ const FileView: React.FC<FileViewProps> = ({
         exit={{ opacity: 0 }}
         onAnimationComplete={loadLargeImage}
       >
-        <Header position="absolute" jssStyleSheet={headerStyles} />
+        <Header
+          position="absolute"
+          jssStyleSheet={headerStyles}
+          centerContent={<HeaderCenterContent fileData={fileData} />}
+          rightSideContent={<HeaderRightContent fileData={fileData} />}
+        />
       </motion.div>
       <ImageViewer imageURL={imageURL} fileData={fileData} />
     </div>

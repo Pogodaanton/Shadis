@@ -4,7 +4,7 @@ import { StandardLuminance, ThemeName, Theme, props, state } from "./DesignSyste
 import { createColorPalette } from "@microsoft/fast-components-styles-msft";
 import { parseColor } from "@microsoft/fast-colors";
 
-export const PogodaDesignToolkit = React.createContext({});
+export const DesignToolkit = React.createContext({});
 
 const colorSchemes: { [key: string]: string } = {
   dark: "(prefers-color-scheme: dark)",
@@ -17,7 +17,7 @@ const accentColors = {
   accentPalette: createColorPalette(parseColor(accentBaseColor)),
 };
 
-class PogodaDesignToolkitProvider extends Component<props, state> {
+class DesignToolkitProvider extends Component<props, state> {
   // Dark / Light mode listeners
   private activeMatches: Array<MediaQueryList> = [];
 
@@ -26,7 +26,7 @@ class PogodaDesignToolkitProvider extends Component<props, state> {
    * If a `ThemeName` is given, it will update to that specific one.
    *
    * @see https://git.io/JvkF1
-   * @memberof PogodaDesignToolkitProvider
+   * @memberof DesignToolkitProvider
    */
   handleUpdateTheme = (customThemeName?: ThemeName): void => {
     // If ThemeName is given, we don't want to change theme to it's opposite.
@@ -61,7 +61,7 @@ class PogodaDesignToolkitProvider extends Component<props, state> {
    * @private
    * @see https://git.io/JvkF6
    * @event MediaQueryList
-   * @memberof PogodaDesignToolkitProvider
+   * @memberof DesignToolkitProvider
    */
   private matchMediaListener = (e: MediaQueryListEvent | MediaQueryList): any => {
     if (!e || !e.matches) {
@@ -107,12 +107,12 @@ class PogodaDesignToolkitProvider extends Component<props, state> {
   };
 
   render = (): ReactNode => (
-    <PogodaDesignToolkit.Provider value={this.state.contextData}>
+    <DesignToolkit.Provider value={this.state.contextData}>
       <DesignSystemProvider designSystem={this.state.designSystem}>
         {this.props.children}
       </DesignSystemProvider>
-    </PogodaDesignToolkit.Provider>
+    </DesignToolkit.Provider>
   );
 }
 
-export default PogodaDesignToolkitProvider;
+export default DesignToolkitProvider;

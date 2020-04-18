@@ -64,6 +64,16 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
     overflow: "hidden",
     textAlign: "center",
   },
+  header_right: {
+    flexGrow: "1",
+    textAlign: "right",
+    marginRight: "3px",
+  },
+  "@media (max-width: 540px)": {
+    header_center: {
+      display: "none",
+    },
+  },
 };
 
 const HeaderBase: React.FC<HeaderProps> = props => {

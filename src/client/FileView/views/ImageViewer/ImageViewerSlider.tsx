@@ -10,7 +10,7 @@ import {
   SliderLabel,
   SliderLabelClassNameContract,
 } from "@microsoft/fast-components-react-msft";
-import { applyBackdropBackground } from "../../_DesignSystem";
+import { applyBackdropBackground } from "../../../_DesignSystem";
 import { parseColorHexRGBA } from "@microsoft/fast-colors";
 import { SliderTrackItemAnchor } from "@microsoft/fast-components-react-base";
 import {

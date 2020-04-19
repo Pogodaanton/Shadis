@@ -9,7 +9,7 @@ import {
 import { motion } from "framer-motion";
 import { Header } from "../_DesignSystem";
 import { HeaderClassNameContract } from "../_DesignSystem/Header/Header.props";
-import ImageViewer from "./views/ImageViewer";
+import ImageViewer from "./views/ImageViewer/ImageViewer";
 import { HeaderCenterContent } from "./views/HeaderCenterContent";
 import { HeaderRightContent } from "./views/HeaderRightContent";
 

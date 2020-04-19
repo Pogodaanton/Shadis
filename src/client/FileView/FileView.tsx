@@ -15,6 +15,7 @@ import { HeaderRightContent } from "./views/HeaderRightContent";
 
 const styles: ComponentStyles<FileViewClassNameContract, DesignSystem> = {
   fileView: {
+    display: "flex",
     position: "fixed",
     zIndex: "30",
     top: "0",

@@ -5,6 +5,7 @@ import { ManagedClasses } from "@microsoft/fast-jss-manager-react";
  */
 export interface ImageViewerClassNameContract {
   imageViewer: string;
+  imageViewerContainer: string;
   imageViewer__zoomedin?: string;
   imageViewer__dragging?: string;
 }

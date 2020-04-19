@@ -7,8 +7,13 @@ import { SpringProps } from "popmotion/lib/animations/spring/types";
 import { debounce } from "lodash-es";
 import { classNames } from "@microsoft/fast-web-utilities";
 import ImageViewerSlider from "./ImageViewerSlider";
+import { AutoSizer, Size } from "react-virtualized";
 
 const styles: ComponentStyles<ImageViewerClassNameContract, DesignSystem> = {
+  imageViewerContainer: {
+    flexGrow: "1",
+    position: "relative",
+  },
   imageViewer: {
     position: "absolute",
     userSelect: "none",
@@ -47,7 +52,8 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
   ({ managedClasses, fileData, imageURL, zoomRef }: ImageViewerProps) => {
     fileData = fileData || window.fileData;
     const { id, title } = fileData;
-    const onWindowResize = useRef<() => void>(null);
+    const onWindowResize = useRef<(info?: Size) => any>(() => null);
+    const containerRef = useRef<HTMLDivElement>();
 
     // Boolean states
     const [inTransformMode, setTransformMode] = useState(false);
@@ -74,6 +80,26 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
     }>({});
 
     /**
+     * Some functions are called before the ref is
+     * defined. Thus, we need to fall back to `window`.
+     *
+     * We cannot wait for the ref, since SharedAnimation
+     * expects immediately rendered components.
+     */
+    const getViewport = (): Size => {
+      if (!containerRef.current)
+        return {
+          width: window.innerWidth,
+          height: window.innerHeight - 64,
+        };
+
+      return {
+        width: containerRef.current.clientWidth,
+        height: containerRef.current.clientHeight - 64,
+      };
+    };
+
+    /**
      * Sizes the given image to fit the boundaries of the page
      * This is needed, as the image needs absolute dimensions
      * in order to become independently resizable and movable.
@@ -90,9 +116,10 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
         marginLeft: number;
       } => {
         let marginLeft = null;
+        const viewport = getViewport();
         const initialWidth = width;
-        const maxWidth = window.innerWidth;
-        const maxHeight = window.innerHeight - 64;
+        const maxWidth = viewport.width;
+        const maxHeight = viewport.height;
         const factor = width / height;
 
         if (width - maxWidth > 0 || height - maxHeight > 0) {
@@ -126,15 +153,18 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
     ]);
 
     /**
-     * Resize image if window resizes
+     * Initiate resize function that is used by <AutoSizer/>.
+     * The function is debounced by 80ms to save system resources.
+     *
+     * Since there are no resize events for HTML Tags, we use
+     * <AutoSizer/> to register any size changes in the div.
      */
     useEffect(() => {
-      onWindowResize.current = debounce(
-        () => setImageDimensions(calcImageSize(fileData)),
-        80
-      );
-      window.addEventListener("resize", onWindowResize.current);
-      return () => window.removeEventListener("resize", onWindowResize.current);
+      onWindowResize.current = debounce((sizes: Size) => {
+        // Prevent re-render if there are no size changes
+        if (!sizes) return;
+        setImageDimensions(calcImageSize(fileData));
+      }, 80);
     }, [calcImageSize, fileData]);
 
     /**
@@ -183,9 +213,10 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
      * if it is bigger than the viewport
      */
     const calculateDragConstraints = useCallback(() => {
+      const viewport = getViewport();
       const { width, height } = imageDimensions;
-      const overflowX = Math.max(width - window.innerWidth, 0);
-      const overflowY = Math.max(height - (window.innerHeight - 64), 0);
+      const overflowX = Math.max(width - viewport.width, 0);
+      const overflowY = Math.max(height - viewport.height, 0);
       const constraints = {
         top: -1 * (overflowY / 2),
         bottom: overflowY / 2,
@@ -239,11 +270,14 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
 
     return (
       <motion.div
+        className={managedClasses.imageViewerContainer}
         initial={!isLoggedIn && { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ default: 0.1 }}
         exit={!isLoggedIn && { opacity: 0 }}
+        ref={containerRef}
       >
+        <AutoSizer onResize={onWindowResize.current}>{() => null}</AutoSizer>
         <motion.div
           className={classNames(
             managedClasses.imageViewer,

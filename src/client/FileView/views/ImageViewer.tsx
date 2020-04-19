@@ -161,7 +161,7 @@ const ImageViewer: React.FC<ImageViewerProps> = memo(
     useEffect(() => {
       zoomRef(handleToggle);
       return () => zoomRef(() => {});
-    }, [handleToggle, zoomRef, inTransformMode]);
+    }, [handleToggle, zoomRef, inTransformMode, sliderVal]);
 
     /**
      * Caches the lastDragPoint for onImageTap

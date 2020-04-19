@@ -2,24 +2,10 @@ import { ButtonAppearance } from "@microsoft/fast-components-react-msft";
 import { DesignSystem, baseLayerLuminance } from "@microsoft/fast-components-styles-msft";
 import { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import React, { useContext } from "react";
-import { FaAdjust, FaCaretLeft, FaSearchPlus, FaShareAlt, FaInfo } from "react-icons/fa";
-import { Button, DesignToolkit } from "../../_DesignSystem";
-import { ButtonClassNameContract } from "../../_DesignSystem/Button/Button.props";
+import { FaAdjust, FaSearchPlus, FaShareAlt } from "react-icons/fa";
+import { Button, DesignToolkit } from "../../../_DesignSystem";
+import { ButtonClassNameContract } from "../../../_DesignSystem/Button/Button.props";
 import { HeaderRightContentProps } from "./HeaderRightContent.props";
-
-/**
- * Custom styling for sidebar toggle.
- */
-const customCaretStyle: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
-  button: {
-    paddingTop: "6px",
-    paddingLeft: "6px",
-    margin: "0",
-    "& svg:first-child": {
-      paddingTop: "2px",
-    },
-  },
-};
 
 const customThemeSwitcherStyle: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
   button: {
@@ -31,10 +17,18 @@ const customThemeSwitcherStyle: ComponentStyles<ButtonClassNameContract, DesignS
   },
 };
 
+/**
+ * We need to make space for the sidebar button.
+ */
+const marginLeftStyleSheet: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
+  button: {
+    marginRight: "57px",
+  },
+};
+
 export const HeaderRightContent: React.ComponentType<HeaderRightContentProps> = ({
   onMagnify,
   onShare,
-  onSidebarOpen,
 }) => {
   const themeCtx = useContext(DesignToolkit);
   return (
@@ -54,16 +48,7 @@ export const HeaderRightContent: React.ComponentType<HeaderRightContentProps> = 
         appearance={ButtonAppearance.lightweight}
         icon={FaShareAlt}
         onClick={onShare}
-      />
-      <Button
-        beforeContent={classname => (
-          <>
-            <FaCaretLeft className={classname} />
-            <FaInfo className={classname} />
-          </>
-        )}
-        onClick={onSidebarOpen}
-        jssStyleSheet={customCaretStyle}
+        jssStyleSheet={marginLeftStyleSheet}
       />
     </>
   );

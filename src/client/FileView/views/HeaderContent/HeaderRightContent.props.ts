@@ -12,5 +12,4 @@ export interface HeaderRightContentProps
   extends ManagedClasses<HeaderRightContentClassNameContract> {
   onMagnify?: React.MouseEventHandler;
   onShare?: React.MouseEventHandler;
-  onSidebarOpen?: React.MouseEventHandler;
 }

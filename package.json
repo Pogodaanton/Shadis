@@ -11,6 +11,7 @@
     "@microsoft/fast-jss-manager-react": "^4.6.4",
     "@microsoft/fast-jss-utilities": "^4.7.9",
     "@microsoft/fast-web-utilities": "^4.4.2",
+    "@popmotion/easing": "^1.0.2",
     "@svgr/webpack": "4.3.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",

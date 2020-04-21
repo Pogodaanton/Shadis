@@ -7,6 +7,8 @@ export interface FVSidebarClassNameContract {
   fv_sidebar: string;
   fv_sidebar_button: string;
   fv_sidebar_container: string;
+  fv_sidebar_content?: string;
+  fv_sidebar_footer?: string;
 }
 
 /**

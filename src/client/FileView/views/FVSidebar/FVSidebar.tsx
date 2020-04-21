@@ -16,11 +16,8 @@ import { tween } from "popmotion";
 import { cubicBezier } from "@popmotion/easing";
 import { designSystemContext } from "@microsoft/fast-jss-manager-react/dist/context";
 import { parseColorHexRGBA } from "@microsoft/fast-colors";
-import {
-  Typography,
-  TypographySize,
-  TypographyTag,
-} from "@microsoft/fast-components-react-msft";
+import { Heading, HeadingSize, HeadingTag } from "@microsoft/fast-components-react-msft";
+import FVSidebarContent from "./FVSidebarContent";
 
 /**
  * The position where on the x-axis the button is placed by default
@@ -41,6 +38,8 @@ const styles: ComponentStyles<FVSidebarClassNameContract, DesignSystem> = {
     ...applyPillCornerRadius(),
   },
   fv_sidebar: {
+    display: "flex",
+    flexDirection: "column",
     width: defaultSidebarWidth + "px",
     height: "100%",
     background: neutralLayerL1,
@@ -50,11 +49,14 @@ const styles: ComponentStyles<FVSidebarClassNameContract, DesignSystem> = {
     position: "absolute",
     top: "0",
     right: "0",
+    "& > h1": {
+      padding: "18px 25px 17px 75px",
+    },
   },
   fv_sidebar_container: {
-    "& > h1": {
-      padding: "17px 25px 0px 75px",
-    },
+    overflow: "auto",
+    display: "flex",
+    flexDirection: "column",
   },
 };
 
@@ -78,8 +80,9 @@ const customCaretStyle: ComponentStyles<ButtonClassNameContract, DesignSystem> =
   },
 };
 
-const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses }) => {
-  const [visible, setVisibility] = useState(false);
+const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileData }) => {
+  const [visible, setVisibility] = useState(true);
+  const [isButtonHover, setButtonHover] = useState(false);
   const designCtx = useContext(designSystemContext);
 
   /**
@@ -134,11 +137,9 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses }) => {
   );
 
   /**
-   * Rotate and reposition icon if sidebar is opened.
-   * We do latter to optically center the icon.
+   * Rotate icon if sidebar is opened.
    */
   const buttonIconRotation = useTransform(sidebarPos, [defaultButtonPos, 82], [0, 180]);
-  const buttonIconPosition = useTransform(sidebarPos, [defaultButtonPos, 82], [0, 2]);
 
   /**
    * Custom tween animator for opening and closing
@@ -148,7 +149,7 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses }) => {
       const anim = tween({
         from: sidebarPos.get(),
         to: visible ? defaultSidebarWidth : 0,
-        duration: 400,
+        duration: visible ? 400 : 350,
         ease: visible ? cubicBezier(0.2, 0.66, 0, 1) : cubicBezier(0.0, 0.0, 0.85, 0.05),
       }).start({
         complete,
@@ -158,6 +159,12 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses }) => {
     });
   }, [sidebarPos, visible]);
 
+  /**
+   * Resetting hover state if visible state changes.
+   * This is for avoiding visual bugs.
+   */
+  useEffect(() => setButtonHover(false), [visible]);
+
   return (
     <>
       <motion.div
@@ -166,11 +173,20 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses }) => {
           x: buttonPosition,
           background: buttonBackground,
         }}
+        onHoverStart={() => setButtonHover(true)}
+        onHoverEnd={() => setButtonHover(false)}
       >
         <Button
           beforeContent={classname => (
             <>
-              <motion.div style={{ rotate: buttonIconRotation, x: buttonIconPosition }}>
+              <motion.div
+                animate={{
+                  // Hover animation
+                  // We also move the caret by a few pixels for optical centering
+                  x: isButtonHover ? (visible ? 5 : -3) : visible ? 2 : 0,
+                }}
+                style={{ rotate: buttonIconRotation }}
+              >
                 <FaCaretLeft className={classname} />
               </motion.div>
               <FaInfo className={classname} />
@@ -191,10 +207,12 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses }) => {
           x: sidebarContainerX,
         }}
       >
+        <Heading size={HeadingSize._5} tag={HeadingTag.h1}>
+          File Inspector
+        </Heading>
         <div className={managedClasses.fv_sidebar_container}>
-          <Typography size={TypographySize._5} tag={TypographyTag.h1}>
-            File Inspector
-          </Typography>
+          <FVSidebarContent fileData={fileData} />
+          <footer className={managedClasses.fv_sidebar_footer} />
         </div>
       </motion.div>
     </>

@@ -1,0 +1,12 @@
+{
+  "description": "Description",
+  "width": "Width",
+  "height": "Height",
+  "uploaded": "Uploaded",
+  "format": "File format",
+  "size": "Size",
+  "untitled": "-",
+  "editDescription": "Edit Description",
+  "delete": "Delete File",
+  "source": "View Original"
+}

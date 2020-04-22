@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 
 const styles: ComponentStyles<FVSidebarContentClassNameContract, DesignSystem> = {
   fv_sidebarContent: {
+    flexGrow: "1",
     padding: "20px 25px",
   },
   fv_sidebarContent_list: {

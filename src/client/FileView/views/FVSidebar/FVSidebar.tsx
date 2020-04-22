@@ -19,6 +19,7 @@ import { designSystemContext } from "@microsoft/fast-jss-manager-react/dist/cont
 import { parseColorHexRGBA } from "@microsoft/fast-colors";
 import { Heading, HeadingSize, HeadingTag } from "@microsoft/fast-components-react-msft";
 import FVSidebarContent from "./FVSidebarContent";
+import FVSidebarFooter from "./FVSidebarFooter";
 
 /**
  * The position where on the x-axis the button is placed by default
@@ -58,6 +59,7 @@ const styles: ComponentStyles<FVSidebarClassNameContract, DesignSystem> = {
     overflow: "auto",
     display: "flex",
     flexDirection: "column",
+    flexGrow: "1",
   },
 };
 
@@ -168,14 +170,12 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
     <>
       <motion.div
         className={managedClasses.fv_sidebar_button}
-        whileHover={
-          !visible && {
-            background: neutralFillHover(designCtx),
-          }
-        }
         style={{
           x: buttonPosition,
           background: buttonBackground,
+        }}
+        exit={{
+          opacity: 0,
         }}
         onHoverStart={() => setButtonHover(true)}
         onHoverEnd={() => setButtonHover(false)}
@@ -216,7 +216,7 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
         </Heading>
         <div className={managedClasses.fv_sidebar_container}>
           <FVSidebarContent fileData={fileData} />
-          <footer className={managedClasses.fv_sidebar_footer} />
+          <FVSidebarFooter fileData={fileData} />
         </div>
       </motion.div>
     </>

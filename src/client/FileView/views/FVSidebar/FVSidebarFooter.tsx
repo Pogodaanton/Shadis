@@ -5,29 +5,14 @@ import {
 } from "./FVSidebarFooter.props";
 import {
   DesignSystem,
-  neutralOutlineActive,
-  accentFillRest,
-  accentForegroundCut,
-  neutralFillRest,
   neutralForegroundRest,
-  neutralLayerL1,
   neutralLayerL2,
 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { Button, ButtonAppearance } from "../../../_DesignSystem";
-import {
-  FaTrash,
-  FaImage,
-  FaDownload,
-  FaExternalLinkAlt,
-  FaExternalLinkSquareAlt,
-  FaWrench,
-  FaPlus,
-} from "react-icons/fa";
+import { FaTrash, FaDownload, FaExternalLinkSquareAlt } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
-import { ButtonClassNameContract } from "../../../_DesignSystem/Button/Button.props";
 import { Hypertext } from "@microsoft/fast-components-react-msft";
-import { neutralBaseColor } from "@microsoft/fast-components-styles-msft/dist/utilities/color/color-constants";
 import { designSystemContext } from "@microsoft/fast-jss-manager-react/dist/context";
 
 const styles: ComponentStyles<FVSidebarFooterClassNameContract, DesignSystem> = {

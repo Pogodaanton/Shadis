@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { FVSidebarProps, FVSidebarClassNameContract } from "./FVSidebar.props";
 import {
   DesignSystem,
@@ -6,10 +6,9 @@ import {
   neutralOutlineActive,
   neutralLayerL2,
   applyPillCornerRadius,
-  neutralFillHover,
 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, usePresence } from "framer-motion";
 import { Button } from "../../../_DesignSystem";
 import { FaCaretLeft, FaInfo } from "react-icons/fa";
 import { ButtonClassNameContract } from "../../../_DesignSystem/Button/Button.props";
@@ -84,9 +83,10 @@ const customCaretStyle: ComponentStyles<ButtonClassNameContract, DesignSystem> =
 };
 
 const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileData }) => {
-  const [visible, setVisibility] = useState(true);
+  const [visible, setVisibility] = useState(false);
   const [isButtonHover, setButtonHover] = useState(false);
   const designCtx = useContext(designSystemContext) as DesignSystem;
+  const [isPresent, safeToRemove] = usePresence();
 
   /**
    * The width of the sidebar
@@ -165,6 +165,38 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
    * This is for avoiding visual bugs.
    */
   useEffect(() => setButtonHover(false), [visible]);
+
+  /**
+   * Close sidebar while unmounting component.
+   * We set a timeout for the image repositoning animation to kick in.
+   *
+   * TODO: Find a way to close sidebar BEFORE unmounting
+   * ! Maybe call an upper safeToRemove prop?
+   */
+  const allowUnmount = useCallback(
+    (pos: number) => {
+      if (!isPresent && pos === 0) {
+        setTimeout(safeToRemove, 200);
+      }
+    },
+    [isPresent, safeToRemove]
+  );
+
+  /**
+   * Listen to isPresent for starting closing animation.
+   */
+  useEffect(() => {
+    if (!safeToRemove) return;
+    if (!isPresent) {
+      if (visible) setVisibility(false);
+      else if (!sidebarPos.isAnimating()) {
+        console.log("bruh");
+        safeToRemove();
+        return;
+      }
+      return sidebarPos.onChange(allowUnmount);
+    }
+  }, [allowUnmount, isPresent, safeToRemove, sidebarPos, visible]);
 
   return (
     <>

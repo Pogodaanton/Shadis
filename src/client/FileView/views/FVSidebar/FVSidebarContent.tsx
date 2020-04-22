@@ -5,18 +5,10 @@ import {
 } from "./FVSidebarContent.props";
 import {
   DesignSystem,
-  neutralFillRest,
   neutralForegroundRest,
-  neutralForegroundActive,
-  neutralForegroundHint,
   neutralForegroundHover,
 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
-import {
-  Typography,
-  TypographyTag,
-  TypographySize,
-} from "@microsoft/fast-components-react-msft";
 import { useTranslation } from "react-i18next";
 
 const styles: ComponentStyles<FVSidebarContentClassNameContract, DesignSystem> = {
@@ -51,14 +43,16 @@ const FVSidebarContent: React.ComponentType<FVSidebarContentProps> = memo(
           <dt>{t("description")}:</dt>
           <dd>{fileData.title === "untitled" ? "-" : fileData.title}</dd>
           <dt>{t("width")}:</dt>
-          <dd>{fileData.width}</dd>
+          <dd>{fileData.width || "-"}</dd>
           <dt>{t("height")}:</dt>
-          <dd>{fileData.height}</dd>
+          <dd>{fileData.height || "-"}</dd>
           <dt>{t("format")}:</dt>
-          <dd>{fileData.extension}</dd>
+          <dd>{fileData.extension || "-"}</dd>
           <dt>{t("uploaded")}:</dt>
           <dd>
-            {uploaded.toLocaleDateString()} {uploaded.toLocaleTimeString()}
+            {uploaded
+              ? `${uploaded.toLocaleDateString()} ${uploaded.toLocaleTimeString()}`
+              : "-"}
           </dd>
         </dl>
       </div>

@@ -22,7 +22,7 @@ const customThemeSwitcherStyle: ComponentStyles<ButtonClassNameContract, DesignS
  */
 const marginLeftStyleSheet: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
   button: {
-    marginRight: "57px",
+    marginRight: "60px",
   },
 };
 

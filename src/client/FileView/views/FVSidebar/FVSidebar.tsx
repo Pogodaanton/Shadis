@@ -6,6 +6,7 @@ import {
   neutralOutlineActive,
   neutralLayerL2,
   applyPillCornerRadius,
+  neutralFillHover,
 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
@@ -83,7 +84,7 @@ const customCaretStyle: ComponentStyles<ButtonClassNameContract, DesignSystem> =
 const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileData }) => {
   const [visible, setVisibility] = useState(true);
   const [isButtonHover, setButtonHover] = useState(false);
-  const designCtx = useContext(designSystemContext);
+  const designCtx = useContext(designSystemContext) as DesignSystem;
 
   /**
    * The width of the sidebar
@@ -129,10 +130,8 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
     sidebarPos,
     [defaultButtonPos, 82],
     [
-      parseColorHexRGBA(
-        neutralLayerL2(designCtx as DesignSystem) + "00"
-      ).toStringWebRGBA(),
-      neutralLayerL2(designCtx as DesignSystem),
+      parseColorHexRGBA(neutralLayerL2(designCtx) + "00").toStringWebRGBA(),
+      neutralLayerL2(designCtx),
     ]
   );
 
@@ -169,6 +168,11 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
     <>
       <motion.div
         className={managedClasses.fv_sidebar_button}
+        whileHover={
+          !visible && {
+            background: neutralFillHover(designCtx),
+          }
+        }
         style={{
           x: buttonPosition,
           background: buttonBackground,

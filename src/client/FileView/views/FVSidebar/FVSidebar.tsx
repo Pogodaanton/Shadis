@@ -99,6 +99,15 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
   const sidebarWidth = useMotionValue(defaultSidebarWidth);
 
   /**
+   * The width of the sidebar spacer
+   *
+   * To resize <ImageViewer/> we add a spacer underneath the `absolute`
+   * positioned main sidebar. Since resizing the flexbox is CPU-heavy,
+   * we have this value that is separated from all animations.
+   */
+  const sidebarSpacerWidth = useMotionValue(0);
+
+  /**
    * Main motion value
    *
    * We assume that the sidebar cannot be opened
@@ -234,6 +243,18 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
     return headerRightPosition.onChange(addHeaderPadding);
   }, [headerRightPosition]);
 
+  /**
+   * Resize spacer if an animation finishes.
+   */
+  useEffect(() => {
+    const resizeSpacer = (val: number) => {
+      if (val <= 0) sidebarSpacerWidth.set(0);
+      if (val >= defaultSidebarWidth) sidebarSpacerWidth.set(val);
+    };
+
+    return sidebarPos.onChange(resizeSpacer);
+  }, [sidebarPos, sidebarSpacerWidth]);
+
   return (
     <>
       <motion.div
@@ -270,7 +291,7 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
       </motion.div>
       <motion.div
         style={{
-          width: sidebarPos,
+          width: sidebarSpacerWidth,
         }}
       />
       <motion.div

@@ -91,9 +91,12 @@ const AnimatedRoutes: React.FC<RouteChildrenProps<{ id: string }>> = ({ match })
   }, []);
 
   return (
-    <AnimateSharedLayout>
+    <AnimateSharedLayout
+      type="crossfade"
+      transition={match.params.id ? { duration: 0.5 } : { duration: 0.3 }}
+    >
       {isLoggedIn && <Dashboard key="dashboard" frozen={!!match.params.id} />}
-      <AnimatePresence>
+      <AnimatePresence exitBeforeEnter>
         {match.params.id && viewLoaded && ViewRef.current && fileData && (
           <ViewRef.current fileData={fileData} key={match.params.id} />
         )}

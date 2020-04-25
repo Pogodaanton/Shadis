@@ -62,8 +62,17 @@ const FileView: React.FC<FileViewProps> = ({
 }: FileViewProps) => {
   fileData = fileData || window.fileData;
   const { id, extension } = fileData || window.fileData;
+
+  /**
+   * Helper functions as refs to prevent them from updating after
+   * each re-render
+   */
   const onImageLoaded = useRef<() => void>(null);
   const onMagnify = useRef<React.MouseEventHandler>(() => {});
+
+  /**
+   * Used to decide whether to view the thumbnail or the original image
+   */
   const [largeImageLoaded, setLargeImageLoadedState] = useState(false);
 
   /**
@@ -101,6 +110,7 @@ const FileView: React.FC<FileViewProps> = ({
     largeImageLoaded ? extension : "thumb.jpg"
   }`;
 
+  // Callback used after mounting ImageViewer
   const setZoomRef = (ref: React.MouseEventHandler) => (onMagnify.current = ref);
 
   return (

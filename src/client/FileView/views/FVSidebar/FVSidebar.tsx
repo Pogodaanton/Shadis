@@ -83,10 +83,15 @@ const customCaretStyle: ComponentStyles<ButtonClassNameContract, DesignSystem> =
 };
 
 const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileData }) => {
-  const [visible, setVisibility] = useState(false);
   const [isButtonHover, setButtonHover] = useState(false);
   const designCtx = useContext(designSystemContext) as DesignSystem;
   const [isPresent, safeToRemove] = usePresence();
+
+  /**
+   * visible: True, already while it's opening
+   *          False, already while closing
+   */
+  const [visible, setVisibility] = useState(false);
 
   /**
    * The width of the sidebar
@@ -114,12 +119,21 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
   );
 
   /**
-   * Only move button if sidebarPos > defaultButtonPos
-   * We add 1 px more in order to avoid animation glitches
+   * Moves the button into the sidebar when opened.
    */
   const buttonPosition = useTransform(
     sidebarPos,
     pos => -1 * Math.max(pos - (defaultButtonPos + 63), 0)
+  );
+
+  /**
+   * Moves the right-side header buttons with the sidebar.
+   *
+   * Note that the sidebar toggle button travels into the sidebar when opened,
+   * whereas it is next to the right-side header buttons when closed.
+   */
+  const headerRightPosition = useTransform(sidebarPos, pos =>
+    Math.max(pos - (defaultButtonPos + 63 - 12 - 5), 0)
   );
 
   /**
@@ -190,13 +204,35 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
     if (!isPresent) {
       if (visible) setVisibility(false);
       else if (!sidebarPos.isAnimating()) {
-        console.log("bruh");
         safeToRemove();
         return;
       }
       return sidebarPos.onChange(allowUnmount);
     }
   }, [allowUnmount, isPresent, safeToRemove, sidebarPos, visible]);
+
+  /**
+   * Move right-side header contents by applying padding-right to it
+   * and hide center header contents as they can be seen in the sidebar
+   */
+  useEffect(() => {
+    const addHeaderPadding = (val: number) => {
+      const headerRight: HTMLDivElement = document.querySelector("header .header-right");
+      const headerCenter: HTMLDivElement = document.querySelector(
+        "header .header-center"
+      );
+
+      // TranslateX is precalulated by useTransform
+      if (!!headerRight) headerRight.style.transform = `translateX(-${val}px)`;
+
+      // To save resources, we calculate the opacity with headerRightPosition
+      if (!headerCenter || !headerCenter.hasChildNodes()) return;
+      headerCenter.style.opacity = Math.max(0, val * (-1 / 200) + 1) + "";
+      headerCenter.style.transform = `translateX(-${val * 0.3}px)`;
+    };
+
+    return headerRightPosition.onChange(addHeaderPadding);
+  }, [headerRightPosition]);
 
   return (
     <>

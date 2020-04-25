@@ -33,6 +33,7 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
     width: "100%",
     padding: "0 12px",
     boxSizing: "border-box",
+    justifyContent: "space-between",
     ...applyBackdropGradient,
   },
   header__fixed: {
@@ -65,7 +66,6 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
     textAlign: "center",
   },
   header_right: {
-    flexGrow: "1",
     textAlign: "right",
     marginRight: "3px",
   },
@@ -85,7 +85,7 @@ const HeaderBase: React.FC<HeaderProps> = props => {
         [props.managedClasses.header__absolute, props.position === "absolute"]
       )}
     >
-      <div className={props.managedClasses.header_left}>
+      <div className={"header-left " + props.managedClasses.header_left}>
         <Link to="/">
           <Logo size="45" alt="Go to Homepage" />
         </Link>
@@ -94,13 +94,13 @@ const HeaderBase: React.FC<HeaderProps> = props => {
       </div>
       {props.centerContent && (
         <div
-          className={props.managedClasses.header_center}
+          className={"header-center " + props.managedClasses.header_center}
           children={props.centerContent}
         />
       )}
       {props.rightSideContent && (
         <div
-          className={props.managedClasses.header_right}
+          className={"header-right " + props.managedClasses.header_right}
           children={props.rightSideContent}
         />
       )}

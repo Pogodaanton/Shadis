@@ -12,7 +12,13 @@ import { HeaderClassNameContract } from "../_DesignSystem/Header/Header.props";
 import ImageViewer from "./views/ImageViewer/ImageViewer";
 import { HeaderCenterContent } from "./views/HeaderContent/HeaderCenterContent";
 import { HeaderRightContent } from "./views/HeaderContent/HeaderRightContent";
-import FVSidebar from "./views/FVSidebar/FVSidebar";
+import { FVSidebarProps } from "./views/FVSidebar/FVSidebar.props";
+import { LoadableComponent } from "@loadable/component";
+import { FullscreenLoader } from "../Loader";
+
+const FVSidebar: LoadableComponent<FVSidebarProps> = FullscreenLoader(
+  import(/* webpackChunkName: "FVSidebar" */ "./views/FVSidebar/FVSidebar")
+);
 
 const styles: ComponentStyles<FileViewClassNameContract, DesignSystem> = {
   fileView: {
@@ -131,7 +137,7 @@ const FileView: React.FC<FileViewProps> = ({
         />
       </motion.div>
       <ImageViewer imageURL={imageURL} fileData={fileData} zoomRef={setZoomRef} />
-      <FVSidebar fileData={fileData} />
+      {largeImageLoaded && <FVSidebar fileData={fileData} />}
     </div>
   );
 };

@@ -17,7 +17,7 @@ i18n
   .init({
     fallbackLng: "en",
     debug: true,
-    ns: ["common", "dashboard"],
+    ns: ["common", "dashboard", "fileview"],
     defaultNS: "common",
     backend: {
       loadPath: "/static/locales/{{lng}}/{{ns}}.json",

@@ -1,27 +1,54 @@
-import React, { useEffect, useRef, useState, memo, useCallback } from "react";
-import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
-import { ImageViewerClassNameContract, ImageViewerProps } from "./ImageViewer.props";
+/* eslint-disable jsx-a11y/alt-text */
+import React, {
+  useRef,
+  useState,
+  useLayoutEffect,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
+import { ImageViewerProps, ImageViewerClassNameContract } from "./ImageViewer.props";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
-import { motion, TapHandlers, useMotionValue, useSpring } from "framer-motion";
-import { SpringProps } from "popmotion/lib/animations/spring/types";
-import { debounce } from "lodash-es";
+import manageJss, { ComponentStyles, CSSRules } from "@microsoft/fast-jss-manager-react";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  TapHandlers,
+  MotionValue,
+  useDomEvent,
+} from "framer-motion";
+import { headerHeight } from "../../../_DesignSystem";
+import { useViewportDimensions } from "./useViewportDimensions";
 import { classNames } from "@microsoft/fast-web-utilities";
 import ImageViewerSlider from "./ImageViewerSlider";
-import { AutoSizer, Size } from "react-virtualized";
+import { ColdSubscription, tween, TweenProps, spring } from "popmotion";
+
+const applyCenteredAbsolute: CSSRules<DesignSystem> = {
+  position: "absolute",
+  userSelect: "none",
+  top: headerHeight + "px",
+  left: "0",
+  right: "0",
+  bottom: "0",
+  margin: "auto",
+  "& img": {
+    width: "100%",
+    height: "100%",
+  },
+};
 
 const styles: ComponentStyles<ImageViewerClassNameContract, DesignSystem> = {
-  imageViewerContainer: {
+  imageViewer: {
     flexGrow: "1",
     position: "relative",
+    "& > iframe": {
+      opacity: 0,
+      pointerEvents: "none",
+    },
   },
-  imageViewer: {
-    position: "absolute",
-    userSelect: "none",
-    top: "64px",
-    left: "0",
-    right: "0",
-    bottom: "0",
-    margin: "auto",
+  imageViewer_imageContainer: {
+    ...applyCenteredAbsolute,
     cursor: "zoom-in",
   },
   imageViewer__zoomedin: {
@@ -32,298 +59,381 @@ const styles: ComponentStyles<ImageViewerClassNameContract, DesignSystem> = {
   },
 };
 
-/**
- * @see window.userData
- */
-const isLoggedIn =
-  typeof window.userData !== "undefined" &&
-  typeof window.userData.username !== "undefined";
-
 // Used to determine whether user clicked or panned
 let lastDragPoint = { x: 0, y: 0 };
 
-// Spring config for useSpring()
-const springConfig: SpringProps = {
-  stiffness: 800,
-  damping: 2000,
+/* eslint-disable react-hooks/exhaustive-deps */
+const isMotionValue = (value: any): value is MotionValue => {
+  return value instanceof MotionValue;
+};
+const useTween = (source: MotionValue | number, config: TweenProps = {}) => {
+  const activeAnimation = useRef<ColdSubscription | null>(null);
+  const value = useMotionValue(isMotionValue(source) ? source.get() : source);
+
+  useMemo(
+    () =>
+      value.attach((v, set) => {
+        if (activeAnimation.current) activeAnimation.current.stop();
+
+        activeAnimation.current = tween({
+          duration: 300,
+          ...config,
+          from: value.get(),
+          to: v,
+        }).start(set);
+
+        return value.get();
+      }),
+    Object.values(config)
+  );
+
+  return value;
+};
+/* eslint-enable react-hooks/exhaustive-deps */
+
+/**
+ * Animation function to be used with `MotionValue.start()`.
+ * It uses popmotion's inbuilt spring function.
+ *
+ * @param motionValue The `MotionValue` you attach this function to.
+ * @param config A custom config for popmotion's tween function.
+ */
+const animateWithSpring = (motionValue: MotionValue, config: TweenProps) => (
+  complete: () => void
+) => {
+  const animation = spring({
+    to: 0,
+    ...config,
+    velocity: motionValue.getVelocity(),
+    from: motionValue.get(),
+    stiffness: 400,
+    damping: 60,
+  }).start({
+    complete,
+    update: (val: number) => motionValue.set(val),
+  });
+
+  return animation.stop;
 };
 
-const ImageViewer: React.FC<ImageViewerProps> = memo(
-  ({ managedClasses, fileData, imageURL, zoomRef }: ImageViewerProps) => {
-    fileData = fileData || window.fileData;
-    const { id, title } = fileData;
-    const onWindowResize = useRef<(info?: Size) => any>(() => null);
-    const containerRef = useRef<HTMLDivElement>();
+/**
+ * The main ImageViewer Component
+ */
+const ImageViewer: React.ComponentType<ImageViewerProps> = ({
+  imageURL,
+  managedClasses,
+  fileData,
+  zoomRef,
+}) => {
+  fileData = fileData || window.fileData;
+  const { id, title, width, height } = fileData;
 
-    // Boolean states
-    const [inTransformMode, setTransformMode] = useState(false);
-    const [inDragMode, setDragMode] = useState(false);
+  // Ref of the draggable component
+  const draggableRef = useRef(null);
 
-    // maxValue Depends on the image width and height
-    // and is thus modified in calcImageSize()
-    const [maxValue, setMaxValue] = useState(300);
-    const [sliderVal, setSliderVal] = useState(100);
+  // Viewport dimensions
+  const [resizeListener, { viewportWidth, viewportHeight }] = useViewportDimensions();
 
-    // Motion values for framer-motion
-    const dragX = useMotionValue(0);
-    const dragY = useMotionValue(0);
-    const defaultX = useSpring(dragX, springConfig);
-    const defaultY = useSpring(dragY, springConfig);
+  /**
+   * Calculates `defaultScale` so that bigger images
+   * can fit in the viewport
+   */
+  const fitImageToViewport = useCallback(() => {
+    let newScaleFactor = 1;
+    const aspectRatio = width / height;
 
-    // We need to redefine the type,
-    // as the original one from Framer also accepts a boolean
-    const [dragConstraints, setDragConstraints] = useState<{
-      top?: number;
-      right?: number;
-      bottom?: number;
-      left?: number;
-    }>({});
+    if (width - viewportWidth > 0 || height - viewportHeight > 0) {
+      if (viewportHeight * aspectRatio <= viewportWidth) {
+        const adaptedWidth = width * (viewportHeight / height);
+        newScaleFactor = adaptedWidth / width;
+      } else {
+        const adaptedHeight = height * (viewportWidth / width);
+        newScaleFactor = adaptedHeight / height;
+      }
+    }
 
-    /**
-     * Some functions are called before the ref is
-     * defined. Thus, we need to fall back to `window`.
-     *
-     * We cannot wait for the ref, since SharedAnimation
-     * expects immediately rendered components.
-     */
-    const getViewport = (): Size => {
-      if (!containerRef.current)
-        return {
-          width: window.innerWidth,
-          height: window.innerHeight - 64,
-        };
+    return newScaleFactor;
+  }, [height, viewportHeight, viewportWidth, width]);
 
-      return {
-        width: containerRef.current.clientWidth,
-        height: containerRef.current.clientHeight - 64,
-      };
-    };
+  /**
+   * Minimum scale factor.
+   *
+   * It can be used to determine the default size
+   * of the image, hence the name.
+   */
+  const defaultScale = useMemo(() => fitImageToViewport(), [fitImageToViewport]);
 
-    /**
-     * Sizes the given image to fit the boundaries of the page
-     * This is needed, as the image needs absolute dimensions
-     * in order to become independently resizable and movable.
-     *
-     * @param dimensions An object with the true width and height of the image.
-     */
-    const calcImageSize = useCallback(
-      ({
-        width,
-        height,
-      }: Window["fileData"]): {
-        width: number;
-        height: number;
-        marginLeft: number;
-      } => {
-        let marginLeft = null;
-        const viewport = getViewport();
-        const initialWidth = width;
-        const maxWidth = viewport.width;
-        const maxHeight = viewport.height;
-        const factor = width / height;
+  // Scale factor
+  // TODO: Reevaluate usefulness of using both state and motionValue
+  const [scaleState, setScaleState] = useState(defaultScale);
+  const scaleVal = useTween(scaleState, { duration: 200 });
+  const scaledWidth = useTransform(scaleVal, (v: number) => v * width);
+  const scaledHeight = useTransform(scaleVal, (v: number) => v * height);
 
-        if (width - maxWidth > 0 || height - maxHeight > 0) {
-          if (maxHeight * factor <= maxWidth) {
-            width = width * (maxHeight / height);
-            height = maxHeight;
-          } else {
-            height = height * (maxWidth / width);
-            width = maxWidth;
-          }
-        }
+  // Adjust scaleVal to scaleState
+  useLayoutEffect(() => scaleVal.set(scaleState), [scaleState, scaleVal]);
 
-        // Setting max value for <Slider/>
-        const ogFactor = (initialWidth / width) * 100 + 200;
-        if (ogFactor !== maxValue) setMaxValue(ogFactor);
-
-        width *= sliderVal / 100;
-        height *= sliderVal / 100;
-        marginLeft = (maxWidth - width) / 2;
-
-        return { width, height, marginLeft };
-      },
-      [maxValue, sliderVal]
+  /**
+   * Resizes the image based on the wheel direction and
+   * toggles transform mode if needed.
+   */
+  const onDraggableWheel = (e: WheelEvent) => {
+    const newScaleFactor = Math.min(
+      Math.max(scaleState + (e.deltaY / 150) * -1, defaultScale),
+      3
     );
-    const [imageDimensions, setImageDimensions] = useState(calcImageSize(fileData));
 
-    // Resize image based on range slider change
-    useEffect(() => setImageDimensions(calcImageSize(fileData)), [
-      calcImageSize,
-      fileData,
-    ]);
+    setScaleState(newScaleFactor);
+    if (
+      (newScaleFactor > defaultScale && !inTransformMode) ||
+      (newScaleFactor <= defaultScale && inTransformMode)
+    ) {
+      setTransformState(!inTransformMode);
+    }
+  };
 
-    /**
-     * Initiate resize function that is used by <AutoSizer/>.
-     * The function is debounced by 80ms to save system resources.
-     *
-     * Since there are no resize events for HTML Tags, we use
-     * <AutoSizer/> to register any size changes in the div.
-     */
-    useEffect(() => {
-      onWindowResize.current = debounce((sizes: Size) => {
-        // Prevent re-render if there are no size changes
-        if (!sizes) return;
-        setImageDimensions(calcImageSize(fileData));
-      }, 80);
-    }, [calcImageSize, fileData]);
+  // Assign listener to wheel event
+  useDomEvent(draggableRef, "wheel", onDraggableWheel, { passive: false });
 
-    /**
-     * Toggles transform mode and resets the x and y coordinates
-     * to center the image.
-     */
-    const handleToggle = useCallback(() => {
-      if (!inTransformMode) setSliderVal(120);
-      else {
-        setSliderVal(100);
-        dragX.stop();
-        dragX.set(0);
-        dragY.stop();
-        dragY.set(0);
-      }
+  /**
+   * Caches the lastDragPoint for onImageTap
+   */
+  const onTapStart: TapHandlers["onTapStart"] = (_e, { point }) => {
+    lastDragPoint = point;
+  };
 
-      setTransformMode(!inTransformMode);
-    }, [dragX, dragY, inTransformMode]);
+  /**
+   * Toggles the transform mode based on whether
+   * the user dragged the image.
+   */
+  const onTap: TapHandlers["onTap"] = (_e, { point }) => {
+    if (point.x === lastDragPoint.x && point.y === lastDragPoint.y)
+      setTransformState(!inTransformMode);
+  };
 
-    /**
-     * Calling ref function prop to pass on the handleToggle
-     * function as a way to externally toggle the transform mode
-     */
-    useEffect(() => {
-      zoomRef(handleToggle);
-      return () => zoomRef(() => {});
-    }, [handleToggle, zoomRef, inTransformMode, sliderVal]);
+  // Dragging state
+  const [isDragging, setDraggingState] = useState(false);
+  // Toggle the dragging state
+  const onDragStart = () => !isDragging && setDraggingState(true);
+  const onDragEnd = () => isDragging && setDraggingState(false);
 
-    /**
-     * Caches the lastDragPoint for onImageTap
-     */
-    const onImageTapStart: TapHandlers["onTapStart"] = (_e, { point }) => {
-      lastDragPoint = point;
+  /**
+   * Position of the image in the x-axis.
+   *
+   * Keep in mind that the origin is on the
+   * centre of the page.
+   */
+  const posX = useMotionValue(0);
+
+  /**
+   * Position of the image in the y-axis.
+   *
+   * Keep in mind that the origin is on the
+   * centre of the page.
+   */
+  const posY = useMotionValue(0);
+
+  /**
+   * If activated, <ImageViewerSlider/> appears and the image
+   * is draggable
+   */
+  const [inTransformMode, setTransformState] = useState(false);
+
+  /**
+   * Calling ref function prop to pass on the handleToggle
+   * function as a way to externally toggle the transform mode
+   */
+  useLayoutEffect(() => {
+    zoomRef(() => setTransformState(!inTransformMode));
+    return () => zoomRef(() => {});
+  }, [inTransformMode, zoomRef]);
+
+  /**
+   * Scales the image by 0.2 if entering transform mode,
+   * resets image position and size if leaving transform mode
+   */
+  useLayoutEffect(() => {
+    if (inTransformMode) setScaleState(defaultScale + 0.2);
+    else setScaleState(defaultScale);
+  }, [defaultScale, inTransformMode, posX, posY]);
+
+  /**
+   * To keep the image centered if it is bigger than the viewport
+   * we adjust the X axis by the delta of the overflowing part
+   */
+  const posXAdjusted = useMotionValue<number>(0);
+  useLayoutEffect(() => {
+    const posXAdjustor = () => {
+      const deltaX = Math.min(0, (viewportWidth - scaledWidth.get()) / 2);
+      posXAdjusted.set(posX.get() + deltaX);
     };
 
-    /**
-     * Toggles the transform mode based on whether
-     * the user dragged the image.
-     */
-    const onImageTap: TapHandlers["onTap"] = (_e, { point }) => {
-      if (point.x === lastDragPoint.x && point.y === lastDragPoint.y) handleToggle();
+    posXAdjustor();
+    const posXListener = posX.onChange(posXAdjustor);
+    const scaledWidthListener = scaledWidth.onChange(posXAdjustor);
+
+    // onChange events return a cleanup function
+    return () => {
+      posXListener();
+      scaledWidthListener();
+    };
+  }, [posX, posXAdjusted, scaledWidth, viewportWidth]);
+
+  /**
+   * Calculates `dragConstraints`
+   */
+  const calcDragConstraints = useCallback(() => {
+    const overflowX = Math.max(width * scaleState - viewportWidth, 0);
+    const overflowY = Math.max(height * scaleState - viewportHeight, 0);
+    const constraints = {
+      top: -1 * (overflowY / 2),
+      bottom: overflowY / 2,
+      left: -1 * (overflowX / 2),
+      right: overflowX / 2,
     };
 
-    /**
-     * Calculated constraints that only allow to move the image
-     * if it is bigger than the viewport
-     */
-    const calculateDragConstraints = useCallback(() => {
-      const viewport = getViewport();
-      const { width, height } = imageDimensions;
-      const overflowX = Math.max(width - viewport.width, 0);
-      const overflowY = Math.max(height - viewport.height, 0);
-      const constraints = {
-        top: -1 * (overflowY / 2),
-        bottom: overflowY / 2,
-        left: -1 * (overflowX / 2),
-        right: overflowX / 2,
-      };
+    return constraints;
+  }, [height, scaleState, viewportHeight, viewportWidth, width]);
 
-      return constraints;
-    }, [imageDimensions]);
+  /**
+   * Calculated constraints that only allow to move the image
+   * if it is bigger than the viewport
+   */
+  type dragConstraints = {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  };
 
-    // Automatically update constraints after imageDimensions update
-    useEffect(() => {
-      setDragConstraints(calculateDragConstraints());
-    }, [calculateDragConstraints, imageDimensions]);
+  const [dragConstraints, setDragConstraints] = useState(calcDragConstraints());
 
-    // Resizes the image based on the wheel direction
-    const onImageWheel: React.WheelEventHandler<HTMLDivElement> = ({ deltaY }) => {
-      const newVal = Math.min(Math.max(sliderVal + deltaY * -1, 100), maxValue);
-      setSliderVal(newVal);
+  // Automatically update constraints after imageDimensions update
+  useEffect(() => {
+    setDragConstraints(calcDragConstraints());
+  }, [calcDragConstraints]);
 
-      // Toggle transform mode automatically on scroll
-      if ((newVal > 100 && !inTransformMode) || (newVal <= 100 && inTransformMode)) {
-        setTransformMode(!inTransformMode);
-      }
-    };
+  /**
+   * Move image back to co constraints if it is overflowing.
+   * This can happen while scaling down the image.
+   */
+  useEffect(() => {
+    const { top, bottom, left, right } = dragConstraints;
+    const y = posY.get();
+    const x = posX.get();
+    let newY = y;
+    let newX = x;
 
-    // Move image back to constraints if it is overflowing
-    // This can be the case when scaling down the image
-    useEffect(() => {
-      const { top, bottom, left, right } = dragConstraints;
-      const y = dragY.get();
-      const x = dragX.get();
-      let newY = y;
-      let newX = x;
+    if (y < top) newY = top;
+    if (y > bottom) newY = bottom;
+    if (x < left) newX = left;
+    if (x > right) newX = right;
 
-      if (y < top) newY = top;
-      if (y > bottom) newY = bottom;
-      if (x < left) newX = left;
-      if (x > right) newX = right;
+    if (newY !== y) {
+      posY.stop();
+      posY.start(animateWithSpring(posY, { to: newY }));
+    }
 
-      if (newY !== y) {
-        dragY.stop();
-        dragY.set(newY);
-      }
+    if (newX !== x) {
+      posX.stop();
+      posX.start(animateWithSpring(posX, { to: newX }));
+    }
+  }, [dragConstraints, posX, posY]);
 
-      if (newX !== x) {
-        dragX.stop();
-        dragX.set(newX);
-      }
-    }, [dragConstraints, dragX, dragY]);
+  /**
+   * Used to determine whether a magic animation
+   * is running.
+   */
+  type isMagicAnimRunning = boolean;
+  const [isMagicAnimRunning, setMagicAnimState] = useState(false);
+  // Toggle `isMagicAnimRunning`
+  const onMagicAnimStart = () => !isMagicAnimRunning && setMagicAnimState(true);
+  const onMagicAnimEnd = () => isMagicAnimRunning && setMagicAnimState(false);
 
-    return (
+  /**
+   * ATTRIBUTES
+   * ==========
+   */
+
+  const sharedDraggableAttributes = {
+    className: classNames(
+      managedClasses.imageViewer_imageContainer,
+      [managedClasses.imageViewer__zoomedin, inTransformMode],
+      [managedClasses.imageViewer__dragging, isDragging]
+    ),
+    draggable: false,
+    onTapStart,
+    onTap,
+    drag: inTransformMode,
+    onDragStart,
+    onDragEnd,
+    dragElastic: 0.2,
+  };
+
+  const sharedImgAttributes = {
+    src: imageURL,
+    alt: title,
+    draggable: false,
+  };
+
+  // Default dimensions used for magic component
+  const defaultWidth = useMemo(() => width * defaultScale, [defaultScale, width]);
+  const defaultHeight = useMemo(() => height * defaultScale, [defaultScale, height]);
+
+  return (
+    <motion.div className={managedClasses.imageViewer}>
+      {resizeListener}
       <motion.div
-        className={managedClasses.imageViewerContainer}
-        initial={!isLoggedIn && { opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ default: 0.1 }}
-        exit={!isLoggedIn && { opacity: 0 }}
-        ref={containerRef}
+        /**
+         * This component is used for magic animations
+         * connecting the cards in the dashboard
+         * with this ImageViewer.
+         *
+         * For the sake of simplicity, we use a seperate
+         * component for magic animations and only make them
+         * visible, if needed.
+         */
+        layoutId={`card-image-container-${id}`}
+        className={managedClasses.imageViewer_imageContainer}
+        onAnimationStart={onMagicAnimStart}
+        onAnimationComplete={onMagicAnimEnd}
+        style={{
+          visibility: isMagicAnimRunning ? "visible" : "hidden",
+          width: defaultWidth,
+          height: defaultHeight,
+        }}
       >
-        <AutoSizer onResize={onWindowResize.current}>{() => null}</AutoSizer>
-        <motion.div
-          className={classNames(
-            managedClasses.imageViewer,
-            [managedClasses.imageViewer__zoomedin, inTransformMode],
-            [managedClasses.imageViewer__dragging, inDragMode]
-          )}
-          layoutId={`card-image-container-${id}`}
-          drag={inTransformMode}
-          initial={imageDimensions}
-          animate={imageDimensions}
-          transition={{
-            default: { type: "tween", ease: "easeOut", duration: 0.2 },
-          }}
-          draggable={false}
-          onTapStart={onImageTapStart}
-          onTap={onImageTap}
-          onDragStart={() => setDragMode(true)}
-          onDragEnd={() => setDragMode(false)}
-          dragConstraints={dragConstraints}
-          dragElastic={0.2}
-          onWheel={onImageWheel}
-          style={{
-            x: inTransformMode ? dragX : defaultX,
-            y: inTransformMode ? dragY : defaultY,
-          }}
-        >
-          <img
-            alt={title}
-            src={imageURL}
-            draggable={false}
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "inline-block",
-            }}
-          />
-        </motion.div>
-        <ImageViewerSlider
-          show={inTransformMode}
-          value={sliderVal}
-          maxValue={maxValue}
-          onValueChange={setSliderVal}
-        />
+        <img {...sharedImgAttributes} />
       </motion.div>
-    );
-  }
-);
+      <motion.div
+        {...sharedDraggableAttributes}
+        ref={draggableRef}
+        dragConstraints={dragConstraints}
+        style={{
+          display: isMagicAnimRunning ? "none" : "block",
+          width: scaledWidth,
+          height: scaledHeight,
+          x: posXAdjusted,
+          y: posY,
+        }}
+        /**
+         * Since `posXAdjusted` is set as the value for `x`,
+         * we need to tell the component to modify `posX`
+         * so that `posXAdjusted` can be calculated
+         */
+        _dragValueX={posX}
+      >
+        <img {...sharedImgAttributes} />
+      </motion.div>
+      <ImageViewerSlider
+        show={inTransformMode}
+        value={scaleState}
+        minFactor={defaultScale}
+        maxFactor={3}
+        onValueChange={setScaleState}
+      />
+    </motion.div>
+  );
+};
 
 export default manageJss(styles)(ImageViewer);

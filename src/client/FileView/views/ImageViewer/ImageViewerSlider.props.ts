@@ -14,7 +14,8 @@ export interface ImageViewerSliderClassNameContract {
 export interface ImageViewerSliderProps
   extends ManagedClasses<ImageViewerSliderClassNameContract> {
   show: boolean;
-  maxValue: number;
+  minFactor: number;
+  maxFactor: number;
   value: number;
   onValueChange: (value: number) => any;
 }

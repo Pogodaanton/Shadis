@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   ImageViewerSliderProps,
@@ -40,6 +40,7 @@ const styles: ComponentStyles<ImageViewerSliderClassNameContract, DesignSystem> 
   },
   imageViewerSlider_label: {
     display: "inline-grid",
+    pointerEvents: "none",
   },
 };
 
@@ -50,69 +51,104 @@ const labelStyle: ComponentStyles<SliderLabelClassNameContract, DesignSystem> = 
 };
 
 /**
+ * Defines the point where the image
+ * is in its original size.
+ */
+const ogPos = 100;
+
+/**
  * A floating slider with procentual labels.
  * Used in conjunction with ImageViewer.
  */
-const ImageViewerSlider: React.ComponentType<ImageViewerSliderProps> = memo(
-  ({ managedClasses, show, value, maxValue, onValueChange }) => {
-    /**
-     * Defines the point where the image
-     * is in its original size
-     */
-    const ogPos = maxValue - 200;
+const ImageViewerSlider: React.ComponentType<ImageViewerSliderProps> = ({
+  managedClasses,
+  show,
+  value,
+  minFactor,
+  maxFactor,
+  onValueChange,
+}) => {
+  /**
+   * Current position on the slider.
+   */
+  type value = number;
+  value = value * 100;
 
-    /**
-     * If ogPos is 100, we know that
-     * the image is already in its original form.
-     */
-    const isLargeImage = ogPos > 100;
+  /**
+   * Lowest point on the slider.
+   */
+  const minValue = useMemo(() => minFactor * 100, [minFactor]);
 
-    /**
-     * Decides whether showing the label would be
-     * intrusive or unfitting.
-     */
-    const shouldShowLabel =
-      value > 105 && value < maxValue - 5 && (value < ogPos - 20 || value > ogPos + 20);
+  /**
+   * Highest point on the slider.
+   */
+  const maxValue = useMemo(() => maxFactor * 100, [maxFactor]);
 
-    /**
-     * Determines where the fixed label should be positioned
-     */
-    const fixedLabelPos = isLargeImage ? ogPos : maxValue - 100;
+  /**
+   * Tells whether the image needed to be
+   * shrunk in order to fit the viewport.
+   */
+  const isLargeImage = useMemo(() => minValue < 100, [minValue]);
 
-    return (
-      <motion.div
-        className={managedClasses.imageViewerSlider}
-        initial={{ y: "200%" }}
-        animate={{ y: show ? 0 : "200%" }}
+  /**
+   * Position of the fixed label that hints
+   * either at 1x or 2x depending on the image size.
+   */
+  const fixedLabelPos = useMemo(() => (isLargeImage ? ogPos : maxValue - 100), [
+    isLargeImage,
+    maxValue,
+  ]);
+
+  /**
+   * Decides whether showing the label would be
+   * intrusive or unfitting.
+   */
+  const shouldShowLabel =
+    value > minValue + 5 &&
+    value < maxValue - 5 &&
+    (value < ogPos - 20 || value > ogPos + 20);
+
+  /**
+   * Formats the new value and passes it on to the callback prop.
+   * @param v THe new value of the slider
+   */
+  const handleValueChange = useCallback((v: number) => onValueChange(v / 100), [
+    onValueChange,
+  ]);
+
+  return (
+    <motion.div
+      className={managedClasses.imageViewerSlider}
+      initial={{ y: "200%" }}
+      animate={{ y: show ? 0 : "200%" }}
+    >
+      <Slider
+        range={{ minValue, maxValue }}
+        value={value}
+        onValueChange={handleValueChange}
       >
-        <Slider
-          range={{ minValue: 100, maxValue }}
-          value={value}
-          onValueChange={onValueChange}
+        <SliderLabel
+          label={isLargeImage ? "100%" : "200%"}
+          valuePositionBinding={fixedLabelPos}
+          showTickmark={true}
+          onClick={() => handleValueChange(fixedLabelPos)}
+          jssStyleSheet={labelStyle}
+        />
+        <motion.div
+          className={managedClasses.imageViewerSlider_label}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: shouldShowLabel ? 1 : 0 }}
+          transition={{ default: 0.1 }}
         >
           <SliderLabel
-            label={isLargeImage ? "100%" : "200%"}
-            valuePositionBinding={fixedLabelPos}
+            label={Math.floor((value * (isLargeImage ? 100 : 200)) / ogPos) + "%"}
+            valuePositionBinding={SliderTrackItemAnchor.selectedRangeMax}
             showTickmark={true}
-            onClick={() => onValueChange(fixedLabelPos)}
-            jssStyleSheet={labelStyle}
           />
-          <motion.div
-            className={managedClasses.imageViewerSlider_label}
-            initial={{ opacity: 1 }}
-            animate={{ opacity: shouldShowLabel ? 1 : 0 }}
-            transition={{ default: 0.1 }}
-          >
-            <SliderLabel
-              label={Math.floor((value * (isLargeImage ? 100 : 200)) / ogPos) + "%"}
-              valuePositionBinding={SliderTrackItemAnchor.selectedRangeMax}
-              showTickmark={true}
-            />
-          </motion.div>
-        </Slider>
-      </motion.div>
-    );
-  }
-);
+        </motion.div>
+      </Slider>
+    </motion.div>
+  );
+};
 
 export default manageJss(styles)(ImageViewerSlider);

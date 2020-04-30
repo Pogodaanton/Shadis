@@ -5566,7 +5566,7 @@ hex-color-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
 
-hey-listen@^1.0.8:
+hey-listen@^1.0.5, hey-listen@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/hey-listen/-/hey-listen-1.0.8.tgz#8e59561ff724908de1aa924ed6ecc84a56a9aa68"
   integrity sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==
@@ -8550,6 +8550,19 @@ popmotion@9.0.0-beta-8:
     style-value-types "^3.1.6"
     tslib "^1.10.0"
 
+popmotion@^8.7.1:
+  version "8.7.1"
+  resolved "https://registry.yarnpkg.com/popmotion/-/popmotion-8.7.1.tgz#81cb02540f5eed5307209b0a917fc6406661554e"
+  integrity sha512-XVQQnlmc8nLKBbR9gGVtsjNe/g1mOzg9TzWR2cE2bztvZe/IaSDDV6OY8HZcbcL+yUg3lJn4hh4MWbV+J8mj9Q==
+  dependencies:
+    "@popmotion/easing" "^1.0.1"
+    "@popmotion/popcorn" "^0.4.4"
+    framesync "^4.0.0"
+    hey-listen "^1.0.5"
+    style-value-types "^3.1.7"
+    stylefire "^7.0.1"
+    tslib "^1.10.0"
+
 portfinder@^1.0.17, portfinder@^1.0.25:
   version "1.0.25"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.25.tgz#254fd337ffba869f4b9d37edc298059cb4d35eca"
@@ -9580,6 +9593,11 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-resize-aware@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-resize-aware/-/react-resize-aware-3.0.0.tgz#fee9e1c61ac5bb2dd87c59e03703070d01601269"
+  integrity sha512-UyLk1KNbFHDye9AFLyr7HBGmzkRDGz2mYp6LDS+LCxM6DXGpviwS5Q4JRzXWdw0tk+n46UE/Kotku/cb8HCh0Q==
 
 react-router-dom@^5.1.2:
   version "5.1.2"
@@ -10898,7 +10916,7 @@ style-value-types@^3.1.6, style-value-types@^3.1.7:
     hey-listen "^1.0.8"
     tslib "^1.10.0"
 
-stylefire@7.0.3:
+stylefire@7.0.3, stylefire@^7.0.1:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/stylefire/-/stylefire-7.0.3.tgz#9120ecbb084111788e0ddaa04074799750f20d1d"
   integrity sha512-Q0l7NSeFz/OkX+o6/7Zg3VZxSAZeQzQpYomWmIpOehFM/rJNMSLVX5fgg6Q48ut2ETNKwdhm97mPNU643EBCoQ==

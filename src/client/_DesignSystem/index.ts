@@ -1,6 +1,6 @@
 import { DesignToolkit } from "./Toolkit/DesignSystem";
 import { Button, ButtonAppearance } from "./Button/Button";
-import Header from "./Header/Header";
+import Header, { headerHeight } from "./Header/Header";
 import Logo from "./Logo/Logo";
 import { iconToGlyph, applyCenteredFlexbox, applyBackdropBackground } from "./utilities";
 import useToasts from "./Toast/useToasts";
@@ -9,6 +9,7 @@ import ProgressIcon from "./ProgressIcon/ProgressIcon";
 export {
   Button,
   Header,
+  headerHeight,
   Logo,
   ButtonAppearance,
   iconToGlyph,

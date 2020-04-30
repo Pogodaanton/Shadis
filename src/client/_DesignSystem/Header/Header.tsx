@@ -14,6 +14,11 @@ import { classNames } from "@microsoft/fast-web-utilities";
 import { applyBackdropBackground } from "../utilities";
 
 /**
+ * Hardcoded height of the header.
+ */
+export const headerHeight: number = 64;
+
+/**
  * Generates an acrylic backdrop as well as a gradient background.
  */
 const applyBackdropGradient = applyBackdropBackground(
@@ -27,7 +32,7 @@ const applyBackdropGradient = applyBackdropBackground(
 
 const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
   header: {
-    height: "64px",
+    height: headerHeight + "px",
     display: "flex",
     alignItems: "center",
     width: "100%",
@@ -40,7 +45,7 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
     position: "fixed",
     zIndex: "1",
     "& ~ *": {
-      paddingTop: "64px",
+      paddingTop: headerHeight + "px",
     },
   },
   header__absolute: {

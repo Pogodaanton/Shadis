@@ -13,7 +13,6 @@ import manageJss, { ComponentStyles, CSSRules } from "@microsoft/fast-jss-manage
 import {
   motion,
   useMotionValue,
-  useTransform,
   TapHandlers,
   MotionValue,
   useDomEvent,
@@ -128,8 +127,10 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   fileData = fileData || window.fileData;
   const { id, title, width, height } = fileData;
 
-  // Ref of the draggable component
-  const draggableRef = useRef(null);
+  /**
+   * React.Ref from the draggable component
+   */
+  const draggableRef = useRef<HTMLDivElement>(null);
 
   // Viewport dimensions
   const [resizeListener, { viewportWidth, viewportHeight }] = useViewportDimensions();
@@ -161,17 +162,21 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
    * It can be used to determine the default size
    * of the image, hence the name.
    */
-  const defaultScale = useMemo(() => fitImageToViewport(), [fitImageToViewport]);
+  const defaultScale: number = useMemo(fitImageToViewport, [fitImageToViewport]);
 
-  // Scale factor
-  // TODO: Reevaluate usefulness of using both state and motionValue
-  const [scaleState, setScaleState] = useState(defaultScale);
-  const scaleVal = useTween(scaleState, { duration: 200 });
-  const scaledWidth = useTransform(scaleVal, (v: number) => v * width);
-  const scaledHeight = useTransform(scaleVal, (v: number) => v * height);
+  /**
+   * Current scale factor
+   *
+   * This number can be manipulated by the user.
+   */
 
-  // Adjust scaleVal to scaleState
-  useLayoutEffect(() => scaleVal.set(scaleState), [scaleState, scaleVal]);
+  const [scale, setScaleState] = useState(defaultScale);
+
+  /**
+   * If activated, <ImageViewerSlider/> appears and the image
+   * is draggable
+   */
+  const [inTransformMode, setTransformState] = useState(false);
 
   /**
    * Resizes the image based on the wheel direction and
@@ -179,7 +184,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
    */
   const onDraggableWheel = (e: WheelEvent) => {
     const newScaleFactor = Math.min(
-      Math.max(scaleState + (e.deltaY / 150) * -1, defaultScale),
+      Math.max(scale + (e.deltaY / 150) * -1, defaultScale),
       3
     );
 
@@ -234,12 +239,6 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   const posY = useMotionValue(0);
 
   /**
-   * If activated, <ImageViewerSlider/> appears and the image
-   * is draggable
-   */
-  const [inTransformMode, setTransformState] = useState(false);
-
-  /**
    * Calling ref function prop to pass on the handleToggle
    * function as a way to externally toggle the transform mode
    */
@@ -249,69 +248,54 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   }, [inTransformMode, zoomRef]);
 
   /**
-   * Scales the image by 0.2 if entering transform mode,
-   * resets image position and size if leaving transform mode
-   */
-  useLayoutEffect(() => {
-    if (inTransformMode) setScaleState(defaultScale + 0.2);
-    else setScaleState(defaultScale);
-  }, [defaultScale, inTransformMode, posX, posY]);
-
-  /**
    * To keep the image centered if it is bigger than the viewport
    * we adjust the X axis by the delta of the overflowing part
+   *
+   * TODO: Utilise code below for image centering if sidebar is open
    */
   const posXAdjusted = useMotionValue<number>(0);
-  useLayoutEffect(() => {
-    const posXAdjustor = () => {
-      const deltaX = Math.min(0, (viewportWidth - scaledWidth.get()) / 2);
-      posXAdjusted.set(posX.get() + deltaX);
-    };
-
-    posXAdjustor();
-    const posXListener = posX.onChange(posXAdjustor);
-    const scaledWidthListener = scaledWidth.onChange(posXAdjustor);
-
-    // onChange events return a cleanup function
-    return () => {
-      posXListener();
-      scaledWidthListener();
-    };
-  }, [posX, posXAdjusted, scaledWidth, viewportWidth]);
 
   /**
-   * Calculates `dragConstraints`
+   * The amount of overflow of the image in the x axis that
+   * needs to be moved back in order to keep the image centered.
    */
-  const calcDragConstraints = useCallback(() => {
-    const overflowX = Math.max(width * scaleState - viewportWidth, 0);
-    const overflowY = Math.max(height * scaleState - viewportHeight, 0);
-    const constraints = {
-      top: -1 * (overflowY / 2),
-      bottom: overflowY / 2,
-      left: -1 * (overflowX / 2),
-      right: overflowX / 2,
-    };
+  const deltaX: number = useMemo(() => Math.min(0, (viewportWidth - width) / 2), [
+    viewportWidth,
+    width,
+  ]);
 
-    return constraints;
-  }, [height, scaleState, viewportHeight, viewportWidth, width]);
+  useLayoutEffect(() => {
+    const posXAdjustor = () => posXAdjusted.set(posX.get() + deltaX);
+
+    posXAdjustor();
+    return posX.onChange(posXAdjustor);
+  }, [deltaX, posX, posXAdjusted]);
 
   /**
    * Calculated constraints that only allow to move the image
    * if it is bigger than the viewport
    */
-  type dragConstraints = {
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
-  };
+  const dragConstraints = useMemo(() => {
+    const overflowX = Math.max(width * scale - viewportWidth, 0);
+    const overflowY = Math.max(height * scale - viewportHeight, 0);
+    return {
+      top: -1 * (overflowY / 2),
+      bottom: overflowY / 2,
+      left: -1 * (overflowX / 2),
+      right: overflowX / 2,
+    };
+  }, [height, scale, viewportHeight, viewportWidth, width]);
 
-  const [dragConstraints, setDragConstraints] = useState(calcDragConstraints());
-
-  // Automatically update constraints after imageDimensions update
-  useEffect(() => {
-    setDragConstraints(calcDragConstraints());
-  }, [calcDragConstraints]);
+  /**
+   * Enlargens the image if entering transform mode,
+   * resets image size if leaving transform mode.
+   *
+   * The effect below handles further cleanup tasks.
+   */
+  useLayoutEffect(() => {
+    if (inTransformMode) setScaleState(defaultScale < 1 ? 1 : 1.2);
+    else setScaleState(defaultScale);
+  }, [defaultScale, inTransformMode, posX, posY]);
 
   /**
    * Move image back to co constraints if it is overflowing.
@@ -341,7 +325,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   }, [dragConstraints, posX, posY]);
 
   /**
-   * Used to determine whether a magic animation
+   * Used for determining whether a magic animation
    * is running.
    */
   type isMagicAnimRunning = boolean;
@@ -351,25 +335,8 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   const onMagicAnimEnd = () => isMagicAnimRunning && setMagicAnimState(false);
 
   /**
-   * ATTRIBUTES
-   * ==========
+   * Attributes for all img-Tags in this component
    */
-
-  const sharedDraggableAttributes = {
-    className: classNames(
-      managedClasses.imageViewer_imageContainer,
-      [managedClasses.imageViewer__zoomedin, inTransformMode],
-      [managedClasses.imageViewer__dragging, isDragging]
-    ),
-    draggable: false,
-    onTapStart,
-    onTap,
-    drag: inTransformMode,
-    onDragStart,
-    onDragEnd,
-    dragElastic: 0.2,
-  };
-
   const sharedImgAttributes = {
     src: imageURL,
     alt: title,
@@ -390,29 +357,44 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
          * with this ImageViewer.
          *
          * For the sake of simplicity, we use a seperate
-         * component for magic animations and only make them
-         * visible, if needed.
+         * component for magic animations and only make it
+         * visible if needed.
          */
         layoutId={`card-image-container-${id}`}
         className={managedClasses.imageViewer_imageContainer}
         onAnimationStart={onMagicAnimStart}
         onAnimationComplete={onMagicAnimEnd}
+        tabIndex={-1}
         style={{
           visibility: isMagicAnimRunning ? "visible" : "hidden",
           width: defaultWidth,
           height: defaultHeight,
         }}
       >
-        <img {...sharedImgAttributes} />
+        <img {...sharedImgAttributes} tabIndex={-1} />
       </motion.div>
       <motion.div
-        {...sharedDraggableAttributes}
+        className={classNames(
+          managedClasses.imageViewer_imageContainer,
+          [managedClasses.imageViewer__zoomedin, inTransformMode],
+          [managedClasses.imageViewer__dragging, isDragging]
+        )}
         ref={draggableRef}
+        initial={false}
+        animate={{ scale }}
+        transition={{ type: "tween", duration: 0.18 }}
+        draggable={false}
+        drag={inTransformMode}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        dragElastic={0.2}
         dragConstraints={dragConstraints}
+        onTapStart={onTapStart}
+        onTap={onTap}
         style={{
           display: isMagicAnimRunning ? "none" : "block",
-          width: scaledWidth,
-          height: scaledHeight,
+          width: width,
+          height: height,
           x: posXAdjusted,
           y: posY,
         }}
@@ -427,7 +409,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
       </motion.div>
       <ImageViewerSlider
         show={inTransformMode}
-        value={scaleState}
+        value={scale}
         minFactor={defaultScale}
         maxFactor={3}
         onValueChange={setScaleState}

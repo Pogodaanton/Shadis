@@ -85,7 +85,7 @@ const customCaretStyle: ComponentStyles<ButtonClassNameContract, DesignSystem> =
 const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileData }) => {
   const [isButtonHover, setButtonHover] = useState(false);
   const designCtx = useContext(designSystemContext) as DesignSystem;
-  const [isPresent, safeToRemove] = usePresence();
+  // const [isPresent, safeToRemove] = usePresence();
 
   /**
    * visible: True, already while it's opening
@@ -196,6 +196,7 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
    * TODO: Find a way to close sidebar BEFORE unmounting
    * ! Maybe call an upper safeToRemove prop?
    */
+  /*
   const allowUnmount = useCallback(
     (pos: number) => {
       if (!isPresent && pos === 0) {
@@ -207,7 +208,7 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
 
   /**
    * Listen to isPresent for starting closing animation.
-   */
+   *
   useEffect(() => {
     if (!safeToRemove) return;
     if (!isPresent) {
@@ -218,7 +219,7 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
       }
       return sidebarPos.onChange(allowUnmount);
     }
-  }, [allowUnmount, isPresent, safeToRemove, sidebarPos, visible]);
+  }, [allowUnmount, isPresent, safeToRemove, sidebarPos, visible]);*/
 
   /**
    * Move right-side header contents by applying padding-right to it
@@ -248,8 +249,7 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
    */
   useEffect(() => {
     const resizeSpacer = (val: number) => {
-      if (val <= 0) sidebarSpacerWidth.set(0);
-      if (val >= defaultSidebarWidth) sidebarSpacerWidth.set(val);
+      if (val <= 0 || val >= defaultSidebarWidth) sidebarSpacerWidth.set(val);
     };
 
     return sidebarPos.onChange(resizeSpacer);
@@ -263,9 +263,10 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
           x: buttonPosition,
           background: buttonBackground,
         }}
-        exit={{
-          opacity: 0,
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        exit={{ opacity: 0 }}
         onHoverStart={() => setButtonHover(true)}
         onHoverEnd={() => setButtonHover(false)}
       >

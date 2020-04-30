@@ -21,7 +21,7 @@ import { headerHeight } from "../../../_DesignSystem";
 import { useViewportDimensions } from "./useViewportDimensions";
 import { classNames } from "@microsoft/fast-web-utilities";
 import ImageViewerSlider from "./ImageViewerSlider";
-import { ColdSubscription, tween, TweenProps, spring } from "popmotion";
+import { TweenProps, spring } from "popmotion";
 
 const applyCenteredAbsolute: CSSRules<DesignSystem> = {
   position: "absolute",
@@ -60,35 +60,6 @@ const styles: ComponentStyles<ImageViewerClassNameContract, DesignSystem> = {
 
 // Used to determine whether user clicked or panned
 let lastDragPoint = { x: 0, y: 0 };
-
-/* eslint-disable react-hooks/exhaustive-deps */
-const isMotionValue = (value: any): value is MotionValue => {
-  return value instanceof MotionValue;
-};
-const useTween = (source: MotionValue | number, config: TweenProps = {}) => {
-  const activeAnimation = useRef<ColdSubscription | null>(null);
-  const value = useMotionValue(isMotionValue(source) ? source.get() : source);
-
-  useMemo(
-    () =>
-      value.attach((v, set) => {
-        if (activeAnimation.current) activeAnimation.current.stop();
-
-        activeAnimation.current = tween({
-          duration: 300,
-          ...config,
-          from: value.get(),
-          to: v,
-        }).start(set);
-
-        return value.get();
-      }),
-    Object.values(config)
-  );
-
-  return value;
-};
-/* eslint-enable react-hooks/exhaustive-deps */
 
 /**
  * Animation function to be used with `MotionValue.start()`.

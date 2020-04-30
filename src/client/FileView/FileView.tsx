@@ -125,7 +125,7 @@ const FileView: React.FC<FileViewProps> = ({
         className={managedClasses.fileViewBackground}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.3 }}
         exit={{ opacity: 0 }}
         onAnimationComplete={loadLargeImage}
       >
@@ -137,7 +137,7 @@ const FileView: React.FC<FileViewProps> = ({
         />
       </motion.div>
       <ImageViewer imageURL={imageURL} fileData={fileData} zoomRef={setZoomRef} />
-      {largeImageLoaded && <FVSidebar fileData={fileData} />}
+      <FVSidebar fileData={fileData} />
     </div>
   );
 };

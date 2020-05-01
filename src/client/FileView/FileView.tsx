@@ -15,6 +15,8 @@ import { HeaderRightContent } from "./views/HeaderContent/HeaderRightContent";
 import { FVSidebarProps } from "./views/FVSidebar/FVSidebar.props";
 import { LoadableComponent } from "@loadable/component";
 import { FullscreenLoader } from "../Loader";
+import FVSidebarProvider from "./views/FVSidebar/FVSidebarContext";
+import FVSidebarToggleButton from "./views/FVSidebar/FVSidebarToggleButton";
 
 const FVSidebar: LoadableComponent<FVSidebarProps> = FullscreenLoader(
   import(/* webpackChunkName: "FVSidebar" */ "./views/FVSidebar/FVSidebar")
@@ -120,25 +122,28 @@ const FileView: React.FC<FileViewProps> = ({
   const setZoomRef = (ref: React.MouseEventHandler) => (onMagnify.current = ref);
 
   return (
-    <div className={managedClasses.fileView}>
-      <motion.div
-        className={managedClasses.fileViewBackground}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        exit={{ opacity: 0 }}
-        onAnimationComplete={loadLargeImage}
-      >
-        <Header
-          position="absolute"
-          jssStyleSheet={headerStyles}
-          centerContent={<HeaderCenterContent fileData={fileData} />}
-          rightSideContent={<HeaderRightContent onMagnify={onMagnify.current} />}
-        />
-      </motion.div>
-      <ImageViewer imageURL={imageURL} fileData={fileData} zoomRef={setZoomRef} />
-      <FVSidebar fileData={fileData} />
-    </div>
+    <FVSidebarProvider>
+      <div className={managedClasses.fileView}>
+        <motion.div
+          className={managedClasses.fileViewBackground}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          exit={{ opacity: 0 }}
+          onAnimationComplete={loadLargeImage}
+        >
+          <Header
+            position="absolute"
+            jssStyleSheet={headerStyles}
+            centerContent={<HeaderCenterContent fileData={fileData} />}
+            rightSideContent={<HeaderRightContent onMagnify={onMagnify.current} />}
+          />
+          <FVSidebarToggleButton />
+        </motion.div>
+        <ImageViewer imageURL={imageURL} fileData={fileData} zoomRef={setZoomRef} />
+        {largeImageLoaded && <FVSidebar fileData={fileData} />}
+      </div>
+    </FVSidebarProvider>
   );
 };
 

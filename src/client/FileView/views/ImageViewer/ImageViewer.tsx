@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
+  useContext,
 } from "react";
 import { ImageViewerProps, ImageViewerClassNameContract } from "./ImageViewer.props";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
@@ -22,6 +23,8 @@ import { useViewportDimensions } from "./useViewportDimensions";
 import { classNames } from "@microsoft/fast-web-utilities";
 import ImageViewerSlider from "./ImageViewerSlider";
 import { TweenProps, spring } from "popmotion";
+import { SidebarData } from "../FVSidebar/FVSidebarContext";
+import { debounce } from "lodash-es";
 
 const applyCenteredAbsolute: CSSRules<DesignSystem> = {
   position: "absolute",
@@ -107,25 +110,16 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   const [resizeListener, { viewportWidth, viewportHeight }] = useViewportDimensions();
 
   /**
-   * Calculates `defaultScale` so that bigger images
-   * can fit in the viewport
+   * Used for detecting the current state of the sidebar
    */
-  const fitImageToViewport = useCallback(() => {
-    let newScaleFactor = 1;
-    const aspectRatio = width / height;
+  const { sidebarPos } = useContext(SidebarData);
 
-    if (width - viewportWidth > 0 || height - viewportHeight > 0) {
-      if (viewportHeight * aspectRatio <= viewportWidth) {
-        const adaptedWidth = width * (viewportHeight / height);
-        newScaleFactor = adaptedWidth / width;
-      } else {
-        const adaptedHeight = height * (viewportWidth / width);
-        newScaleFactor = adaptedHeight / height;
-      }
-    }
-
-    return newScaleFactor;
-  }, [height, viewportHeight, viewportWidth, width]);
+  /**
+   * Debounce sidebar position changes, so that we can avoid
+   * expensive calculations and renderings
+   */
+  const [debouncedSidebarPos, setSidebarPos] = useState(sidebarPos.get());
+  useEffect(() => sidebarPos.onChange(debounce(setSidebarPos, 20)), [sidebarPos]);
 
   /**
    * Minimum scale factor.
@@ -133,7 +127,23 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
    * It can be used to determine the default size
    * of the image, hence the name.
    */
-  const defaultScale: number = useMemo(fitImageToViewport, [fitImageToViewport]);
+  const defaultScale = useMemo(() => {
+    let newScaleFactor = 1;
+    const aspectRatio = width / height;
+    const adjustedViewportWidth = viewportWidth - debouncedSidebarPos;
+
+    if (width - adjustedViewportWidth > 0 || height - viewportHeight > 0) {
+      if (viewportHeight * aspectRatio <= adjustedViewportWidth) {
+        const adaptedWidth = width * (viewportHeight / height);
+        newScaleFactor = adaptedWidth / width;
+      } else {
+        const adaptedHeight = height * (adjustedViewportWidth / width);
+        newScaleFactor = adaptedHeight / height;
+      }
+    }
+
+    return newScaleFactor;
+  }, [debouncedSidebarPos, height, viewportHeight, viewportWidth, width]);
 
   /**
    * Current scale factor
@@ -221,8 +231,6 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   /**
    * To keep the image centered if it is bigger than the viewport
    * we adjust the X axis by the delta of the overflowing part
-   *
-   * TODO: Utilise code below for image centering if sidebar is open
    */
   const posXAdjusted = useMotionValue<number>(0);
 
@@ -235,19 +243,30 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
     width,
   ]);
 
+  /**
+   * Listen to `deltaX`, `posX` and `sidebarPos` changes and adjust posXAdjusted
+   */
   useLayoutEffect(() => {
-    const posXAdjustor = () => posXAdjusted.set(posX.get() + deltaX);
+    const posXAdjustor = () => {
+      posXAdjusted.set(posX.get() + deltaX - sidebarPos.get() / 2);
+    };
 
     posXAdjustor();
-    return posX.onChange(posXAdjustor);
-  }, [deltaX, posX, posXAdjusted]);
+    const cleanup1 = posX.onChange(posXAdjustor);
+    const cleanup2 = sidebarPos.onChange(posXAdjustor);
+
+    return () => {
+      cleanup1();
+      cleanup2();
+    };
+  }, [deltaX, posX, posXAdjusted, sidebarPos]);
 
   /**
    * Calculated constraints that only allow to move the image
    * if it is bigger than the viewport
    */
   const dragConstraints = useMemo(() => {
-    const overflowX = Math.max(width * scale - viewportWidth, 0);
+    const overflowX = Math.max(width * scale - (viewportWidth - debouncedSidebarPos), 0);
     const overflowY = Math.max(height * scale - viewportHeight, 0);
     return {
       top: -1 * (overflowY / 2),
@@ -255,7 +274,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
       left: -1 * (overflowX / 2),
       right: overflowX / 2,
     };
-  }, [height, scale, viewportHeight, viewportWidth, width]);
+  }, [debouncedSidebarPos, height, scale, viewportHeight, viewportWidth, width]);
 
   /**
    * Enlargens the image if entering transform mode,

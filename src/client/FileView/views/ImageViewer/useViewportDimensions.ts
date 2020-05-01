@@ -1,5 +1,6 @@
 import { headerHeight } from "../../../_DesignSystem";
 import useResizeAware from "react-resize-aware";
+import { debounce } from "lodash-es";
 
 /**
  * The dimensions of the parent element

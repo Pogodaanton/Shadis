@@ -7,7 +7,6 @@ import {
   DesignSystem,
   applyPillCornerRadius,
   neutralLayerL2,
-  neutralLayerL3,
 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { motion, useTransform } from "framer-motion";

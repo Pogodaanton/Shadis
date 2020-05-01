@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useMotionValue, MotionValue } from "framer-motion";
 
 /**

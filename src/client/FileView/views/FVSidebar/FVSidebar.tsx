@@ -1,32 +1,19 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useCallback,
-  useLayoutEffect,
-} from "react";
+import React, { useEffect, useContext } from "react";
 import { FVSidebarProps, FVSidebarClassNameContract } from "./FVSidebar.props";
 import {
   DesignSystem,
   neutralLayerL1,
   neutralOutlineActive,
-  neutralLayerL2,
   applyPillCornerRadius,
 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
-import { motion, useMotionValue, useTransform, usePresence } from "framer-motion";
-import { Button } from "../../../_DesignSystem";
-import { FaCaretLeft, FaInfo } from "react-icons/fa";
-import { ButtonClassNameContract } from "../../../_DesignSystem/Button/Button.props";
+import { motion, useTransform } from "framer-motion";
 import { tween } from "popmotion";
 import { cubicBezier } from "@popmotion/easing";
-import { designSystemContext } from "@microsoft/fast-jss-manager-react/dist/context";
-import { parseColorHexRGBA } from "@microsoft/fast-colors";
 import { Heading, HeadingSize, HeadingTag } from "@microsoft/fast-components-react-msft";
 import FVSidebarContent from "./FVSidebarContent";
 import FVSidebarFooter from "./FVSidebarFooter";
-import { SidebarData, ISidebarData } from "./FVSidebarContext";
-import FVSidebarToggleButton from "./FVSidebarToggleButton";
+import { SidebarData } from "./FVSidebarContext";
 
 /**
  * The position where on the x-axis the button is placed by default

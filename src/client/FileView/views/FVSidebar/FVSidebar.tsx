@@ -82,7 +82,7 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
       const anim = tween({
         from: sidebarPos.get(),
         to: isSidebarVisible ? defaultSidebarWidth : 0,
-        duration: isSidebarVisible ? 400 : 350,
+        duration: isSidebarVisible ? 400 : 300,
         ease: isSidebarVisible
           ? cubicBezier(0.2, 0.66, 0, 1)
           : cubicBezier(0.0, 0.0, 0.85, 0.05),

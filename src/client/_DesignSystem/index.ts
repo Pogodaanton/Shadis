@@ -1,5 +1,5 @@
 import { useWindowBreakpoint } from "./Hooks/useWindowBreakpoint";
-import { DesignToolkit } from "./Toolkit/DesignSystem";
+import { DesignToolkit, isLoggedIn } from "./Toolkit/DesignSystem";
 import { Button, ButtonAppearance } from "./Button/Button";
 import Header, { headerHeight } from "./Header/Header";
 import Logo from "./Logo/Logo";
@@ -26,4 +26,5 @@ export {
   DesignToolkit,
   useMotionValueFactory,
   useWindowBreakpoint,
+  isLoggedIn,
 };

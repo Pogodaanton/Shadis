@@ -24,6 +24,13 @@ const accentColors = {
   accentPalette: createColorPalette(parseColor(accentBaseColor)),
 };
 
+/**
+ * @see window.userData
+ */
+export const isLoggedIn =
+  typeof window.userData !== "undefined" &&
+  typeof window.userData.username !== "undefined";
+
 class DesignToolkitProvider extends Component<props, state> {
   // Dark / Light mode listeners
   private activeMatches: Array<MediaQueryList> = [];

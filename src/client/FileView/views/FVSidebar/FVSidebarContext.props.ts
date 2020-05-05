@@ -26,4 +26,6 @@ export interface ISidebarData {
   isSidebarVisible: boolean;
   setSidebarVisibility: React.Dispatch<React.SetStateAction<boolean>>;
   isSidebarFloating: boolean;
+  fileTitle: string;
+  setFileTitle: React.Dispatch<React.SetStateAction<string>>;
 }

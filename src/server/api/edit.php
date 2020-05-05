@@ -8,14 +8,6 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
   error("Only POST request allowed!", 401);
 }
 
-/**
- * Login check
- * If an edit token was given, this can be ignored.
- */
-if (!isset($_SESSION["u_id"]) && !isset($token)) {
-  error("Unauthorized", 401);
-}
-
 // Rewrap data assuming it is a JSON request
 if (empty($_POST)) {
   $_POST = json_decode(file_get_contents("php://input"));
@@ -27,6 +19,14 @@ if (empty($_POST)) {
 $token = $_POST->token;
 $selection = $_POST->selection;
 $action = $_POST->action;
+
+/**
+ * Login check
+ * If an edit token was given, this can be ignored.
+ */
+if (!isset($_SESSION["u_id"]) && !isset($token)) {
+  error("Unauthorized", 401);
+}
 
 // Input check
 if (
@@ -102,6 +102,14 @@ if ($action === "delete") {
       }
     }
   }
+} elseif ($action === "editTitle") {
+  $value = $_POST->value;
+
+  if (!isset($value) || !is_string($value) || empty($value)) {
+    error("Missing input! Arguments needed: (selection or token), action and value", 400);
+  }
+
+  $req = $db->request("UPDATE `" . $table_prefix . "files` SET title=? WHERE id IN (" . generate_q_marks($selection) . ")", "s" . generate_string_types($selection), $value, ...$selection);
 } else {
   error("Provided action does not exist", 400);
 }

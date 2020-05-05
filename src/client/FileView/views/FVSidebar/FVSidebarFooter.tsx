@@ -9,7 +9,7 @@ import {
   neutralLayerL2,
 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
-import { Button, ButtonAppearance, useToasts } from "../../../_DesignSystem";
+import { Button, ButtonAppearance, useToasts, isLoggedIn } from "../../../_DesignSystem";
 import { FaTrash, FaDownload, FaExternalLinkSquareAlt } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { Hypertext } from "@microsoft/fast-components-react-msft";
@@ -65,13 +65,6 @@ const styles: ComponentStyles<FVSidebarFooterClassNameContract, DesignSystem> = 
 
 // Other possible color for later use:
 // #1399dc
-
-/**
- * @see window.userData
- */
-const isLoggedIn =
-  typeof window.userData !== "undefined" &&
-  typeof window.userData.username !== "undefined";
 
 const FVSidebarFooter: React.ComponentType<FVSidebarFooterProps> = ({
   managedClasses,

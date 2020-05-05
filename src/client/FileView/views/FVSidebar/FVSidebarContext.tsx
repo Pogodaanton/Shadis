@@ -14,11 +14,15 @@ const defaultSidebarWidth: number = 400;
  */
 export const SidebarData = React.createContext<ISidebarData>(null);
 
-const FVSidebarProvider: React.ComponentType<{}> = ({ children }) => {
+const FVSidebarProvider: React.ComponentType<{ fileData: Window["fileData"] }> = ({
+  children,
+  fileData,
+}) => {
   const sidebarWidth = useMotionValue(defaultSidebarWidth);
   const sidebarPos = useMotionValue(0);
   const [isSidebarVisible, setSidebarVisibility] = useState(false);
   const isSidebarFloating = useWindowBreakpoint(850, "max-width", true);
+  const [fileTitle, setFileTitle] = useState(fileData ? fileData.title : "");
 
   const sidebarValues = useMemo(
     () => ({
@@ -27,8 +31,10 @@ const FVSidebarProvider: React.ComponentType<{}> = ({ children }) => {
       isSidebarVisible,
       setSidebarVisibility,
       isSidebarFloating,
+      fileTitle,
+      setFileTitle,
     }),
-    [isSidebarFloating, isSidebarVisible, sidebarPos, sidebarWidth]
+    [fileTitle, isSidebarFloating, isSidebarVisible, sidebarPos, sidebarWidth]
   );
 
   return <SidebarData.Provider children={children} value={sidebarValues} />;

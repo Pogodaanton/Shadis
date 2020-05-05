@@ -7,7 +7,8 @@
     "loginGeneric": "Couldn't log you in",
     "loginMissingData": "Username or password missing!",
     "loginInvalidData": "Invalid username or password!",
-    "requestFile": "Can't access page \"{{id}}\"!"
+    "requestFile": "Can't access page \"{{id}}\"!",
+    "requestGeneric": "Couldn't execute request"
   },
   "notification": {
     "error": "Uh-Oh:",

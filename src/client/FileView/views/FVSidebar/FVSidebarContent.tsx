@@ -10,6 +10,8 @@ import {
 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { useTranslation } from "react-i18next";
+import { isLoggedIn } from "../../../_DesignSystem";
+import FVSidebarDescEditor from "./FVSidebarDescEditor";
 
 const styles: ComponentStyles<FVSidebarContentClassNameContract, DesignSystem> = {
   fv_sidebarContent: {
@@ -37,12 +39,13 @@ const FVSidebarContent: React.ComponentType<FVSidebarContentProps> = memo(
   ({ managedClasses, fileData }) => {
     const { t } = useTranslation("fileview");
     const uploaded = new Date(fileData.timestamp * 1000);
+    const title = fileData.title === "untitled" ? "-" : fileData.title;
 
     return (
       <div className={managedClasses.fv_sidebarContent}>
         <dl className={managedClasses.fv_sidebarContent_list}>
           <dt>{t("description")}:</dt>
-          <dd>{fileData.title === "untitled" ? "-" : fileData.title}</dd>
+          <dd>{isLoggedIn ? <FVSidebarDescEditor fileData={fileData} /> : title}</dd>
           <dt>{t("width")}:</dt>
           <dd>{fileData.width || "-"}</dd>
           <dt>{t("height")}:</dt>

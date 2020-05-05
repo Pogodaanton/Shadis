@@ -12,6 +12,8 @@ export interface ProgressIconClassNameContract {
 /**
  * Props for the component
  */
-export interface ProgressIconProps extends ManagedClasses<ProgressIconClassNameContract> {
+export interface ProgressIconProps
+  extends ManagedClasses<ProgressIconClassNameContract>,
+    React.HTMLAttributes<HTMLDivElement> {
   icon: IconType;
 }

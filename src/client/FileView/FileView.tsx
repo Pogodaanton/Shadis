@@ -122,7 +122,7 @@ const FileView: React.FC<FileViewProps> = ({
   const setZoomRef = (ref: React.MouseEventHandler) => (onMagnify.current = ref);
 
   return (
-    <FVSidebarProvider>
+    <FVSidebarProvider fileData={fileData}>
       <div className={managedClasses.fileView}>
         <motion.div
           className={managedClasses.fileViewBackground}
@@ -135,7 +135,7 @@ const FileView: React.FC<FileViewProps> = ({
           <Header
             position="absolute"
             jssStyleSheet={headerStyles}
-            centerContent={<HeaderCenterContent fileData={fileData} />}
+            centerContent={<HeaderCenterContent />}
             rightSideContent={<HeaderRightContent onMagnify={onMagnify.current} />}
           />
           <FVSidebarToggleButton />

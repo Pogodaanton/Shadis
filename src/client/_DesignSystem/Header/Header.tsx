@@ -74,7 +74,12 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
     textAlign: "right",
     marginRight: "3px",
   },
-  "@media (max-width: 540px)": {
+  "@media (max-width: 1000px)": {
+    header_center: {
+      position: "initial",
+    },
+  },
+  "@media (max-width: 690px)": {
     header_center: {
       display: "none",
     },

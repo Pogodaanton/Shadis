@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useContext } from "react";
-import { motion, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ImageViewerSliderProps,
   ImageViewerSliderClassNameContract,
@@ -10,7 +10,7 @@ import {
   SliderLabel,
   SliderLabelClassNameContract,
 } from "@microsoft/fast-components-react-msft";
-import { applyBackdropBackground } from "../../../_DesignSystem";
+import { applyBackdropBackground, useMotionValueFactory } from "../../../_DesignSystem";
 import { parseColorHexRGBA } from "@microsoft/fast-colors";
 import { SliderTrackItemAnchor } from "@microsoft/fast-components-react-base";
 import {
@@ -69,7 +69,7 @@ const ImageViewerSlider: React.ComponentType<ImageViewerSliderProps> = ({
   maxFactor,
   onValueChange,
 }) => {
-  const { sidebarPos } = useContext(SidebarData);
+  const { sidebarPos, isSidebarFloating } = useContext(SidebarData);
 
   /**
    * Current position on the slider.
@@ -122,7 +122,10 @@ const ImageViewerSlider: React.ComponentType<ImageViewerSliderProps> = ({
   /**
    * Moves the slider if sidebar is opened.
    */
-  const sliderPosX = useTransform(sidebarPos, (v: number) => -1 * (v / 2));
+  const sliderPosX = useMotionValueFactory(
+    () => (isSidebarFloating ? 0 : -1 * (sidebarPos.get() / 2)),
+    [sidebarPos, isSidebarFloating]
+  );
 
   return (
     <motion.div

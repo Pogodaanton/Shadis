@@ -3,11 +3,11 @@ import { DesignSystem, baseLayerLuminance } from "@microsoft/fast-components-sty
 import { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import React, { useContext } from "react";
 import { FaAdjust, FaSearchPlus, FaShareAlt } from "react-icons/fa";
-import { Button, DesignToolkit } from "../../../_DesignSystem";
+import { Button, DesignToolkit, useMotionValueFactory } from "../../../_DesignSystem";
 import { ButtonClassNameContract } from "../../../_DesignSystem/Button/Button.props";
 import { HeaderRightContentProps } from "./HeaderRightContent.props";
 import { defaultButtonPos } from "../FVSidebar/FVSidebarToggleButton";
-import { motion, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { SidebarData } from "../FVSidebar/FVSidebarContext";
 
 /**
@@ -37,14 +37,18 @@ export const HeaderRightContent: React.ComponentType<HeaderRightContentProps> = 
   onShare,
 }) => {
   const themeCtx = useContext(DesignToolkit);
-  const { sidebarPos } = useContext(SidebarData);
+  const { sidebarPos, isSidebarFloating } = useContext(SidebarData);
 
   /**
    * Move right-side header contents alongside sidebar
    * if the window is big enough
    */
-  const headerRightPosX = useTransform(sidebarPos, pos =>
-    Math.min((pos - (defaultButtonPos + 63 - 12 - 5)) * -1, 0)
+  const headerRightPosX = useMotionValueFactory(
+    () =>
+      isSidebarFloating
+        ? 0
+        : Math.min((sidebarPos.get() - (defaultButtonPos + 63 - 12 - 5)) * -1, 0),
+    [sidebarPos, isSidebarFloating]
   );
 
   return (

@@ -111,14 +111,18 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   /**
    * Used for detecting the current state of the sidebar
    */
-  const { sidebarPos } = useContext(SidebarData);
+  const { sidebarPos, isSidebarFloating } = useContext(SidebarData);
 
   /**
    * Debounce sidebar position changes, so that we can avoid
    * expensive calculations and renderings
    */
   const [debouncedSidebarPos, setSidebarPos] = useState(sidebarPos.get());
-  useEffect(() => sidebarPos.onChange(debounce(setSidebarPos, 20)), [sidebarPos]);
+  useEffect(() => {
+    const listener = () => setSidebarPos(isSidebarFloating ? 0 : sidebarPos.get());
+    listener();
+    return sidebarPos.onChange(debounce(listener, 20));
+  }, [isSidebarFloating, sidebarPos]);
 
   /**
    * Minimum scale factor.
@@ -247,7 +251,9 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
    */
   useLayoutEffect(() => {
     const posXAdjustor = () => {
-      posXAdjusted.set(posX.get() + deltaX - sidebarPos.get() / 2);
+      posXAdjusted.set(
+        posX.get() + deltaX - (isSidebarFloating ? 0 : sidebarPos.get()) / 2
+      );
     };
 
     posXAdjustor();
@@ -258,7 +264,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
       cleanup1();
       cleanup2();
     };
-  }, [deltaX, posX, posXAdjusted, sidebarPos]);
+  }, [deltaX, isSidebarFloating, posX, posXAdjusted, sidebarPos]);
 
   /**
    * Calculated constraints that only allow to move the image

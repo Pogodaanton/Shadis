@@ -22,6 +22,7 @@ const styles: ComponentStyles<
     width: "100%",
     height: "100%",
     zIndex: "100",
+    color: "white",
     "& span": {
       "font-size": "2em",
     },

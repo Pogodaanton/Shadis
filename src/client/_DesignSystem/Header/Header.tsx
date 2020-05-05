@@ -11,7 +11,7 @@ import { HeaderProps, HeaderClassNameContract } from "./Header.props";
 import Logo from "../Logo/Logo";
 import { Link } from "react-router-dom";
 import { classNames } from "@microsoft/fast-web-utilities";
-import { applyBackdropBackground } from "../utilities";
+import { applyBackdropBackground } from "../Utils/stylesheetModifiers";
 
 /**
  * Hardcoded height of the header.

@@ -7,7 +7,7 @@ import {
 } from "@microsoft/fast-components-styles-msft";
 import { FunctionComponent } from "react";
 import React from "react";
-import { applyCenteredFlexbox } from "../utilities";
+import { applyCenteredFlexbox } from "../Utils/stylesheetModifiers";
 
 const styles: ComponentStyles<ProgressIconClassNameContract, DesignSystem> = {
   progressIconContainer: {

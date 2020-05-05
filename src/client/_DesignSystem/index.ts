@@ -2,9 +2,14 @@ import { DesignToolkit } from "./Toolkit/DesignSystem";
 import { Button, ButtonAppearance } from "./Button/Button";
 import Header, { headerHeight } from "./Header/Header";
 import Logo from "./Logo/Logo";
-import { iconToGlyph, applyCenteredFlexbox, applyBackdropBackground } from "./utilities";
+import {
+  applyCenteredFlexbox,
+  applyBackdropBackground,
+} from "./Utils/stylesheetModifiers";
+import { iconToGlyph } from "./Utils/iconToGlyph";
 import useToasts from "./Toast/useToasts";
 import ProgressIcon from "./ProgressIcon/ProgressIcon";
+import useMotionValueFactory from "./Hooks/useMotionValueFactory";
 
 export {
   Button,
@@ -18,4 +23,5 @@ export {
   ProgressIcon,
   applyBackdropBackground,
   DesignToolkit,
+  useMotionValueFactory,
 };

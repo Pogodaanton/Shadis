@@ -19,7 +19,7 @@ import MSFTButton from "@microsoft/fast-components-react-msft/dist/button/button
 import { classNames } from "@microsoft/fast-web-utilities";
 import { isNil } from "lodash-es";
 import ButtonStyle from "./ButtonStyle";
-import { iconToGlyph } from "../utilities";
+import { iconToGlyph } from "../Utils/iconToGlyph";
 
 class CustomButton extends Foundation<ButtonHandledProps, ButtonUnhandledProps, {}> {
   public static displayName: string = `Button`;

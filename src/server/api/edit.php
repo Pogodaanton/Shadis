@@ -38,8 +38,8 @@ if (
 }
 
 /**
- * Try to acquire the file ID for the provided token.
- * This is a simpler approach than ada
+ * Try to acquire the file ID for the provided token and assign it to $selection.
+ * This is a simpler approach than making sure $token exists in every step.
  */
 if (isset($token)) {
   if (is_string($token) && strlen($token) === 16) {
@@ -53,8 +53,8 @@ if (isset($token)) {
 }
 
 /**
- * If the selection is only a single id,
- * it should be possible to send it without enclosing it in an array first.
+ * The selection can also consist of a single file ID.
+ * In this case, enclosing it in an array should not be necessary.
  */
 if (is_string($selection)) {
   $selection = array($selection);

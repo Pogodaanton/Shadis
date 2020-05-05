@@ -122,6 +122,7 @@ const DashboardList: React.FC<DashboardListProps> = React.memo(
               <AutoSizer disableHeight height={height} onResize={debouncedOnResize()}>
                 {() => (
                   <Masonry
+                    className={inSelectMode ? "selecting" : ""}
                     ref={masonryRef}
                     cellCount={listData.length}
                     cellMeasurerCache={cache}

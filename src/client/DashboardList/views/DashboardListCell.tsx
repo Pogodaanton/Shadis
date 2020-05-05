@@ -32,9 +32,14 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     ...applyElevatedCornerRadius(),
     ...applyElevation(ElevationMultiplier.e4),
     cursor: "pointer",
-    "&:hover $dashboardListCell_metadata": {
-      transform: "translateY(0%)",
-      transition: "transform .2s .1s cubic-bezier(0.1, 0.9, 0.2, 1)",
+    "&:hover": {
+      "& $dashboardListCell_metadata": {
+        transform: "translateY(0%)",
+        transition: "transform .2s .1s cubic-bezier(0.1, 0.9, 0.2, 1)",
+      },
+      "& $dashboardListCell_checkbox": {
+        opacity: "1",
+      },
     },
     "&$dashboardListCell__checked $dashboardListCell_metadata": {
       transform: "translateY(0%)",
@@ -77,6 +82,11 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     top: "10px",
     left: "10px",
     zIndex: "2",
+    opacity: "0",
+    transition: "opacity 0.08s .1s",
+    ".selecting &": {
+      opacity: "1",
+    },
   },
   dashboardListCell_overlay: {
     display: "none",
@@ -203,7 +213,12 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
         checked={props.selected}
       />
       <div className={props.managedClasses.dashboardListCell_overlay} />
-      <footer className={props.managedClasses.dashboardListCell_metadata} tabIndex={0}>
+      <footer
+        className={props.managedClasses.dashboardListCell_metadata}
+        tabIndex={0}
+        // Make sure that small images are still selectable
+        style={thumb_height < 45 ? { display: "none" } : {}}
+      >
         <Label tabIndex={-1}>{t(title, title)}</Label>
       </footer>
     </motion.div>

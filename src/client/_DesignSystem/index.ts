@@ -1,3 +1,4 @@
+import { useWindowBreakpoint } from "./Hooks/useWindowBreakpoint";
 import { DesignToolkit } from "./Toolkit/DesignSystem";
 import { Button, ButtonAppearance } from "./Button/Button";
 import Header, { headerHeight } from "./Header/Header";
@@ -24,4 +25,5 @@ export {
   applyBackdropBackground,
   DesignToolkit,
   useMotionValueFactory,
+  useWindowBreakpoint,
 };

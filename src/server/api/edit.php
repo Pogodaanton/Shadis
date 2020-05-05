@@ -9,11 +9,9 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 // Login check
-/*
 if (!isset($_SESSION["u_id"])) {
   error("Unauthorized", 401);
 }
-*/
 
 // Rewrap data assuming it is a JSON request
 if (empty($_POST)) {
@@ -26,6 +24,17 @@ $action = $_POST->action;
 // Input check
 if (!isset($selection) || !isset($action) || empty($selection) || empty($action)) {
   error("Missing input! Arguments needed: selection, action", 400);
+}
+
+/**
+ * If the selection is only a single id,
+ * it should be possible to send it without enclosing it in an array first.
+ * 
+ * NOTE: We currently have ID hardcoded to have a length of 8, this might change
+ *       later down the line.
+ */
+if (is_string($selection) && strlen($selection) === 8) {
+  $selection = array($selection);
 }
 
 /**

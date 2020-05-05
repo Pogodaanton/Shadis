@@ -55,7 +55,7 @@ const Dashboard: React.FC<DashboardProps> = props => {
 
   const onDeleteSelected = async (selection: string[]) => {
     try {
-      await axios.post(window.location.origin + "/api/editMultiple.php", {
+      await axios.post(window.location.origin + "/api/edit.php", {
         selection,
         action: "delete",
       });

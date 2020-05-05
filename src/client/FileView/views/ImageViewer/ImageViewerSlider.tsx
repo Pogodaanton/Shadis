@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo } from "react";
-import { motion } from "framer-motion";
+import React, { useCallback, useMemo, useContext } from "react";
+import { motion, useTransform } from "framer-motion";
 import {
   ImageViewerSliderProps,
   ImageViewerSliderClassNameContract,
@@ -20,6 +20,7 @@ import {
   applyPillCornerRadius,
   neutralLayerFloating,
 } from "@microsoft/fast-components-styles-msft";
+import { SidebarData } from "../FVSidebar/FVSidebarContext";
 
 const styles: ComponentStyles<ImageViewerSliderClassNameContract, DesignSystem> = {
   imageViewerSlider: {
@@ -68,6 +69,8 @@ const ImageViewerSlider: React.ComponentType<ImageViewerSliderProps> = ({
   maxFactor,
   onValueChange,
 }) => {
+  const { sidebarPos } = useContext(SidebarData);
+
   /**
    * Current position on the slider.
    */
@@ -116,11 +119,17 @@ const ImageViewerSlider: React.ComponentType<ImageViewerSliderProps> = ({
     onValueChange,
   ]);
 
+  /**
+   * Moves the slider if sidebar is opened.
+   */
+  const sliderPosX = useTransform(sidebarPos, (v: number) => -1 * (v / 2));
+
   return (
     <motion.div
       className={managedClasses.imageViewerSlider}
       initial={{ y: "200%" }}
       animate={{ y: show ? 0 : "200%" }}
+      style={{ x: sliderPosX }}
     >
       <Slider
         range={{ minValue, maxValue }}

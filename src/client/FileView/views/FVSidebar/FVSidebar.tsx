@@ -11,9 +11,14 @@ import { motion, useTransform } from "framer-motion";
 import { tween } from "popmotion";
 import { cubicBezier } from "@popmotion/easing";
 import { Heading, HeadingSize, HeadingTag } from "@microsoft/fast-components-react-msft";
-import FVSidebarContent from "./FVSidebarContent";
-import FVSidebarFooter from "./FVSidebarFooter";
+import loadable from "@loadable/component";
 import { SidebarData } from "./FVSidebarContext";
+
+/**
+ * We can load this afterwards, as the sidebar is closed by default.
+ */
+const FVSidebarContent = loadable(() => import("./FVSidebarContent"));
+const FVSidebarFooter = loadable(() => import("./FVSidebarFooter"));
 
 /**
  * The position where on the x-axis the button is placed by default

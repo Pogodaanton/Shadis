@@ -1,3 +1,4 @@
+import { isLoggedIn } from "./../_DesignSystem/Toolkit/DesignSystem";
 import i18n from "i18next";
 import Backend from "i18next-xhr-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
@@ -17,7 +18,7 @@ i18n
   .init({
     fallbackLng: "en",
     debug: true,
-    ns: ["common", "dashboard", "fileview"],
+    ns: ["common", "fileview", isLoggedIn ? "dashboard" : null],
     defaultNS: "common",
     backend: {
       loadPath: "/static/locales/{{lng}}/{{ns}}.json",

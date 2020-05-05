@@ -8,32 +8,55 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
   error("Only POST request allowed!", 401);
 }
 
-// Login check
-if (!isset($_SESSION["u_id"])) {
+/**
+ * Login check
+ * If an edit token was given, this can be ignored.
+ */
+if (!isset($_SESSION["u_id"]) && !isset($token)) {
   error("Unauthorized", 401);
 }
 
 // Rewrap data assuming it is a JSON request
 if (empty($_POST)) {
   $_POST = json_decode(file_get_contents("php://input"));
+  if (json_last_error() !== JSON_ERROR_NONE) {
+    error("Could note decode JSON data: (" . json_last_error() . ") " . json_last_error_msg());
+  }
 }
 
+$token = $_POST->token;
 $selection = $_POST->selection;
 $action = $_POST->action;
 
 // Input check
-if (!isset($selection) || !isset($action) || empty($selection) || empty($action)) {
-  error("Missing input! Arguments needed: selection, action", 400);
+if (
+  (!isset($selection) && !isset($token)) ||
+  (empty($selection) && empty($token)) ||
+  !isset($action) || empty($action)
+) {
+  error("Missing input! Arguments needed: (selection or token) and action", 400);
+}
+
+/**
+ * Try to acquire the file ID for the provided token.
+ * This is a simpler approach than ada
+ */
+if (isset($token)) {
+  if (is_string($token) && strlen($token) === 16) {
+    $res = $db->request("SELECT id FROM `" . $table_prefix . "files` WHERE token=?", "s", $token);
+    $res_array = $res->fetch_assoc();
+    if (!$res_array) error("Provided token not found", 400);
+    $selection = array($res_array["id"]);
+  } else {
+    error("Provided token not found", 400);
+  }
 }
 
 /**
  * If the selection is only a single id,
  * it should be possible to send it without enclosing it in an array first.
- * 
- * NOTE: We currently have ID hardcoded to have a length of 8, this might change
- *       later down the line.
  */
-if (is_string($selection) && strlen($selection) === 8) {
+if (is_string($selection)) {
   $selection = array($selection);
 }
 
@@ -79,6 +102,8 @@ if ($action === "delete") {
       }
     }
   }
+} else {
+  error("Provided action does not exist", 400);
 }
 
 respond("Task successfully executed!");

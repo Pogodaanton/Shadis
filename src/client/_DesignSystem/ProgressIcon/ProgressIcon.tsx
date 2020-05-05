@@ -8,6 +8,7 @@ import {
 import { FunctionComponent } from "react";
 import React from "react";
 import { applyCenteredFlexbox } from "../Utils/stylesheetModifiers";
+import { classNames } from "@microsoft/fast-web-utilities";
 
 const styles: ComponentStyles<ProgressIconClassNameContract, DesignSystem> = {
   progressIconContainer: {
@@ -24,7 +25,9 @@ const styles: ComponentStyles<ProgressIconClassNameContract, DesignSystem> = {
 
 const ProgressIcon: FunctionComponent<ProgressIconProps> = props => {
   return (
-    <div className={props.managedClasses.progressIconContainer}>
+    <div
+      className={classNames(props.managedClasses.progressIconContainer, props.className)}
+    >
       <props.icon className={props.managedClasses.progressIcon} />
     </div>
   );

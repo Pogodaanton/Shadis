@@ -9,11 +9,13 @@ import {
   neutralLayerL2,
 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
-import { Button, ButtonAppearance } from "../../../_DesignSystem";
+import { Button, ButtonAppearance, useToasts } from "../../../_DesignSystem";
 import { FaTrash, FaDownload, FaExternalLinkSquareAlt } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { Hypertext } from "@microsoft/fast-components-react-msft";
 import { designSystemContext } from "@microsoft/fast-jss-manager-react/dist/context";
+import axios from "../../../_interceptedAxios";
+import { useHistory } from "react-router-dom";
 
 const styles: ComponentStyles<FVSidebarFooterClassNameContract, DesignSystem> = {
   fv_sidebarFooter: {
@@ -75,8 +77,35 @@ const FVSidebarFooter: React.ComponentType<FVSidebarFooterProps> = ({
   managedClasses,
   fileData,
 }) => {
-  const { t } = useTranslation("fileview");
+  const { t } = useTranslation(["fileview", "dashboard"]);
+  const { addToast } = useToasts();
   const desCtx = useContext(designSystemContext) as DesignSystem;
+  const history = useHistory();
+
+  const onDelete = async () => {
+    try {
+      await axios.post(window.location.origin + "/api/edit.php", {
+        selection: fileData.id,
+        action: "delete",
+      });
+
+      addToast("", {
+        appearance: "success",
+        title: t("dashboard:itemsDeleted", { count: 1 }),
+      });
+
+      history.replace("/");
+    } catch (err) {
+      addToast(t(err.i18n, err.message), {
+        appearance: "error",
+        title: t("dashboard:error.requestGeneric") + ":",
+      });
+      console.log(
+        `${t("dashboard:error.requestGeneric")}:\n`,
+        `(${err.code}) - ${err.message}`
+      );
+    }
+  };
 
   return (
     <footer
@@ -98,7 +127,7 @@ const FVSidebarFooter: React.ComponentType<FVSidebarFooterProps> = ({
       </div>
       <div className={managedClasses.fv_sidebarFooter_buttons}>
         {isLoggedIn && (
-          <Button appearance={ButtonAppearance.stealth} icon={FaTrash}>
+          <Button appearance={ButtonAppearance.stealth} icon={FaTrash} onClick={onDelete}>
             {t("delete")}
           </Button>
         )}

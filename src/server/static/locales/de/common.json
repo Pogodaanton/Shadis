@@ -1,0 +1,22 @@
+{
+  "loginButton": "Anmelden",
+  "username": "Benutzername",
+  "password": "Passwort",
+  "goto": "Gehe zu {{name}}",
+  "error": {
+    "loginGeneric": "Anmeldung fehlgeschlagen",
+    "loginMissingData": "Benutzername oder Passwort fehlt!",
+    "loginInvalidData": "Ungültiger Benutzername oder Passwort!",
+    "requestFile": "Seite \"{{id}}\" konnte nicht abgerufen werden!",
+    "requestGeneric": "Ausführung der Anfrage ist fehlgeschlagen!"
+  },
+  "notification": {
+    "error": "Oh nein!",
+    "warning": "Warnung:",
+    "info": "Info:"
+  },
+  "notFound": {
+    "title": "Hier ist nichts zu sehen!",
+    "description": "Diese Seite wurde entweder entfernt oder hat nie jemals existiert."
+  }
+}

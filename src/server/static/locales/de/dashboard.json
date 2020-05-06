@@ -1,4 +1,29 @@
 {
   "emptyTitle": "Du hast noch nichts hochgeladen!",
-  "emptyDescription": "Du kannst hier ein Bild per Drag & Drop hochladen."
+  "emptyDescription": "Du kannst hier ein Bild per Drag & Drop hochladen.",
+  "untitled": "Unbennantes Bild",
+  "delete": "Entfernen",
+  "deleteSelected": "Ausgewählte Datei entfernen",
+  "deleteSelected_plural": "Ausgewählte Dateien entfernen",
+  "selectedDeleted": "Eine Datei erfolgreich entfernt",
+  "selectedDeleted_plural": "{{count}} Dateien erfolgreich entfernt",
+  "upload": {
+    "title": "Dateien hochladen",
+    "select": "Datei auswählen",
+    "finished": "Datei als {{filename}} hochgeladen",
+    "visit": "Dateiverknüpfung aufsuchen",
+    "dropTitle": "Drop it like it's hot!",
+    "dropDescription": "Du kannst eine Datei hochladen, indem du sie in dieses Fenster hineinziehst.",
+    "error": {
+      "title": "Oh nein, etwas ist schiefgelaufen!",
+      "unsupported": "Dieses Dateiformat wird nicht unterstützt.\nFolgende sind erlaubt: jpg, png, gif"
+    },
+    "aria": {
+      "dialogLabel": "Hochlade-Dialog"
+    }
+  },
+  "error": {
+    "requestGeneric": "Ausführung der Anfrage ist fehlgeschlagen",
+    "listGeneric": "Abrufung der Dateienliste ist fehlgeschlagen"
+  }
 }

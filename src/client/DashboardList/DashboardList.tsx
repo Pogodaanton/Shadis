@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect, useLayoutEffect } from "react";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import {
@@ -38,12 +38,22 @@ const cache = new CellMeasurerCache({
 });
 
 // Our masonry layout will use 3 columns with a 10px gutter between
-const cellPositioner = createMasonryCellPositioner({
+const cellPositionerParams = {
   cellMeasurerCache: cache,
   columnCount: 3,
   columnWidth: 200,
   spacer: 10,
-});
+};
+const cellPositioner = createMasonryCellPositioner(cellPositionerParams);
+
+/**
+ * The initial values for `masonryBounds`
+ */
+const initialMasonryBounds = {
+  width: 0,
+  left: 0,
+  pageWidth: 0,
+};
 
 /**
  * Calculates the amount of columns in a Masonry based on the given available width.
@@ -61,11 +71,19 @@ const DashboardList: React.FC<DashboardListProps> = React.memo(
     const masonryRef = useRef(null);
     const onResizeRef = useRef(null);
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
-    const [masonryBounds, setMasonryBounds] = useState({
-      width: 0,
-      left: 0,
-      pageWidth: 0,
-    });
+    const [masonryBounds, setMasonryBounds] = useState(initialMasonryBounds);
+
+    /**
+     * Reset static caches and size data on unmount
+     */
+    useLayoutEffect(
+      () => () => {
+        cache.clearAll();
+        cellPositioner.reset(cellPositionerParams);
+        currentColumnCount = 0;
+      },
+      []
+    );
 
     // Positions the masonry to the centre of the page.
     const onResize = ({ width: pageWidth }, forceUpdate?: boolean) => {

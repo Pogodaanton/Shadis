@@ -5,7 +5,8 @@ import { ManagedClasses } from "@microsoft/fast-jss-manager-react";
  */
 export interface NotFoundClassNameContract {
   notFound?: string;
-  notFoundIcon?: string;
+  notFound_container?: string;
+  notFound_icon?: string;
 }
 
 /**

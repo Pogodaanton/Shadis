@@ -7,6 +7,7 @@ import axios from "../_interceptedAxios";
 import { AnimatePresence, AnimateSharedLayout } from "framer-motion";
 import { useToasts } from "../_DesignSystem";
 import { useTranslation } from "react-i18next";
+import { History } from "history";
 
 /**
  * Lazy-loading components
@@ -16,6 +17,9 @@ const FileView: LoadableComponent<FileViewProps> = FullscreenLoader(
 );
 const Login: LoadableComponent<{}> = loadable(() =>
   import(/* webpackChunkName: "Login" */ "../Login/Login")
+);
+const NotFound: LoadableComponent<{}> = loadable(() =>
+  import(/* webpackChunkName: "NotFound" */ "../NotFound/NotFound")
 );
 
 // Due to the HOC It is somewhat hard to assign the proper props to it
@@ -37,7 +41,7 @@ const isLoggedIn =
  * we need to fetch all necessary data
  * before the actual component is mounted.
  */
-const useFilePrefetcher = (id: string) => {
+const useFilePrefetcher = (id: string, history: History<{}>) => {
   const [fileData, setFileData] = useState<Window["fileData"]>(null);
   const { addToast } = useToasts();
   const { t } = useTranslation("common");
@@ -48,16 +52,22 @@ const useFilePrefetcher = (id: string) => {
         const res = await axios.get(window.location.origin + "/api/get.php", {
           params: { id },
         });
-        setFileData(res.data);
+
+        if (!res.data) {
+          setFileData({} as any);
+        } else {
+          setFileData(res.data);
+        }
       } catch (err) {
         addToast(t("error.requestFile", { id }), { appearance: "error" });
         console.log(t("error.requestFile", { id }), "\n", err.message);
+        history.replace("/");
       }
     };
 
     if (id) fetchFileData(id);
     else setFileData(null);
-  }, [addToast, id, t]);
+  }, [addToast, history, id, t]);
 
   return fileData;
 };
@@ -66,10 +76,13 @@ const useFilePrefetcher = (id: string) => {
  * Sets up connected animations between dashboard an view components
  * if the user is logged in and prefetches "fileData" on each "/:id" route
  */
-const AnimatedRoutes: React.FC<RouteChildrenProps<{ id: string }>> = ({ match }) => {
+const AnimatedRoutes: React.FC<RouteChildrenProps<{ id: string }>> = ({
+  match,
+  history,
+}) => {
   const ViewRef = useRef<React.ComponentType<FileViewProps>>(null);
   const [viewLoaded, setViewLoaded] = useState(false);
-  const fileData = useFilePrefetcher(match.params.id);
+  const fileData = useFilePrefetcher(match.params.id, history);
 
   /**
    * AnimateSharedLayout doesn't like stand-in components,
@@ -90,13 +103,22 @@ const AnimatedRoutes: React.FC<RouteChildrenProps<{ id: string }>> = ({ match })
     }
   }, []);
 
+  const is404 =
+    !!match.params.id && fileData !== null && typeof fileData.id === "undefined";
+  const isValidFile =
+    !!match.params.id &&
+    viewLoaded &&
+    ViewRef.current &&
+    fileData &&
+    typeof fileData.id !== "undefined";
+  const isDashboardVisible = isLoggedIn && !is404;
+
   return (
     <AnimateSharedLayout type="crossfade">
-      {isLoggedIn && <Dashboard key="dashboard" frozen={!!match.params.id} />}
+      {isDashboardVisible && <Dashboard key="dashboard" frozen={!!match.params.id} />}
       <AnimatePresence exitBeforeEnter>
-        {match.params.id && viewLoaded && ViewRef.current && fileData && (
-          <ViewRef.current fileData={fileData} key={match.params.id} />
-        )}
+        {isValidFile && <ViewRef.current fileData={fileData} key={match.params.id} />}
+        {is404 && <NotFound key="notFound" />}
         {!match.params.id && !isLoggedIn && <Login key="login" />}
       </AnimatePresence>
     </AnimateSharedLayout>

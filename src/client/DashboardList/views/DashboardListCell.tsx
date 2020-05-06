@@ -147,7 +147,7 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
   const cellRef = useRef<HTMLDivElement>(null);
 
   // i18n-ize the title; `untitled` will call a translation string
-  title = title === "" || !title ? "untitled" : title;
+  title = title === "" || title === "untitled" || !title ? t("untitled") : title;
 
   // We already know the thumbnail size, so we take over the work of <CellMeasurer />
   if (!props.cache.has(props.index, 0)) {
@@ -204,7 +204,7 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
         <img
           className={props.managedClasses.dashboardListCell_image}
           src={`${window.location.origin}/${id}.thumb.jpg`}
-          alt={t(title, title)}
+          alt={title}
           onError={onImageError}
           onLoad={onImageLoaded}
         />
@@ -223,7 +223,7 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
         // Make sure that small images are still selectable
         style={thumb_height < 45 ? { display: "none" } : {}}
       >
-        <Label tabIndex={-1}>{t(title, title)}</Label>
+        <Label tabIndex={-1}>{title}</Label>
       </footer>
     </motion.div>
   );

@@ -18,16 +18,14 @@ const styles: ComponentStyles<AppContainerClassNameContract, DesignSystem> = {
   },
 };
 
-class AppContainer extends React.Component<AppContainerProps> {
-  public render = (): React.ReactNode => (
-    <Background className={this.props.managedClasses.container} value={neutralLayerL1}>
-      <Router>
-        <Suspense fallback={null}>
-          <Route path={["/:id", "/"]} render={props => <AnimatedRoutes {...props} />} />
-        </Suspense>
-      </Router>
-    </Background>
-  );
-}
+const AppContainer: React.ComponentType<AppContainerProps> = ({ managedClasses }) => (
+  <Background className={managedClasses.container} value={neutralLayerL1}>
+    <Router>
+      <Suspense fallback={null}>
+        <Route path={["/:id", "/"]} component={AnimatedRoutes} />
+      </Suspense>
+    </Router>
+  </Background>
+);
 
 export default manageJss(styles)(AppContainer);

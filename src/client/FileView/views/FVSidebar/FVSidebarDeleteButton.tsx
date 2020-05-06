@@ -25,7 +25,7 @@ const FVSidebarDeleteButton: React.ComponentType<FVSidebarFooterProps> = ({
 
       addToast("", {
         appearance: "success",
-        title: t("itemsDeleted", { count: 1 }),
+        title: t("selectedDeleted", { count: 1 }),
       });
 
       history.replace("/");

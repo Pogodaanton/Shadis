@@ -59,7 +59,8 @@ const FVSidebarDescEditor: React.ComponentType<FVSidebarDescEditorProps> = ({
    * Saves changes to title if user leaves the input element.
    */
   const onBlur: React.FocusEventHandler<HTMLInputElement> = async ({ currentTarget }) => {
-    const { value } = currentTarget;
+    let { value } = currentTarget;
+    value = value.trim();
 
     // Avoid saving the same
     if (value === fileTitle) return;
@@ -93,7 +94,7 @@ const FVSidebarDescEditor: React.ComponentType<FVSidebarDescEditorProps> = ({
       className={managedClasses.fv_sidebar_descEditor}
       name="description"
       placeholder={"-"}
-      defaultValue={!fileTitle || fileTitle === "untitled" ? "-" : fileTitle}
+      defaultValue={!fileTitle || fileTitle === "untitled" ? "" : fileTitle}
       onBlur={onBlur}
       onFocus={onFocus}
       maxLength={255}

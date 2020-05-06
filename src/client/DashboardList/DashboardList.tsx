@@ -115,7 +115,11 @@ const DashboardList: React.FC<DashboardListProps> = React.memo(
 
     return (
       <div className={managedClasses.dashboardList}>
-        <DashboardListToolbar visible={inSelectMode} onDelete={onDelete} />
+        <DashboardListToolbar
+          visible={inSelectMode}
+          selectedAmount={selectedItems.length}
+          onDelete={onDelete}
+        />
         {listData !== null && listData.length > 0 && (
           <WindowScroller>
             {({ height, scrollTop }) => (

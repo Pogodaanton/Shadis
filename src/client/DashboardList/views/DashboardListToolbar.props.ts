@@ -14,5 +14,6 @@ export interface DashboardListToolbarClassNameContract {
 export interface DashboardListToolbarProps
   extends ManagedClasses<DashboardListToolbarClassNameContract> {
   visible?: boolean;
+  selectedAmount?: number;
   onDelete: () => void;
 }

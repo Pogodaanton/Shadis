@@ -105,7 +105,7 @@ if ($action === "delete") {
 } elseif ($action === "editTitle") {
   $value = $_POST->value;
 
-  if (!isset($value) || !is_string($value) || empty($value)) {
+  if (!isset($value) || !is_string($value)) {
     error("Missing input! Arguments needed: (selection or token), action and value", 400);
   }
 

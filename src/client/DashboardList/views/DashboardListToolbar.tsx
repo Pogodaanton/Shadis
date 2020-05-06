@@ -40,7 +40,7 @@ const DahboardListToolbar: React.FC<DashboardListToolbarProps> = props => {
         appearance={ButtonAppearance.justified}
         onClick={props.onDelete}
       >
-        {t("deleteItems")}
+        {t("deleteSelected", { count: props.selectedAmount })}
       </Button>
     </div>
   );

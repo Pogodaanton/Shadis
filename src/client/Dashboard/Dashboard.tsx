@@ -62,7 +62,7 @@ const Dashboard: React.FC<DashboardProps> = props => {
 
       addToast("", {
         appearance: "success",
-        title: t("itemsDeleted", { count: selection.length }),
+        title: t("selectedDeleted", { count: selection.length }),
       });
       setListData(
         listData.filter(obj => selection.findIndex(id => id === obj.id) === -1)

@@ -22,7 +22,7 @@ class ImageUpload
   {
     $this->file = $file;
     $this->timestamp = $timestamp ?: time();
-    $this->file_title = $title ?: "untitled";
+    $this->file_title = $title ?: "";
     $this->db = new db();
 
     $this->file_id = $this->loop_through_random_string(8);

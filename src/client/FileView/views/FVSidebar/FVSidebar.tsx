@@ -14,6 +14,7 @@ import { Heading, HeadingSize, HeadingTag } from "@microsoft/fast-components-rea
 import { SidebarData } from "./FVSidebarContext";
 import FVSidebarContent from "./FVSidebarContent";
 import FVSidebarFooter from "./FVSidebarFooter";
+import { useTranslation } from "react-i18next";
 
 /**
  * The position where on the x-axis the button is placed by default
@@ -59,6 +60,7 @@ const styles: ComponentStyles<FVSidebarClassNameContract, DesignSystem> = {
 
 const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileData }) => {
   const { sidebarWidth, sidebarPos, isSidebarVisible } = useContext(SidebarData);
+  const { t } = useTranslation("fileview");
 
   // const [isPresent, safeToRemove] = usePresence();
 
@@ -135,7 +137,7 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
         }}
       >
         <Heading size={HeadingSize._5} tag={HeadingTag.h1}>
-          File Inspector
+          {t("inspector")}
         </Heading>
         <div className={managedClasses.fv_sidebar_container}>
           <FVSidebarContent fileData={fileData} />

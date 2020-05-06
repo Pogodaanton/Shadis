@@ -15,6 +15,11 @@
     "warning": "Warning:",
     "info": "Info:"
   },
+  "hyperlinks": {
+    "about": "About",
+    "thirdParty": "Third-Party Notices",
+    "changeLanguage": "Change Language"
+  },
   "notFound": {
     "title": "Nothing to see here!",
     "description": "This page has either been removed or never existed before."

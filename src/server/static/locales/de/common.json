@@ -15,6 +15,11 @@
     "warning": "Warnung:",
     "info": "Info:"
   },
+  "hyperlinks": {
+    "about": "Über Shadis",
+    "thirdParty": "Drittanbieterinfos",
+    "changeLanguage": "Sprache Ändern"
+  },
   "notFound": {
     "title": "Hier ist nichts zu sehen!",
     "description": "Diese Seite wurde entweder entfernt oder hat nie jemals existiert."

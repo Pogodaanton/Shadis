@@ -78,7 +78,7 @@ const FVSidebarFooter: React.ComponentType<FVSidebarFooterProps> = ({
   managedClasses,
   fileData,
 }) => {
-  const { t } = useTranslation("fileview");
+  const { t } = useTranslation(["fileview", "common"]);
   const desCtx = useContext(designSystemContext) as DesignSystem;
 
   return (
@@ -90,14 +90,15 @@ const FVSidebarFooter: React.ComponentType<FVSidebarFooterProps> = ({
       }}
     >
       <div className={managedClasses.fv_sidebarFooter_links}>
-        {/**
-         * TODO: This is still a filler, it needs to be finalised.
-         */}
         <Hypertext href={window.location.origin}>
-          {isLoggedIn ? "Dashboard" : "Login"}
+          {t("common:hyperlinks.about")}
         </Hypertext>
-        <Hypertext href={window.location.origin}>About</Hypertext>
-        <Hypertext href={window.location.origin}>Third-Party Notices</Hypertext>
+        <Hypertext href={window.location.origin}>
+          {t("common:hyperlinks.thirdParty")}
+        </Hypertext>
+        <Hypertext href={window.location.origin}>
+          {t("common:hyperlinks.changeLanguage")}
+        </Hypertext>
       </div>
       <div className={managedClasses.fv_sidebarFooter_buttons}>
         {isLoggedIn && <FVSidebarDeleteButton fileData={fileData} />}

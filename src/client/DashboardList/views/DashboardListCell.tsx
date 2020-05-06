@@ -71,6 +71,7 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     outline: "none",
     cursor: "default",
     "& > label": {
+      width: "100%",
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
@@ -141,9 +142,12 @@ const onImageError: React.ReactEventHandler<HTMLImageElement> = ({ currentTarget
  * Renders a cell and sets its height in the CellMeasurementCache
  */
 const CellRenderer: React.FC<DashboardListCellProps> = props => {
-  const { id, title, thumb_height } = props.data;
+  let { id, title, thumb_height } = props.data;
   const { t } = useTranslation("dashboard");
   const cellRef = useRef<HTMLDivElement>(null);
+
+  // i18n-ize the title; `untitled` will call a translation string
+  title = title === "" || !title ? "untitled" : title;
 
   // We already know the thumbnail size, so we take over the work of <CellMeasurer />
   if (!props.cache.has(props.index, 0)) {

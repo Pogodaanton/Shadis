@@ -5,7 +5,7 @@ import { RouteChildrenProps } from "react-router-dom";
 import React, { useRef, useState, useEffect } from "react";
 import axios from "../_interceptedAxios";
 import { AnimatePresence, AnimateSharedLayout } from "framer-motion";
-import { useToasts } from "../_DesignSystem";
+import { useToasts, isLoggedIn } from "../_DesignSystem";
 import { useTranslation } from "react-i18next";
 import { History } from "history";
 
@@ -26,13 +26,6 @@ const NotFound: LoadableComponent<{}> = loadable(() =>
 const Dashboard: LoadableComponent<any> = loadable(() =>
   import(/* webpackChunkName: "Dashboard" */ "../Dashboard/Dashboard")
 );
-
-/**
- * @see window.userData
- */
-const isLoggedIn =
-  typeof window.userData !== "undefined" &&
-  typeof window.userData.username !== "undefined";
 
 /**
  * Prefetcher for <FileView/>

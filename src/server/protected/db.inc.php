@@ -84,6 +84,18 @@ class db
         $result = $this->request($sql, "sssiisis", $uid, $token, $extension, $width, $height, $thumb_height, $timestamp, $title);
         return $result;
     }
+
+    /**
+     * Retreives a file entry in the files table.
+     * 
+     * @param string $uid Unique ID of the file.
+     */
+    public function request_file($uid)
+    {
+        $sql = "SELECT id, width, height, thumb_height, extension, title, timestamp FROM `" . $GLOBALS["table_prefix"] . "files` WHERE id=?";
+        $result = $this->request($sql, "s", $uid);
+        return $result->fetch_assoc();
+    }
 }
 
 $db = new db();

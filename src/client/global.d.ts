@@ -29,5 +29,6 @@ interface Window {
     extension: string;
     title: string;
     timestamp: number;
+    fromServer?: boolean;
   };
 }

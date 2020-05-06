@@ -58,6 +58,12 @@ const useFilePrefetcher = (id: string, history: History<{}>) => {
       }
     };
 
+    if (window.fileData) {
+      setFileData(window.fileData);
+      window.fileData = null;
+      return;
+    }
+
     if (id) fetchFileData(id);
     else setFileData(null);
   }, [addToast, history, id, t]);

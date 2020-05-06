@@ -68,8 +68,7 @@ const FileView: React.FC<FileViewProps> = ({
   managedClasses,
   fileData,
 }: FileViewProps) => {
-  fileData = fileData || window.fileData;
-  const { id, extension } = fileData || window.fileData;
+  const { id, extension, fromServer } = fileData;
 
   /**
    * Helper functions as refs to prevent them from updating after
@@ -115,7 +114,7 @@ const FileView: React.FC<FileViewProps> = ({
 
   // imageURL for <ImageViewer/>
   const imageURL = `${window.location.origin}/${id}.${
-    largeImageLoaded ? extension : "thumb.jpg"
+    largeImageLoaded || fromServer ? extension : "thumb.jpg"
   }`;
 
   // Callback used after mounting ImageViewer

@@ -101,6 +101,19 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   const { id, title, width, height } = fileData;
 
   /**
+   * We pre-render the image server-side,
+   * so that users who are unable to enjoy the full experience
+   * can also at least see the actual image.
+   *
+   * This will remove that pre-rendered image, since the web-app
+   * has already rendered it on its own.
+   */
+  const onImageLoaded = () => {
+    const container = document.getElementById("preContainer");
+    if (container) container.remove();
+  };
+
+  /**
    * React.Ref from the draggable component
    */
   const draggableRef = useRef<HTMLDivElement>(null);
@@ -386,6 +399,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
         dragConstraints={dragConstraints}
         onTapStart={onTapStart}
         onTap={onTap}
+        onLoad={onImageLoaded}
         style={{
           display: isMagicAnimRunning ? "none" : "block",
           width: width,

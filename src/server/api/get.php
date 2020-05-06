@@ -10,11 +10,12 @@ if ($_SERVER["REQUEST_METHOD"] !== "GET") {
 
 // Make sure arguments exist
 $id = $_GET["id"];
+
 if (!isset($id)) {
   error("Missing argument \"id\".", 401);
 }
 
-$result = $db->request("SELECT id, width, height, thumb_height, extension, title, timestamp FROM `" . $table_prefix . "files` WHERE id=?", "s", $id);
+$result = $db->request_file($id);
 
 header("Content-type: application/json");
-echo json_encode($result->fetch_assoc());
+echo json_encode($result);

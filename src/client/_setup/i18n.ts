@@ -23,7 +23,11 @@ i18n
     backend: {
       loadPath: "/static/locales/{{lng}}/{{ns}}.json",
     },
-
+    detection: {
+      lookupQuerystring: "lang",
+      lookupCookie: "i18n-shadis",
+      caches: ["cookie"],
+    },
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },

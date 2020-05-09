@@ -1,0 +1,29 @@
+{
+  "emptyTitle": "You haven't uploaded anything yet!",
+  "emptyDescription": "You can drag-and-drop an image into here in order to upload it.",
+  "untitled": "Untitled Image",
+  "delete": "Delete File",
+  "deleteSelected": "Delete selected item",
+  "deleteSelected_plural": "Delete selected items",
+  "selectedDeleted": "Successfully deleted {{count}} item",
+  "selectedDeleted_plural": "Successfully deleted {{count}} items",
+  "upload": {
+    "title": "Upload a file",
+    "select": "Select File",
+    "finished": "File uploaded as {{filename}}",
+    "visit": "Open file page",
+    "dropTitle": "Drop it like it's hot!",
+    "dropDescription": "You can upload an image by dragging it into here.",
+    "error": {
+      "title": "Uh-Oh, an error happened!",
+      "unsupported": "This filetype cannot be uploaded.\nSupported types are: jpg, png, gif"
+    },
+    "aria": {
+      "dialogLabel": "Upload dialog"
+    }
+  },
+  "error": {
+    "requestGeneric": "Couldn't execute request",
+    "listGeneric": "Couldn't retrieve file list"
+  }
+}

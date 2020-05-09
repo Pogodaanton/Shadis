@@ -1,0 +1,12 @@
+{
+  "inspector": "File Inspector",
+  "description": "Description",
+  "width": "Width",
+  "height": "Height",
+  "uploaded": "Uploaded",
+  "format": "File format",
+  "size": "Size",
+  "untitled": "-",
+  "download": "Download File",
+  "source": "View Original"
+}

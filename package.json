@@ -1,0 +1,72 @@
+{
+  "name": "shadis",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@loadable/component": "^5.12.0",
+    "@microsoft/fast-colors": "^5.0.8",
+    "@microsoft/fast-components-react-base": "^4.25.10",
+    "@microsoft/fast-components-react-msft": "^4.30.10",
+    "@microsoft/fast-components-styles-msft": "^4.28.9",
+    "@microsoft/fast-jss-manager-react": "^4.7.2",
+    "@microsoft/fast-jss-utilities": "^4.7.12",
+    "@microsoft/fast-web-utilities": "^4.4.5",
+    "@popmotion/easing": "^1.0.2",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^24.0.0",
+    "@types/loadable__component": "^5.10.0",
+    "@types/lodash-es": "^4.17.3",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/react-toast-notifications": "^2.4.0",
+    "@types/react-virtualized": "^9.21.9",
+    "axios": "^0.19.2",
+    "copy-webpack-plugin": "^5.1.1",
+    "focus-visible": "^4.1.5",
+    "framer-motion": "^2.0.0-beta.66",
+    "i18next": "^19.4.4",
+    "i18next-browser-languagedetector": "^4.1.1",
+    "i18next-xhr-backend": "^3.2.2",
+    "lodash-es": "^4.17.15",
+    "node-sass": "^4.14.1",
+    "popmotion": "^8.7.3",
+    "prettier": "^2.0.5",
+    "react": "^16.13.1",
+    "react-app-rewired": "^2.1.6",
+    "react-dom": "^16.13.1",
+    "react-dropzone": "^11.0.1",
+    "react-i18next": "^11.4.0",
+    "react-icons": "^3.10.0",
+    "react-resize-aware": "^3.0.0",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.4.1",
+    "react-toast-notifications": "^2.4.0",
+    "react-virtualized": "^9.21.2",
+    "rewire": "^5.0.0",
+    "typescript": "~3.8.3",
+    "webpack-livereload-plugin": "^2.3.0"
+  },
+  "scripts": {
+    "start": "node scripts/watch.js",
+    "serve": "node scripts/watch.js",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test"
+  },
+  "config-overrides-path": "scripts/config-overrides",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

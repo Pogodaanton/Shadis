@@ -1,0 +1,40 @@
+import React, { Component } from "react";
+
+let CustomLogo: React.ComponentClass<any, any> | React.FunctionComponent<any> = undefined;
+
+/**
+ * A custom logo can be inserted by creating the module /src/client/_DesignSystem/Assets/Logo.tsx
+ *
+ * export: default
+ * props:
+ *  - size?: string
+ * return: React.ComponentClass | React.FunctionComponent
+ */
+try {
+  const CustomLogoImport: {
+    default?: React.ComponentClass<any, any> | React.FunctionComponent<any>;
+  } = require("../Assets/Logo");
+  CustomLogo = CustomLogoImport.default;
+} catch (error) {}
+
+interface LogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+  size?: string;
+}
+
+// Falling back to a filler image if no module can be found
+export default class Logo extends Component<LogoProps> {
+  render() {
+    return typeof CustomLogo !== "undefined" ? (
+      <CustomLogo {...this.props} />
+    ) : (
+      <img
+        src={
+          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQBAMAAAB8P++eAAAAG1BMVEXMzMyWlpa+vr6cnJy3t7fFxcWjo6OxsbGqqqqN7EKtAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAcklEQVRIiWNgGAWjYBSMglEwsoCysUJzAxoLKzBiMi9oR2NhBSYhxgHBDOVsClAWTqAoqMjAyMDsAWPhBOnhiUBpFlEYCycQZRUGWsguBGPhBCks6UAvBKvBWDhBmFkAMFBa2BygrFEwCkbBKBgFgxoAAFYVFqKYGZ7+AAAAAElFTkSuQmCC"
+        }
+        alt={this.props.alt || "Logo"}
+        width={this.props.size || "80"}
+        height={this.props.size || "80"}
+      />
+    );
+  }
+}

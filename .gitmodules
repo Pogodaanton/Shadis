@@ -1,0 +1,3 @@
+[submodule "submodules/getID3"]
+	path = submodules/getID3
+	url = https://github.com/JamesHeinrich/getID3

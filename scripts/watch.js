@@ -147,20 +147,4 @@ const compiler = reactDevUtils.createCompiler({
 // Watch for changes and copy public folder if compilation is finished
 compiler.watch({}, (err, stats) => {
   if (err) console.error(err);
-
-  /*
-  console.error(
-    stats.toString({
-      chunks: false,
-      colors: true,
-    })
-  );
-  */
 });
-
-function copyPublicFolder() {
-  fs.copySync(paths.appPublic, paths.appBuild, {
-    dereference: true,
-    filter: file => file !== paths.appHtml,
-  });
-}

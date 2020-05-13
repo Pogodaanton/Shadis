@@ -48,7 +48,7 @@
     "react-virtualized": "^9.21.2",
     "rewire": "^5.0.0",
     "typescript": "~3.8.3",
-    "webpack-livereload-plugin": "^2.3.0"
+    "webpack-livereload-plugin": "2.2.0"
   },
   "scripts": {
     "start": "node scripts/watch.js",

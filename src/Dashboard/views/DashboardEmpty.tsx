@@ -14,7 +14,11 @@ import { useTranslation } from "react-i18next";
 
 const styles: ComponentStyles<DashboardEmptyClassNameContract, DesignSystem> = {
   dashboardEmpty: {
+    position: "fixed",
+    width: "100%",
+    height: "100%",
     display: "flex",
+    top: "-64px",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",

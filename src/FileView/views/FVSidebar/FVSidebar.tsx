@@ -59,7 +59,13 @@ const styles: ComponentStyles<FVSidebarClassNameContract, DesignSystem> = {
 };
 
 const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileData }) => {
-  const { sidebarWidth, sidebarPos, isSidebarVisible } = useContext(SidebarData);
+  const {
+    sidebarWidth,
+    sidebarPos,
+    isSidebarVisible,
+    addNavigationHandler,
+    setSidebarVisibility,
+  } = useContext(SidebarData);
   const { t } = useTranslation("fileview");
 
   // const [isPresent, safeToRemove] = usePresence();
@@ -95,6 +101,18 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
       return anim.stop;
     });
   }, [sidebarPos, isSidebarVisible]);
+
+  useEffect(
+    () =>
+      addNavigationHandler(async () => {
+        if (isSidebarVisible) {
+          setSidebarVisibility(false);
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        return true;
+      }),
+    [addNavigationHandler, isSidebarVisible, setSidebarVisibility]
+  );
 
   /**
    * Close sidebar while unmounting component.

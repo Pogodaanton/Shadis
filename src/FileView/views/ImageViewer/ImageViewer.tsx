@@ -124,7 +124,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   /**
    * Used for detecting the current state of the sidebar
    */
-  const { sidebarPos, isSidebarFloating } = useContext(SidebarData);
+  const { sidebarPos, isSidebarFloating, addNavigationHandler } = useContext(SidebarData);
 
   /**
    * Debounce sidebar position changes, so that we can avoid
@@ -214,6 +214,21 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
     if (point.x === lastDragPoint.x && point.y === lastDragPoint.y)
       setTransformState(!inTransformMode);
   };
+
+  /**
+   * Do not navigate away if in transform mode
+   */
+  useEffect(
+    () =>
+      addNavigationHandler(() => {
+        if (inTransformMode) {
+          setTransformState(false);
+          return false;
+        }
+        return true;
+      }),
+    [addNavigationHandler, inTransformMode]
+  );
 
   // Dragging state
   const [isDragging, setDraggingState] = useState(false);

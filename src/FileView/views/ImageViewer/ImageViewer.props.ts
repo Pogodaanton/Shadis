@@ -17,4 +17,5 @@ export interface ImageViewerProps extends ManagedClasses<ImageViewerClassNameCon
   imageURL: string;
   fileData: Window["fileData"];
   zoomRef?: (ref: React.MouseEventHandler) => void;
+  onAnimationComplete?: () => void;
 }

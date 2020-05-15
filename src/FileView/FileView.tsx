@@ -89,6 +89,7 @@ const FileView: React.FC<FileViewProps> = ({
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
+      largeImage = null;
       document.body.style.overflow = "visible";
     };
   }, []);
@@ -107,6 +108,7 @@ const FileView: React.FC<FileViewProps> = ({
    * Load image in background before rendering
    */
   const loadLargeImage = () => {
+    if (largeImage) return;
     largeImage = new Image();
     largeImage.addEventListener("load", onImageLoaded.current);
     largeImage.src = `${window.location.origin}/${id}.${extension}`;
@@ -129,7 +131,6 @@ const FileView: React.FC<FileViewProps> = ({
           animate={{ opacity: 1 }}
           transition={{ duration: 0.2 }}
           exit={{ opacity: 0 }}
-          onAnimationComplete={loadLargeImage}
         >
           <Header
             position="absolute"
@@ -139,7 +140,12 @@ const FileView: React.FC<FileViewProps> = ({
           />
           <FVSidebarToggleButton />
         </motion.div>
-        <ImageViewer imageURL={imageURL} fileData={fileData} zoomRef={setZoomRef} />
+        <ImageViewer
+          imageURL={imageURL}
+          fileData={fileData}
+          zoomRef={setZoomRef}
+          onAnimationComplete={loadLargeImage}
+        />
         {largeImageLoaded && <FVSidebar fileData={fileData} />}
       </div>
     </FVSidebarProvider>

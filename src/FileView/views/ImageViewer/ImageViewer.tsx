@@ -96,6 +96,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   managedClasses,
   fileData,
   zoomRef,
+  onAnimationComplete,
 }) => {
   fileData = fileData || window.fileData;
   const { id, title, width, height } = fileData;
@@ -357,7 +358,10 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   const [isMagicAnimRunning, setMagicAnimState] = useState(false);
   // Toggle `isMagicAnimRunning`
   const onMagicAnimStart = () => !isMagicAnimRunning && setMagicAnimState(true);
-  const onMagicAnimEnd = () => isMagicAnimRunning && setMagicAnimState(false);
+  const onMagicAnimEnd = () => {
+    if (isMagicAnimRunning) setMagicAnimState(false);
+    onAnimationComplete();
+  };
 
   /**
    * Attributes for all img-Tags in this component

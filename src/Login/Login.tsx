@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import { Button, ButtonAppearance, Logo, iconToGlyph } from "../_DesignSystem";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
@@ -8,6 +8,7 @@ import { TextAction, TextFieldType } from "@microsoft/fast-components-react-msft
 import axios from "../_interceptedAxios";
 import { useToasts } from "../_DesignSystem";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 
 const styles: ComponentStyles<LoginClassNameContract, DesignSystem> = {
   login: {
@@ -70,34 +71,38 @@ const Login: React.FC<LoginProps> = props => {
   };
 
   return (
-    <Fragment>
-      <div className={props.managedClasses.login}>
-        <Logo />
-        <form onSubmit={onFormSubmit} className={props.managedClasses.login_form}>
-          <TextAction
-            name="username"
-            placeholder={i18n.t("username")}
-            beforeGlyph={iconToGlyph(FaUserAlt)}
-            autoFocus
-            required
-          />
-          <TextAction
-            name="password"
-            placeholder={i18n.t("password")}
-            type={TextFieldType.password}
-            beforeGlyph={iconToGlyph(FaKey)}
-            required
-          />
-          <Button
-            appearance={ButtonAppearance.primary}
-            icon={FaSignInAlt}
-            disabled={isDebounced}
-          >
-            {t("loginButton")}
-          </Button>
-        </form>
-      </div>
-    </Fragment>
+    <motion.div
+      className={props.managedClasses.login}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.1 }}
+    >
+      <Logo />
+      <form onSubmit={onFormSubmit} className={props.managedClasses.login_form}>
+        <TextAction
+          name="username"
+          placeholder={i18n.t("username")}
+          beforeGlyph={iconToGlyph(FaUserAlt)}
+          autoFocus
+          required
+        />
+        <TextAction
+          name="password"
+          placeholder={i18n.t("password")}
+          type={TextFieldType.password}
+          beforeGlyph={iconToGlyph(FaKey)}
+          required
+        />
+        <Button
+          appearance={ButtonAppearance.primary}
+          icon={FaSignInAlt}
+          disabled={isDebounced}
+        >
+          {t("loginButton")}
+        </Button>
+      </form>
+    </motion.div>
   );
 };
 

@@ -27,6 +27,10 @@ const FVSidebarProvider: React.ComponentType<{ fileData: Window["fileData"] }> =
   const [fileTitle, setFileTitle] = useState(fileData ? fileData.title : "");
   const navigationHandlers = useRef<NavigationHandler[]>([]);
 
+  /**
+   * Adds a listener to `navigationHandlers` and returns a function
+   * that can be used as a return value in a `useEffect` hook.
+   */
   const addNavigationHandler = (handler: NavigationHandler["handler"]) => {
     const id = uniqueId("navHandler");
     navigationHandlers.current.push({ id, handler });
@@ -37,9 +41,14 @@ const FVSidebarProvider: React.ComponentType<{ fileData: Window["fileData"] }> =
     };
   };
 
+  /**
+   * Listen to changes in navigation and trigger every
+   * function that is in `navigationHandlers`.
+   */
   const onNavigationAttempt: NavigationAttemptHandler = (navigation, location, action) =>
     new Promise(resolveAttempt => {
       let shouldNavigate: Promise<boolean>[] = [];
+      console.log(action);
 
       navigationHandlers.current.forEach(obj => {
         const res = obj.handler(navigation, location, action);

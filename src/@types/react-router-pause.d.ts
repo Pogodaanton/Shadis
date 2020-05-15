@@ -28,11 +28,11 @@ declare module "@allpro/react-router-pause" {
     /**
      * Push function from the `history` object
      */
-    push: (path: H.Path, state?: H.LocationState) => void;
+    push: (path: H.Path, state: H.LocationState) => void;
     /**
      * Replace function from the `history` object
      */
-    replace: (path: H.Path, state?: H.LocationState) => void;
+    replace: (path: H.Path, state: H.LocationState) => void;
   }
 
   /**

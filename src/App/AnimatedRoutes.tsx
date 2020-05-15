@@ -1,5 +1,5 @@
 import loadable, { LoadableComponent } from "@loadable/component";
-import { FileViewProps } from "../FileView/FileView.props";
+import { FileViewProps, FileData } from "../FileView/FileView.props";
 import { FullscreenLoader } from "../Loader";
 import { RouteChildrenProps } from "react-router-dom";
 import React, { useRef, useState, useEffect } from "react";
@@ -27,6 +27,15 @@ const Dashboard: LoadableComponent<any> = loadable(() =>
   import(/* webpackChunkName: "Dashboard" */ "../Dashboard/Dashboard")
 );
 
+// Type guards to check for data states
+const isFileDataEmpty = (toDetermine: FileData): toDetermine is {} => {
+  return (toDetermine as Window["fileData"]).id === undefined;
+};
+
+const isFileDataNotEmpty = (toDetermine: FileData): toDetermine is Window["fileData"] => {
+  return (toDetermine as Window["fileData"]).id !== undefined;
+};
+
 /**
  * Prefetcher for <FileView/>
  *
@@ -35,7 +44,7 @@ const Dashboard: LoadableComponent<any> = loadable(() =>
  * before the actual component is mounted.
  */
 const useFilePrefetcher = (id: string, history: History<{}>) => {
-  const [fileData, setFileData] = useState<Window["fileData"]>(null);
+  const [fileData, setFileData] = useState<FileData>(null);
   const { addToast } = useToasts();
   const { t } = useTranslation("common");
 
@@ -47,7 +56,7 @@ const useFilePrefetcher = (id: string, history: History<{}>) => {
         });
 
         if (!res.data) {
-          setFileData({} as any);
+          setFileData({});
         } else {
           setFileData(res.data);
         }
@@ -102,21 +111,17 @@ const AnimatedRoutes: React.FC<RouteChildrenProps<{ id: string }>> = ({
     }
   }, []);
 
-  const is404 =
-    !!match.params.id && fileData !== null && typeof fileData.id === "undefined";
-  const isValidFile =
-    !!match.params.id &&
-    viewLoaded &&
-    ViewRef.current &&
-    fileData &&
-    typeof fileData.id !== "undefined";
+  const is404 = !!match.params.id && fileData !== null && isFileDataEmpty(fileData);
+  const isValidFile = !!match.params.id && viewLoaded && ViewRef.current && fileData;
   const isDashboardVisible = isLoggedIn && !is404;
 
   return (
     <AnimateSharedLayout type="crossfade">
       {isDashboardVisible && <Dashboard key="dashboard" frozen={!!match.params.id} />}
       <AnimatePresence exitBeforeEnter>
-        {isValidFile && <ViewRef.current fileData={fileData} key={match.params.id} />}
+        {isValidFile && isFileDataNotEmpty(fileData) && (
+          <ViewRef.current fileData={fileData} key={match.params.id} />
+        )}
         {is404 && <NotFound key="notFound" />}
         {!match.params.id && !isLoggedIn && <Login key="login" />}
       </AnimatePresence>

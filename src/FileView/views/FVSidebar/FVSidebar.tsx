@@ -68,8 +68,6 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
   } = useContext(SidebarData);
   const { t } = useTranslation("fileview");
 
-  // const [isPresent, safeToRemove] = usePresence();
-
   /**
    * The transitionX position of the sidebar.
    *
@@ -107,44 +105,12 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
       addNavigationHandler(async () => {
         if (isSidebarVisible) {
           setSidebarVisibility(false);
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 400));
         }
         return true;
       }),
     [addNavigationHandler, isSidebarVisible, setSidebarVisibility]
   );
-
-  /**
-   * Close sidebar while unmounting component.
-   * We set a timeout for the image repositoning animation to kick in.
-   *
-   * TODO: Find a way to close sidebar BEFORE unmounting
-   * ! Maybe call an upper safeToRemove prop?
-   */
-  /*
-  const allowUnmount = useCallback(
-    (pos: number) => {
-      if (!isPresent && pos === 0) {
-        setTimeout(safeToRemove, 200);
-      }
-    },
-    [isPresent, safeToRemove]
-  );
-
-  /**
-   * Listen to isPresent for starting closing animation.
-   *
-  useEffect(() => {
-    if (!safeToRemove) return;
-    if (!isPresent) {
-      if (isSidebarVisible) setVisibility(false);
-      else if (!sidebarPos.isAnimating()) {
-        safeToRemove();
-        return;
-      }
-      return sidebarPos.onChange(allowUnmount);
-    }
-  }, [allowUnmount, isPresent, safeToRemove, sidebarPos, isSidebarVisible]);*/
 
   return (
     <>

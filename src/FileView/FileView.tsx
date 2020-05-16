@@ -80,7 +80,7 @@ const FileView: React.FC<FileViewProps> = ({
   /**
    * Used to decide whether to view the thumbnail or the original image
    */
-  const [largeImageLoaded, setLargeImageLoadedState] = useState(false);
+  const [largeImageLoaded, setLargeImageLoadedState] = useState(!!fromServer);
 
   /**
    * Image manipulation involves overflowing the body
@@ -89,7 +89,6 @@ const FileView: React.FC<FileViewProps> = ({
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
-      largeImage = null;
       document.body.style.overflow = "visible";
     };
   }, []);
@@ -100,21 +99,32 @@ const FileView: React.FC<FileViewProps> = ({
   useEffect(() => {
     onImageLoaded.current = () => setLargeImageLoadedState(true);
     return () => {
-      if (largeImage) largeImage.removeEventListener("load", onImageLoaded.current);
+      if (largeImage) {
+        largeImage.removeEventListener("load", onImageLoaded.current);
+        largeImage = null;
+      }
     };
   }, []);
 
   /**
-   * Load image in background before rendering
+   * Load image in background before rendering.
+   * This function is usually executed by <ImageViewer/>.
    */
   const loadLargeImage = () => {
-    if (largeImage) return;
+    if (largeImage || fromServer) return;
     largeImage = new Image();
     largeImage.addEventListener("load", onImageLoaded.current);
     largeImage.src = `${window.location.origin}/${id}.${extension}`;
   };
 
-  // imageURL for <ImageViewer/>
+  /**
+   * imageURL for <ImageViewer/>
+   *
+   * We don't need to load the thumbnail
+   * if the client already started prefetching the image for us.
+   * This only happens when the user is directly opening a file page
+   * instead of opening the image from the dashboard.
+   */
   const imageURL = `${window.location.origin}/${id}.${
     largeImageLoaded || fromServer ? extension : "thumb.jpg"
   }`;

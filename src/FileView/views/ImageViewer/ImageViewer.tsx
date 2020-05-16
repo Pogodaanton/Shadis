@@ -17,7 +17,7 @@ import {
   MotionValue,
   useDomEvent,
 } from "framer-motion";
-import { headerHeight } from "../../../_DesignSystem";
+import { headerHeight, isLoggedIn } from "../../../_DesignSystem";
 import { useViewportDimensions } from "./useViewportDimensions";
 import { classNames } from "@microsoft/fast-web-utilities";
 import ImageViewerSlider from "./ImageViewerSlider";
@@ -372,12 +372,26 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
     draggable: false,
   };
 
+  /**
+   * Additional attributes for the root motion.div
+   * if magic motion is not available.
+   */
+  const extraAttributes = !isLoggedIn
+    ? {
+        animate: { opacity: 1 },
+        transition: { duration: 0.2 },
+        initial: { opacity: 0 },
+        exit: { opacity: 0 },
+        onAnimationComplete: onMagicAnimEnd,
+      }
+    : {};
+
   // Default dimensions used for magic component
   const defaultWidth = useMemo(() => width * defaultScale, [defaultScale, width]);
   const defaultHeight = useMemo(() => height * defaultScale, [defaultScale, height]);
 
   return (
-    <motion.div className={managedClasses.imageViewer}>
+    <motion.div className={managedClasses.imageViewer} {...extraAttributes}>
       {resizeListener}
       <motion.div
         /**

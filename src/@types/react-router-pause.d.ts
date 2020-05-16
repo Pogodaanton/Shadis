@@ -68,9 +68,24 @@ declare module "@allpro/react-router-pause" {
   ) => boolean | undefined | null | Promise<boolean | undefined>;
 
   interface ReactRouterPauseProps {
+    /**
+     * This is called each time a navigation event occurs.
+     * If a handler is not provided, React Router Pause is disabled.
+     */
     handler?: NavigationAttemptHandler;
+    /**
+     * Set `when={false}` to temporarily disable this component.
+     * This is an alternative to using conditional rendering.
+     */
     when?: boolean;
+    /**
+     * A configuration object to change triggering logic.
+     */
     config?: {
+      /**
+       * Should bookmark-links for same page always be allowed?
+       * If `false`, bookmark-links are treated the same as page-links.
+       */
       allowBookmarks: boolean;
     };
   }

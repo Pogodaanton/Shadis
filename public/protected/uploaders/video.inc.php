@@ -62,51 +62,6 @@ class VideoPreprocessor
     $icon_path = dirname(__FILE__) . "/../../static/media/play.png";
 
     // Using an array to make this part more readable
-    /*
-    $exec_array = array(
-      $GLOBALS["imagick_path"],
-      "convert",
-      $icon_path,
-      // "-define png:size=" . $this->file_width . "x" . $this->file_height,
-      // bruh start
-      // "-background white",
-      "\( xc:red xc:blue +append \)",
-      "\( xc:yellow xc:cyan +append \) -append",
-      "xc: +swap",
-      "-interpolate Mesh",
-      "-fx 'v.p{i/(w-1),j/(h-1)}'",
-      // bruh end
-      "-thumbnail '" . $this->thumbnail_width . "x" . $this->thumbnail_height . ">'",
-      "-filter Triangle",
-      "-gravity center",
-      "-extent " . $this->thumbnail_width . "x" . $this->thumbnail_height . "",
-      "-alpha Background",
-      "-unsharp 0.25x0.25+8+0.065",
-      "-dither None",
-      "-sampling-factor 4:2:0",
-      "-quality 82",
-      "-define jpeg:fancy-upsampling=off",
-      "-interlace none",
-      "-colorspace RGB",
-      "-strip",
-      $this->thumbnail_path,
-      "2>&1",
-    );*/
-    /*
-    $exec_array = array(
-      $GLOBALS["imagick_path"],
-      "convert",
-      "\( xc:red xc:blue +append \)",
-      "\( xc:yellow xc:cyan +append \) -append",
-      "-size " . $this->thumbnail_width . "x" . $this->thumbnail_height . "",
-      "xc: +swap",
-      $this->thumbnail_path,
-      "2>&1",
-    );*/
-    //"\( xc: +noise Random \)",
-    //"\( xc:cyan +append \) -append",
-    //$this->thumbnail_path,
-    // "-append",
     $exec_array = array(
       $GLOBALS["imagick_path"],
       "convert",

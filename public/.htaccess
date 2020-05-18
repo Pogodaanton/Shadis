@@ -14,7 +14,7 @@ IndexIgnore *
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{DOCUMENT_ROOT}/uploads/$1.$2 -f
-  RewriteRule ^(.+)\.(jpg|png|gif|webp)$ uploads/$1.$2 [L]
+  RewriteRule ^(.+)\.(jpg|png|gif|webp|mp4)$ uploads/$1.$2 [L]
 
   # Don't rewrite files or directories
   RewriteRule ^index.php$ - [L]

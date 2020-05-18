@@ -46,6 +46,15 @@ $table_prefix = "shadis_";
 $base_directory = "/";
 
 /**
+ * Path to the upload directory of Shadis
+ *
+ * If you want to save the upload path elsewhere, make sure
+ * you edit the root .htaccess file aswell, so that the client
+ * can also find the requested files.
+ */
+$upload_directory = dirname(__FILE__) . "/../uploads/";
+
+/**
  * Path to ImageMagick executable
  * Make sure the given path is really the right one.
  *

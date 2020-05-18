@@ -7,8 +7,6 @@ $loggedIn = isset($_SESSION["u_id"]);
 $secret = $_POST["secret"];
 $file = $_FILES["data"];
 
-$supportedImageFormats = "/(png|jpeg|gif)/";
-
 // Check if key set or logged in
 if ((!isset($secret) || $secret !== UPLOAD_TOKEN) && !$loggedIn) {
   error("Unauthorized", 401);
@@ -24,17 +22,10 @@ if ($file["error"] > 0) {
   error("An unexpected error happened, upload did not succeed. Info: " . $file["error"]);
 }
 
-// Check if file format is supported
-$fileType = $file["type"];
-if (!preg_match($supportedImageFormats, $fileType)) {
-  error("File type '" . $fileType . "' not supported.", 415);
-}
-
-require_once "../protected/uploaders/image.inc.php";
-$image = new ImageUpload($file, $_POST["title"], $_POST["timestamp"]);
-if ($image->upload()) {
-  $urls = $image->get_url_info();
-}
+require_once "../protected/uploaders/file.inc.php";
+$uploader = new FileUploader($file, $_POST["title"], $_POST["timestamp"]);
+$uploader->upload();
+$urls = $uploader->get_url_info();
 
 header("Content-type: application/json");
 echo json_encode($urls);

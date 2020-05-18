@@ -1,9 +1,8 @@
 <?php
 require_once dirname(__FILE__) . "/../output.inc.php";
 
-class ImagePreprocessor
+class VideoPreprocessor
 {
-  private $file;
   private $file_extension;
   private $file_width;
   private $file_height;
@@ -15,7 +14,6 @@ class ImagePreprocessor
 
   public function __construct($file, array $file_analysis, string $file_id, int $thumbnail_width)
   {
-    $this->file = $file;
     $this->file_analysis = $file_analysis;
     $this->file_id = $file_id;
     $this->thumbnail_width = $thumbnail_width;
@@ -35,19 +33,13 @@ class ImagePreprocessor
     try {
       $this->file_extension = $this->file_analysis["fileformat"];
       switch ($this->file_extension) {
-        case "png":
-          $parent_data = $this->file_analysis[$this->file_extension]["IHDR"];
-          $this->file_width = $parent_data["width"];
-          $this->file_height = $parent_data["height"];
-          break;
-        case "jpg":
-        case "gif":
+        case "mp4":
           $parent_data = $this->file_analysis["video"];
           $this->file_width = $parent_data["resolution_x"];
           $this->file_height = $parent_data["resolution_y"];
           break;
         default:
-          error("File format '" . $this->file_extension . "' is not supported by the image preprocessor.", 415);
+          error("File format '" . $this->file_extension . "' is not supported by the video preprocessor.", 415);
           break;
       }
     } catch (ErrorException $ee) {
@@ -60,24 +52,34 @@ class ImagePreprocessor
   }
 
   /**
-   * Generates a thumbnail for the image.
-   * The function assumes that the image has already been put to the uploads directory.
+   * Generates a thumbnail for the video.
    */
   private function generate_thumbnail()
   {
-    // We need to use type from the file array directly, since jpg !== jpeg
-    $type = substr($this->file["type"], 6);
-    $image_path = $GLOBALS["upload_directory"] . $this->file_id . "." . $this->file_extension;
+    $this->thumbnail_height =  $this->thumbnail_width * ($this->file_height / $this->file_width);
+
+    // Path to the play icon
+    $icon_path = dirname(__FILE__) . "/../../static/media/play.png";
 
     // Using an array to make this part more readable
+    /*
     $exec_array = array(
       $GLOBALS["imagick_path"],
       "convert",
-      $image_path,
+      $icon_path,
+      // "-define png:size=" . $this->file_width . "x" . $this->file_height,
+      // bruh start
+      // "-background white",
+      "\( xc:red xc:blue +append \)",
+      "\( xc:yellow xc:cyan +append \) -append",
+      "xc: +swap",
+      "-interpolate Mesh",
+      "-fx 'v.p{i/(w-1),j/(h-1)}'",
+      // bruh end
+      "-thumbnail '" . $this->thumbnail_width . "x" . $this->thumbnail_height . ">'",
       "-filter Triangle",
-      "-define " . $type . ":size=" . $this->file_width . "x" . $this->file_height,
-      "-thumbnail '" . $this->thumbnail_width . "'",
-      "-background white",
+      "-gravity center",
+      "-extent " . $this->thumbnail_width . "x" . $this->thumbnail_height . "",
       "-alpha Background",
       "-unsharp 0.25x0.25+8+0.065",
       "-dither None",
@@ -89,24 +91,47 @@ class ImagePreprocessor
       "-strip",
       $this->thumbnail_path,
       "2>&1",
+    );*/
+    /*
+    $exec_array = array(
+      $GLOBALS["imagick_path"],
+      "convert",
+      "\( xc:red xc:blue +append \)",
+      "\( xc:yellow xc:cyan +append \) -append",
+      "-size " . $this->thumbnail_width . "x" . $this->thumbnail_height . "",
+      "xc: +swap",
+      $this->thumbnail_path,
+      "2>&1",
+    );*/
+    //"\( xc: +noise Random \)",
+    //"\( xc:cyan +append \) -append",
+    //$this->thumbnail_path,
+    // "-append",
+    $exec_array = array(
+      $GLOBALS["imagick_path"],
+      "convert",
+      "-size " . $this->thumbnail_width . "x" . $this->thumbnail_height . "",
+      "\( xc: +noise Random -channel G  -separate -level 0%,100%,2.0 \)",
+      "null: \( $icon_path \) -gravity Center",
+      "-layers Composite",
+      "-layers Optimize",
+      $this->thumbnail_path,
+      "2>&1",
     );
 
     // Combining arguments into exec string
     exec(implode(" ", $exec_array));
-
-    // Setting the thumbnail_height according to the newly generated image
-    $this->thumbnail_height = exec($GLOBALS["imagick_path"] . " identify -ping -format '%h' " . $this->thumbnail_path);
     return true;
   }
 
   /**
-   * Executes every task needed for uploading the image
+   * Executes every task needed for uploading the video
    * @return array Available keys: "file_width", "file_height", "thumbnail_height"
    */
   public function upload()
   {
     if (!$this->generate_thumbnail()) {
-      throw new ErrorException("Generating image thumbnail did not succeed.");
+      throw new ErrorException("Generating video thumbnail did not succeed.");
     }
 
     return array(
@@ -122,8 +147,6 @@ class ImagePreprocessor
    */
   public function cleanup_upload_error()
   {
-    if (file_exists($this->thumbnail_path)) {
-      unlink($this->thumbnail_path);
-    }
+    if (file_exists($this->thumbnail_path)) unlink($this->thumbnail_path);
   }
 }

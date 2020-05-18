@@ -95,6 +95,21 @@ module.exports = {
           to: "protected/getID3",
           flatten: true,
         },
+        {
+          from: "submodules/getID3/getid3/*mpeg*",
+          to: "protected/getID3",
+          flatten: true,
+        },
+        {
+          from: "submodules/getID3/getid3/*audio-video.quicktime*",
+          to: "protected/getID3",
+          flatten: true,
+        },
+        {
+          from: "submodules/getID3/getid3/*audio.mp3*",
+          to: "protected/getID3",
+          flatten: true,
+        },
       ])
     );
 

@@ -17,7 +17,7 @@ import {
   MotionValue,
   useDomEvent,
 } from "framer-motion";
-import { headerHeight, isLoggedIn } from "../../../_DesignSystem";
+import { headerHeight, isLoggedIn, useRouteInterception } from "../../../_DesignSystem";
 import { useViewportDimensions } from "./useViewportDimensions";
 import { classNames } from "@microsoft/fast-web-utilities";
 import ImageViewerSlider from "./ImageViewerSlider";
@@ -140,7 +140,8 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   /**
    * Used for detecting the current state of the sidebar
    */
-  const { sidebarPos, isSidebarFloating, addNavigationHandler } = useContext(SidebarData);
+  const { sidebarPos, isSidebarFloating } = useContext(SidebarData);
+  const { addNavigationHandler } = useRouteInterception();
 
   /**
    * Debounce sidebar position changes, so that we can avoid

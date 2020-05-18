@@ -15,6 +15,7 @@ import { SidebarData } from "./FVSidebarContext";
 import FVSidebarContent from "./FVSidebarContent";
 import FVSidebarFooter from "./FVSidebarFooter";
 import { useTranslation } from "react-i18next";
+import { useRouteInterception } from "../../../_DesignSystem";
 
 /**
  * The position where on the x-axis the button is placed by default
@@ -59,13 +60,11 @@ const styles: ComponentStyles<FVSidebarClassNameContract, DesignSystem> = {
 };
 
 const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileData }) => {
-  const {
-    sidebarWidth,
-    sidebarPos,
-    isSidebarVisible,
-    addNavigationHandler,
-    setSidebarVisibility,
-  } = useContext(SidebarData);
+  const { sidebarWidth, sidebarPos, isSidebarVisible, setSidebarVisibility } = useContext(
+    SidebarData
+  );
+
+  const { addNavigationHandler } = useRouteInterception();
   const { t } = useTranslation("fileview");
 
   /**

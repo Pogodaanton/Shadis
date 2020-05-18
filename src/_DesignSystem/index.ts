@@ -1,3 +1,7 @@
+import {
+  RouteInterceptionManager,
+  useRouteInterception,
+} from "./RouterBlocker/RouteInterceptor";
 import { useWindowBreakpoint } from "./Hooks/useWindowBreakpoint";
 import { DesignToolkit, isLoggedIn } from "./Toolkit/DesignSystem";
 import { Button, ButtonAppearance } from "./Button/Button";
@@ -27,4 +31,6 @@ export {
   useMotionValueFactory,
   useWindowBreakpoint,
   isLoggedIn,
+  RouteInterceptionManager,
+  useRouteInterception,
 };

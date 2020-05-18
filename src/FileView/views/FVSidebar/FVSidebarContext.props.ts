@@ -1,10 +1,4 @@
 import { MotionValue } from "framer-motion";
-import { NavigationAttemptHandler } from "@allpro/react-router-pause";
-
-export interface NavigationHandler {
-  id: string;
-  handler: NavigationAttemptHandler;
-}
 
 /**
  * This context contains an array of useful
@@ -34,5 +28,4 @@ export interface ISidebarData {
   isSidebarFloating: boolean;
   fileTitle: string;
   setFileTitle: React.Dispatch<React.SetStateAction<string>>;
-  addNavigationHandler: (handler: NavigationHandler["handler"]) => () => void;
 }

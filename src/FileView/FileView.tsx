@@ -7,7 +7,7 @@ import {
   neutralLayerL1,
 } from "@microsoft/fast-components-styles-msft";
 import { motion } from "framer-motion";
-import { Header } from "../_DesignSystem";
+import { Header, RouteInterceptionManager } from "../_DesignSystem";
 import { HeaderClassNameContract } from "../_DesignSystem/Header/Header.props";
 import ImageViewer from "./views/ImageViewer/ImageViewer";
 import { HeaderCenterContent } from "./views/HeaderContent/HeaderCenterContent";
@@ -69,8 +69,6 @@ const FileView: React.FC<FileViewProps> = ({
   fileData,
 }: FileViewProps) => {
   const { id, extension, fromServer } = fileData;
-
-  console.log(extension);
 
   /**
    * Helper functions as refs to prevent them from updating after
@@ -141,32 +139,34 @@ const FileView: React.FC<FileViewProps> = ({
 
   return (
     <FVSidebarProvider fileData={fileData}>
-      <div className={managedClasses.fileView}>
-        <motion.div
-          className={managedClasses.fileViewBackground}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2 }}
-          exit={{ opacity: 0 }}
-        >
-          <Header
-            position="absolute"
-            jssStyleSheet={headerStyles}
-            centerContent={<HeaderCenterContent />}
-            rightSideContent={<HeaderRightContent onMagnify={onMagnify.current} />}
-          />
-          <FVSidebarToggleButton />
-        </motion.div>
-        {isVideo ? null : (
-          <ImageViewer
-            imageURL={imageURL}
-            fileData={fileData}
-            zoomRef={setZoomRef}
-            onAnimationComplete={loadLargeImage}
-          />
-        )}
-        {largeImageLoaded && <FVSidebar fileData={fileData} />}
-      </div>
+      <RouteInterceptionManager>
+        <div className={managedClasses.fileView}>
+          <motion.div
+            className={managedClasses.fileViewBackground}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0 }}
+          >
+            <Header
+              position="absolute"
+              jssStyleSheet={headerStyles}
+              centerContent={<HeaderCenterContent />}
+              rightSideContent={<HeaderRightContent onMagnify={onMagnify.current} />}
+            />
+            <FVSidebarToggleButton />
+          </motion.div>
+          {isVideo ? null : (
+            <ImageViewer
+              imageURL={imageURL}
+              fileData={fileData}
+              zoomRef={setZoomRef}
+              onAnimationComplete={loadLargeImage}
+            />
+          )}
+          {largeImageLoaded && <FVSidebar fileData={fileData} />}
+        </div>
+      </RouteInterceptionManager>
     </FVSidebarProvider>
   );
 };

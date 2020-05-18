@@ -70,6 +70,8 @@ const FileView: React.FC<FileViewProps> = ({
 }: FileViewProps) => {
   const { id, extension, fromServer } = fileData;
 
+  console.log(extension);
+
   /**
    * Helper functions as refs to prevent them from updating after
    * each re-render
@@ -81,6 +83,11 @@ const FileView: React.FC<FileViewProps> = ({
    * Used to decide whether to view the thumbnail or the original image
    */
   const [largeImageLoaded, setLargeImageLoadedState] = useState(!!fromServer);
+
+  /**
+   * Used to decide whether to show ImageViewer or VideoViewer
+   */
+  const [isVideo] = useState<boolean>(extension === "mp4");
 
   /**
    * Image manipulation involves overflowing the body
@@ -150,12 +157,14 @@ const FileView: React.FC<FileViewProps> = ({
           />
           <FVSidebarToggleButton />
         </motion.div>
-        <ImageViewer
-          imageURL={imageURL}
-          fileData={fileData}
-          zoomRef={setZoomRef}
-          onAnimationComplete={loadLargeImage}
-        />
+        {isVideo ? null : (
+          <ImageViewer
+            imageURL={imageURL}
+            fileData={fileData}
+            zoomRef={setZoomRef}
+            onAnimationComplete={loadLargeImage}
+          />
+        )}
         {largeImageLoaded && <FVSidebar fileData={fileData} />}
       </div>
     </FVSidebarProvider>

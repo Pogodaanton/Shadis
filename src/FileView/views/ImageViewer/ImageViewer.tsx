@@ -235,17 +235,17 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   /**
    * Do not navigate away if in transform mode
    */
-  useEffect(
-    () =>
-      addNavigationHandler(() => {
+  useEffect(() => {
+    if (inTransformMode) {
+      return addNavigationHandler(() => {
         if (inTransformMode) {
           setTransformState(false);
           return false;
         }
         return true;
-      }),
-    [addNavigationHandler, inTransformMode]
-  );
+      });
+    } else return () => {};
+  }, [addNavigationHandler, inTransformMode]);
 
   // Dragging state
   const [isDragging, setDraggingState] = useState(false);

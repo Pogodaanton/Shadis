@@ -99,17 +99,17 @@ const FVSidebar: React.ComponentType<FVSidebarProps> = ({ managedClasses, fileDa
     });
   }, [sidebarPos, isSidebarVisible]);
 
-  useEffect(
-    () =>
-      addNavigationHandler(async () => {
+  useEffect(() => {
+    if (isSidebarVisible) {
+      return addNavigationHandler(async () => {
         if (isSidebarVisible) {
           setSidebarVisibility(false);
-          await new Promise(resolve => setTimeout(resolve, 400));
+          await new Promise(resolve => setTimeout(resolve, 500));
         }
         return true;
-      }),
-    [addNavigationHandler, isSidebarVisible, setSidebarVisibility]
-  );
+      });
+    } else return () => {};
+  }, [addNavigationHandler, isSidebarVisible, setSidebarVisibility]);
 
   return (
     <>

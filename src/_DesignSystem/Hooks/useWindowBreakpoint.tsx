@@ -23,10 +23,15 @@ export const useWindowBreakpoint = (
 
     const mediaQuery = window.matchMedia(`(${queryType}: ${breakpoint}px)`);
     breakpointListener(mediaQuery);
-    mediaQuery.addEventListener("change", breakpointListener);
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener("change", breakpointListener);
+    } else mediaQuery.addListener(breakpointListener);
 
     return () => {
-      mediaQuery.removeEventListener("change", breakpointListener);
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener("change", breakpointListener);
+      } else mediaQuery.removeListener(breakpointListener);
     };
   }, [breakpoint, queryType]);
 

@@ -1,8 +1,11 @@
 import React, { useContext, useRef, createContext, useMemo } from "react";
-import { uniqueId, findIndex, filter } from "lodash-es";
+import { uniqueId, findIndex } from "lodash-es";
 import { NavigationHandler, RouteInterceptor } from "./RouteInterceptor.types";
 import ReactRouterPause, { NavigationAttemptHandler } from "@allpro/react-router-pause";
 
+/**
+ * Listen to route changes and pause them if needed.
+ */
 const RouteInterceptorContext = createContext<RouteInterceptor>(null);
 
 export const RouteInterceptionManager: React.ComponentType<{}> = ({ children }) => {
@@ -20,15 +23,6 @@ export const RouteInterceptionManager: React.ComponentType<{}> = ({ children }) 
       navigationHandlers.current.splice(index, 1);
       return;
     };
-  };
-
-  /**
-   * Unsubscribes a listener from route changes
-   */
-  const removeNavigationHandler = (handler: NavigationHandler["handler"]) => {
-    navigationHandlers.current = filter(navigationHandlers.current, obj => {
-      return obj.handler !== handler;
-    });
   };
 
   /**
@@ -65,7 +59,6 @@ export const RouteInterceptionManager: React.ComponentType<{}> = ({ children }) 
   const contextItems = useMemo(
     () => ({
       addNavigationHandler,
-      removeNavigationHandler,
     }),
     []
   );

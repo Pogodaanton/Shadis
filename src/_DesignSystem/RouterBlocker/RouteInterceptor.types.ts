@@ -14,8 +14,4 @@ export interface RouteInterceptor {
    * that can be used as a return value in a `useEffect` hook.
    */
   addNavigationHandler: (handler: NavigationHandler["handler"]) => () => void;
-  /**
-   * Unsubscribes a listener from route changes
-   */
-  removeNavigationHandler: (handler: NavigationHandler["handler"]) => void;
 }

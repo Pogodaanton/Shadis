@@ -67,9 +67,8 @@ class VideoPreprocessor
       "convert",
       "-size " . $this->thumbnail_width . "x" . $this->thumbnail_height . "",
       "\( xc: +noise Random -channel G  -separate -level 0%,100%,2.0 \)",
-      "null: \( $icon_path \) -gravity Center",
-      "-layers Composite",
-      "-layers Optimize",
+      "\( xc:white -alpha set -channel A -evaluate set 30%  \) -composite",
+      "$icon_path -gravity Center -composite",
       $this->thumbnail_path,
       "2>&1",
     );

@@ -166,7 +166,7 @@ const FullscreenDropzone = (
     const { getRootProps, getInputProps, open } = useDropzone({
       onDrop,
       noClick: true,
-      accept: ["image/jpeg", "image/png", "image/gif"],
+      accept: ["image/jpeg", "image/png", "image/gif", "video/mp4"],
     });
 
     return (

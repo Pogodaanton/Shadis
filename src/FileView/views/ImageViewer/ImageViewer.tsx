@@ -102,6 +102,11 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   const { id, title, width, height } = fileData;
 
   /**
+   * React.Ref for detecting image load state
+   */
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  /**
    * We pre-render the image server-side,
    * so that users who are unable to enjoy the full experience
    * can also at least see the actual image.
@@ -113,6 +118,16 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
     const container = document.getElementById("preContainer");
     if (container) container.remove();
   };
+
+  /**
+   * Check whether image is finished loading
+   */
+  useEffect(() => {
+    if (imageRef.current) {
+      if (imageRef.current.complete) onImageLoaded();
+      else imageRef.current.addEventListener("load", onImageLoaded);
+    }
+  }, [imageRef]);
 
   /**
    * React.Ref from the draggable component
@@ -434,7 +449,6 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
         dragConstraints={dragConstraints}
         onTapStart={onTapStart}
         onTap={onTap}
-        onLoad={onImageLoaded}
         style={{
           display: isMagicAnimRunning ? "none" : "block",
           width: width,
@@ -449,7 +463,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
          */
         _dragValueX={posX}
       >
-        <img {...sharedImgAttributes} />
+        <img {...sharedImgAttributes} ref={imageRef} />
       </motion.div>
       <ImageViewerSlider
         show={inTransformMode}

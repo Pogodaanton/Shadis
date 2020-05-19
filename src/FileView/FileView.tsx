@@ -17,6 +17,7 @@ import { LoadableComponent } from "@loadable/component";
 import { FullscreenLoader } from "../Loader";
 import FVSidebarProvider from "./views/FVSidebar/FVSidebarContext";
 import FVSidebarToggleButton from "./views/FVSidebar/FVSidebarToggleButton";
+import VideoViewer from "./views/VideoViewer/VideoViewer";
 import ThumbnailViewer from "./views/ThumbnailViewer/ThumbnailViewer";
 
 const FVSidebar: LoadableComponent<FVSidebarProps> = FullscreenLoader(
@@ -114,7 +115,11 @@ const FileView: React.FC<FileViewProps> = ({
             <FVSidebarToggleButton />
           </motion.div>
           <ThumbnailViewer fileData={fileData}>
-            {isVideo ? null : <ImageViewer fileData={fileData} zoomRef={setZoomRef} />}
+            {isVideo ? (
+              <VideoViewer fileData={fileData} />
+            ) : (
+              <ImageViewer fileData={fileData} zoomRef={setZoomRef} />
+            )}
           </ThumbnailViewer>
           <FVSidebar fileData={fileData} />
         </div>

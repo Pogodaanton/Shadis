@@ -41,6 +41,18 @@ const styles: ComponentStyles<ThumbnailViewerClassNameContract, DesignSystem> = 
 export const ThumbnailContext = createContext<ThumbnailContextItems>(null);
 
 /**
+ * Server-side-rendered content
+ *
+ * We pre-render the image server-side,
+ * so that users who are unable to enjoy the full experience
+ * can also at least see the actual image.
+ *
+ * We will remove the pre-rendered image, since the web-app
+ * already renders one itself.
+ */
+export const ssrContainer = document.getElementById("preContainer");
+
+/**
  * A component that is used for magic animations
  * connecting the cards in the dashboard
  * with FileView.
@@ -87,8 +99,8 @@ const ThumbnailViewer: React.ComponentType<ThumbnailViewerProps> = ({
 
   // Toggle `isMagicAnimRunning`
   const onMagicAnimStart = () => {
-    if (!isMagicAnimRunning) setMagicAnimState(true);
     setThumbnailVisibility(true);
+    if (!isMagicAnimRunning) setMagicAnimState(true);
   };
   const onMagicAnimEnd = () => {
     if (isMagicAnimRunning) setMagicAnimState(false);

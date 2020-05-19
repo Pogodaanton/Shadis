@@ -23,7 +23,7 @@ import ImageViewerSlider from "./ImageViewerSlider";
 import { TweenProps, spring } from "popmotion";
 import { SidebarData } from "../FVSidebar/FVSidebarContext";
 import { debounce } from "lodash-es";
-import { ThumbnailContext } from "../ThumbnailViewer/ThumbnailViewer";
+import { ThumbnailContext, ssrContainer } from "../ThumbnailViewer/ThumbnailViewer";
 
 const applyCenteredAbsolute: CSSRules<DesignSystem> = {
   position: "absolute",
@@ -59,18 +59,6 @@ const styles: ComponentStyles<ImageViewerClassNameContract, DesignSystem> = {
     cursor: "grabbing",
   },
 };
-
-/**
- * Server-side-rendered content
- *
- * We pre-render the image server-side,
- * so that users who are unable to enjoy the full experience
- * can also at least see the actual image.
- *
- * We will remove the pre-rendered image, since the web-app
- * already renders one itself.
- */
-const ssrContainer = document.getElementById("preContainer");
 
 // Used to determine whether user clicked or panned
 let lastDragPoint = { x: 0, y: 0 };

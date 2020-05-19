@@ -61,7 +61,8 @@ if (!empty($segments[0])) {
         z-index: 60;
       }
 
-      #preContainer img {
+      #preContainer img,
+      #preContainer video {
         width: 100%;
         height: 100%;
         object-fit: scale-down;
@@ -91,7 +92,11 @@ if (!empty($segments[0])) {
   <div id="root"></div>
   <?php if (!is_null($file_data)) : ?>
     <div id="preContainer">
-      <img src="<?php echo $file_url; ?>" />
+      <?php if ($file_data["extension"] !== "mp4") : ?>
+        <img src="<?php echo $file_url; ?>" />
+      <?php else : ?>
+        <video src="<?php echo $file_url; ?>" muted autoplay loop></video>
+      <?php endif; ?>
     </div>
   <?php endif; ?>
 </body>

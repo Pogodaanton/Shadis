@@ -116,7 +116,7 @@ const AnimatedRoutes: React.FC<RouteChildrenProps<{ id: string }>> = ({
   const isDashboardVisible = isLoggedIn && !is404;
 
   return (
-    <AnimateSharedLayout type="crossfade">
+    <AnimateSharedLayout type="crossfade" transition={{ duration: 0.25 }}>
       {isDashboardVisible && <Dashboard key="dashboard" frozen={!!match.params.id} />}
       <AnimatePresence exitBeforeEnter>
         {isValidFile && isFileDataNotEmpty(fileData) && (

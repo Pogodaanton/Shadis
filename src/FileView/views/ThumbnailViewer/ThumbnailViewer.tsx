@@ -32,9 +32,15 @@ const styles: ComponentStyles<ThumbnailViewerClassNameContract, DesignSystem> = 
     left: "0",
     width: "100%",
     height: "100%",
-    backgroundSize: "contain",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "center",
+    background: "transparent",
+    "& > img": {
+      position: "absolute",
+      top: "0",
+      left: "0",
+      right: "0",
+      bottom: "0",
+      margin: "auto",
+    },
   },
 };
 
@@ -65,7 +71,7 @@ const ThumbnailViewer: React.ComponentType<ThumbnailViewerProps> = ({
   managedClasses,
   children,
 }) => {
-  const { id, width, height, fromServer } = fileData;
+  const { id, width, height, fromServer, title } = fileData;
 
   // Viewport dimensions
   const [resizeListener, { viewportWidth, viewportHeight }] = useViewportDimensions();
@@ -154,18 +160,25 @@ const ThumbnailViewer: React.ComponentType<ThumbnailViewerProps> = ({
     <ThumbnailContext.Provider value={contextValue}>
       <motion.div {...extraAttributes} className={managedClasses.viewer}>
         {resizeListener}
-        <motion.div
-          layoutId={`card-image-container-${id}`}
+        <div
           className={managedClasses.thumbnailViewer}
-          onAnimationStart={onMagicAnimStart}
-          onAnimationComplete={onMagicAnimEnd}
           tabIndex={-1}
           style={{
             visibility: isThumbnailVisible ? "visible" : "hidden",
-            backgroundImage: `url("${window.location.origin}/${id}.thumb.jpg")`,
-            backgroundSize: `${defaultWidth}px ${defaultHeight}px`,
           }}
-        />
+        >
+          <motion.img
+            layoutId={`card-image-container-${id}`}
+            onAnimationStart={onMagicAnimStart}
+            onAnimationComplete={onMagicAnimEnd}
+            alt={title}
+            src={`${window.location.origin}/${id}.thumb.jpg`}
+            style={{
+              width: defaultWidth,
+              height: defaultHeight,
+            }}
+          />
+        </div>
         {children}
       </motion.div>
     </ThumbnailContext.Provider>

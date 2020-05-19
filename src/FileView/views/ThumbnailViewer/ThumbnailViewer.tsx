@@ -1,12 +1,4 @@
-import React, {
-  useState,
-  useMemo,
-  createContext,
-  useRef,
-  useLayoutEffect,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { useState, useMemo, createContext, useRef, useCallback } from "react";
 import {
   ThumbnailViewerProps,
   ThumbnailViewerClassNameContract,

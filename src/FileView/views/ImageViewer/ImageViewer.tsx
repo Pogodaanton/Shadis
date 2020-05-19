@@ -22,7 +22,6 @@ import { classNames } from "@microsoft/fast-web-utilities";
 import ImageViewerSlider from "./ImageViewerSlider";
 import { TweenProps, spring } from "popmotion";
 import { SidebarData } from "../FVSidebar/FVSidebarContext";
-import { debounce } from "lodash-es";
 import { ThumbnailContext, ssrContainer } from "../ThumbnailViewer/ThumbnailViewer";
 
 const applyCenteredAbsolute: CSSRules<DesignSystem> = {
@@ -147,19 +146,8 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   /**
    * Used for detecting the current state of the sidebar
    */
-  const { sidebarPos, isSidebarFloating } = useContext(SidebarData);
+  const { sidebarPos, isSidebarFloating, debouncedSidebarPos } = useContext(SidebarData);
   const { addNavigationHandler } = useRouteInterception();
-
-  /**
-   * Debounce sidebar position changes, so that we can avoid
-   * expensive calculations and renderings
-   */
-  const [debouncedSidebarPos, setSidebarPos] = useState(sidebarPos.get());
-  useEffect(() => {
-    const listener = () => setSidebarPos(isSidebarFloating ? 0 : sidebarPos.get());
-    listener();
-    return sidebarPos.onChange(debounce(listener, 20));
-  }, [isSidebarFloating, sidebarPos]);
 
   /**
    * Minimum scale factor.

@@ -28,4 +28,5 @@ export interface ISidebarData {
   isSidebarFloating: boolean;
   fileTitle: string;
   setFileTitle: React.Dispatch<React.SetStateAction<string>>;
+  debouncedSidebarPos: number;
 }

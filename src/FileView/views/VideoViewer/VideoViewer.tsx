@@ -1,14 +1,16 @@
-import React, { useContext, useRef, useLayoutEffect } from "react";
+import React, { useContext, useRef, useLayoutEffect, useMemo } from "react";
 import { VideoViewerProps, VideoViewerClassNameContract } from "./VideoViewer.props";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { headerHeight } from "../../../_DesignSystem";
 import { ThumbnailContext, ssrContainer } from "../ThumbnailViewer/ThumbnailViewer";
+import { SidebarData } from "../FVSidebar/FVSidebarContext";
 
 const styles: ComponentStyles<VideoViewerClassNameContract, DesignSystem> = {
   videoViewer: {
     position: "absolute",
     top: "64px",
+    transition: "width .15s",
     "& video": {
       width: "100%",
       height: "100%",
@@ -33,13 +35,20 @@ const VideoViewer: React.ComponentType<VideoViewerProps> = ({
   managedClasses,
 }) => {
   const { id, extension, fromServer } = fileData;
-  const {
+  let {
     isThumbnailVisible,
     addEntryFinishListener,
     setThumbnailVisibility,
-    viewportWidth,
+    viewportWidth: originalViewportWidth,
     viewportHeight,
   } = useContext(ThumbnailContext);
+
+  // Sidebar data for viewport calculations
+  const { debouncedSidebarPos } = useContext(SidebarData);
+  const viewportWidth = useMemo(() => originalViewportWidth - debouncedSidebarPos, [
+    debouncedSidebarPos,
+    originalViewportWidth,
+  ]);
 
   /**
    * React.ref of the video element

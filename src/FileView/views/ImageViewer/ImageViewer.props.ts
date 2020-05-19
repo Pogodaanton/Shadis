@@ -14,7 +14,6 @@ export interface ImageViewerClassNameContract {
  * Props for the component
  */
 export interface ImageViewerProps extends ManagedClasses<ImageViewerClassNameContract> {
-  imageURL: string;
   fileData: Window["fileData"];
   zoomRef?: (ref: React.MouseEventHandler) => void;
   onAnimationComplete?: () => void;

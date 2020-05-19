@@ -17,13 +17,13 @@ import {
   MotionValue,
   useDomEvent,
 } from "framer-motion";
-import { headerHeight, isLoggedIn, useRouteInterception } from "../../../_DesignSystem";
-import { useViewportDimensions } from "./useViewportDimensions";
+import { headerHeight, useRouteInterception } from "../../../_DesignSystem";
 import { classNames } from "@microsoft/fast-web-utilities";
 import ImageViewerSlider from "./ImageViewerSlider";
 import { TweenProps, spring } from "popmotion";
 import { SidebarData } from "../FVSidebar/FVSidebarContext";
 import { debounce } from "lodash-es";
+import { ThumbnailContext } from "../ThumbnailViewer/ThumbnailViewer";
 
 const applyCenteredAbsolute: CSSRules<DesignSystem> = {
   position: "absolute",
@@ -60,6 +60,18 @@ const styles: ComponentStyles<ImageViewerClassNameContract, DesignSystem> = {
   },
 };
 
+/**
+ * Server-side-rendered content
+ *
+ * We pre-render the image server-side,
+ * so that users who are unable to enjoy the full experience
+ * can also at least see the actual image.
+ *
+ * We will remove the pre-rendered image, since the web-app
+ * already renders one itself.
+ */
+const ssrContainer = document.getElementById("preContainer");
+
 // Used to determine whether user clicked or panned
 let lastDragPoint = { x: 0, y: 0 };
 
@@ -92,50 +104,57 @@ const animateWithSpring = (motionValue: MotionValue, config: TweenProps) => (
  * The main ImageViewer Component
  */
 const ImageViewer: React.ComponentType<ImageViewerProps> = ({
-  imageURL,
   managedClasses,
   fileData,
   zoomRef,
-  onAnimationComplete,
 }) => {
   fileData = fileData || window.fileData;
-  const { id, title, width, height } = fileData;
+  const { id, extension, title, width, height, fromServer } = fileData;
+
+  const {
+    isThumbnailVisible,
+    viewportWidth,
+    viewportHeight,
+    defaultScale,
+    setThumbnailVisibility,
+    addEntryFinishListener,
+  } = useContext(ThumbnailContext);
 
   /**
-   * React.Ref for detecting image load state
+   * React.Ref of the image element
    */
   const imageRef = useRef<HTMLImageElement>(null);
 
   /**
-   * We pre-render the image server-side,
-   * so that users who are unable to enjoy the full experience
-   * can also at least see the actual image.
-   *
-   * This will remove that pre-rendered image, since the web-app
-   * has already rendered it on its own.
-   */
-  const onImageLoaded = () => {
-    const container = document.getElementById("preContainer");
-    if (container) container.remove();
-  };
-
-  /**
-   * Check whether image is finished loading
+   * Listen to the finishing of the thumbnail animation.
+   * Load the high-res image afterwards and hide the thumbnail.
    */
   useEffect(() => {
     if (imageRef.current) {
-      if (imageRef.current.complete) onImageLoaded();
-      else imageRef.current.addEventListener("load", onImageLoaded);
+      const image = imageRef.current;
+      const listener = () => setThumbnailVisibility(false);
+
+      addEntryFinishListener(() => {
+        image.addEventListener("load", listener);
+        image.src = `${window.location.origin}/${id}.${extension}`;
+
+        if (fromServer) {
+          if (image.complete) listener();
+          if (ssrContainer) ssrContainer.remove();
+          return;
+        }
+      });
+
+      return () => {
+        image.removeEventListener("load", listener);
+      };
     }
-  }, [imageRef]);
+  }, [addEntryFinishListener, extension, fromServer, id, setThumbnailVisibility]);
 
   /**
    * React.Ref from the draggable component
    */
   const draggableRef = useRef<HTMLDivElement>(null);
-
-  // Viewport dimensions
-  const [resizeListener, { viewportWidth, viewportHeight }] = useViewportDimensions();
 
   /**
    * Used for detecting the current state of the sidebar
@@ -160,23 +179,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
    * It can be used to determine the default size
    * of the image, hence the name.
    */
-  const defaultScale = useMemo(() => {
-    let newScaleFactor = 1;
-    const aspectRatio = width / height;
-    const adjustedViewportWidth = viewportWidth - debouncedSidebarPos;
-
-    if (width - adjustedViewportWidth > 0 || height - viewportHeight > 0) {
-      if (viewportHeight * aspectRatio <= adjustedViewportWidth) {
-        const adaptedWidth = width * (viewportHeight / height);
-        newScaleFactor = adaptedWidth / width;
-      } else {
-        const adaptedHeight = height * (adjustedViewportWidth / width);
-        newScaleFactor = adaptedHeight / height;
-      }
-    }
-
-    return newScaleFactor;
-  }, [debouncedSidebarPos, height, viewportHeight, viewportWidth, width]);
+  type defaultScale = number;
 
   /**
    * Current scale factor
@@ -367,71 +370,15 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
   }, [dragConstraints, posX, posY]);
 
   /**
-   * Used for determining whether a magic animation
-   * is running.
-   */
-  type isMagicAnimRunning = boolean;
-  const [isMagicAnimRunning, setMagicAnimState] = useState(false);
-  // Toggle `isMagicAnimRunning`
-  const onMagicAnimStart = () => !isMagicAnimRunning && setMagicAnimState(true);
-  const onMagicAnimEnd = () => {
-    if (isMagicAnimRunning) setMagicAnimState(false);
-    onAnimationComplete();
-  };
-
-  /**
    * Attributes for all img-Tags in this component
    */
   const sharedImgAttributes = {
-    src: imageURL,
     alt: title,
     draggable: false,
   };
 
-  /**
-   * Additional attributes for the root motion.div
-   * if magic motion is not available.
-   */
-  const extraAttributes = !isLoggedIn
-    ? {
-        animate: { opacity: 1 },
-        transition: { duration: 0.2 },
-        initial: { opacity: 0 },
-        exit: { opacity: 0 },
-        onAnimationComplete: onMagicAnimEnd,
-      }
-    : {};
-
-  // Default dimensions used for magic component
-  const defaultWidth = useMemo(() => width * defaultScale, [defaultScale, width]);
-  const defaultHeight = useMemo(() => height * defaultScale, [defaultScale, height]);
-
   return (
-    <motion.div className={managedClasses.imageViewer} {...extraAttributes}>
-      {resizeListener}
-      <motion.div
-        /**
-         * This component is used for magic animations
-         * connecting the cards in the dashboard
-         * with this ImageViewer.
-         *
-         * For the sake of simplicity, we use a seperate
-         * component for magic animations and only make it
-         * visible if needed.
-         */
-        layoutId={`card-image-container-${id}`}
-        className={managedClasses.imageViewer_imageContainer}
-        onAnimationStart={onMagicAnimStart}
-        onAnimationComplete={onMagicAnimEnd}
-        tabIndex={-1}
-        style={{
-          visibility: isMagicAnimRunning ? "visible" : "hidden",
-          width: defaultWidth,
-          height: defaultHeight,
-        }}
-      >
-        <img {...sharedImgAttributes} tabIndex={-1} />
-      </motion.div>
+    <div className={managedClasses.imageViewer}>
       <motion.div
         className={classNames(
           managedClasses.imageViewer_imageContainer,
@@ -451,7 +398,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
         onTapStart={onTapStart}
         onTap={onTap}
         style={{
-          display: isMagicAnimRunning ? "none" : "block",
+          display: isThumbnailVisible ? "none" : "block",
           width: width,
           height: height,
           x: posXAdjusted,
@@ -473,7 +420,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
         maxFactor={3}
         onValueChange={setScaleState}
       />
-    </motion.div>
+    </div>
   );
 };
 

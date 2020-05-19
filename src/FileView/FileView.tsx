@@ -17,6 +17,7 @@ import { LoadableComponent } from "@loadable/component";
 import { FullscreenLoader } from "../Loader";
 import FVSidebarProvider from "./views/FVSidebar/FVSidebarContext";
 import FVSidebarToggleButton from "./views/FVSidebar/FVSidebarToggleButton";
+import ThumbnailViewer from "./views/ThumbnailViewer/ThumbnailViewer";
 
 const FVSidebar: LoadableComponent<FVSidebarProps> = FullscreenLoader(
   import(/* webpackChunkName: "FVSidebar" */ "./views/FVSidebar/FVSidebar")
@@ -62,25 +63,17 @@ const headerStyles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
   header_left: {},
 };
 
-let largeImage: HTMLImageElement = null;
-
 const FileView: React.FC<FileViewProps> = ({
   managedClasses,
   fileData,
 }: FileViewProps) => {
-  const { id, extension, fromServer } = fileData;
+  const { extension } = fileData;
 
   /**
-   * Helper functions as refs to prevent them from updating after
+   * Helper function as ref to prevent it from updating after
    * each re-render
    */
-  const onImageLoaded = useRef<() => void>(null);
   const onMagnify = useRef<React.MouseEventHandler>(() => {});
-
-  /**
-   * Used to decide whether to view the thumbnail or the original image
-   */
-  const [largeImageLoaded, setLargeImageLoadedState] = useState(!!fromServer);
 
   /**
    * Used to decide whether to show ImageViewer or VideoViewer
@@ -97,42 +90,6 @@ const FileView: React.FC<FileViewProps> = ({
       document.body.style.overflow = "visible";
     };
   }, []);
-
-  /**
-   * Setting up imageLoad event handler for large image
-   */
-  useEffect(() => {
-    onImageLoaded.current = () => setLargeImageLoadedState(true);
-    return () => {
-      if (largeImage) {
-        largeImage.removeEventListener("load", onImageLoaded.current);
-        largeImage = null;
-      }
-    };
-  }, []);
-
-  /**
-   * Load image in background before rendering.
-   * This function is usually executed by <ImageViewer/>.
-   */
-  const loadLargeImage = () => {
-    if (largeImage || fromServer) return;
-    largeImage = new Image();
-    largeImage.addEventListener("load", onImageLoaded.current);
-    largeImage.src = `${window.location.origin}/${id}.${extension}`;
-  };
-
-  /**
-   * imageURL for <ImageViewer/>
-   *
-   * We don't need to load the thumbnail
-   * if the client already started prefetching the image for us.
-   * This only happens when the user is directly opening a file page
-   * instead of opening the image from the dashboard.
-   */
-  const imageURL = `${window.location.origin}/${id}.${
-    largeImageLoaded || fromServer ? extension : "thumb.jpg"
-  }`;
 
   // Callback used after mounting ImageViewer
   const setZoomRef = (ref: React.MouseEventHandler) => (onMagnify.current = ref);
@@ -156,15 +113,10 @@ const FileView: React.FC<FileViewProps> = ({
             />
             <FVSidebarToggleButton />
           </motion.div>
-          {isVideo ? null : (
-            <ImageViewer
-              imageURL={imageURL}
-              fileData={fileData}
-              zoomRef={setZoomRef}
-              onAnimationComplete={loadLargeImage}
-            />
-          )}
-          {largeImageLoaded && <FVSidebar fileData={fileData} />}
+          <ThumbnailViewer fileData={fileData}>
+            {isVideo ? null : <ImageViewer fileData={fileData} zoomRef={setZoomRef} />}
+          </ThumbnailViewer>
+          <FVSidebar fileData={fileData} />
         </div>
       </RouteInterceptionManager>
     </FVSidebarProvider>

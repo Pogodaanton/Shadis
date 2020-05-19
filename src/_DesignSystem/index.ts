@@ -15,6 +15,7 @@ import { iconToGlyph } from "./Utils/iconToGlyph";
 import useToasts from "./Toast/useToasts";
 import ProgressIcon from "./ProgressIcon/ProgressIcon";
 import useMotionValueFactory from "./Hooks/useMotionValueFactory";
+import { useScaleFactor } from "./Hooks/useScaleFactor";
 
 export {
   Button,
@@ -33,4 +34,5 @@ export {
   isLoggedIn,
   RouteInterceptionManager,
   useRouteInterception,
+  useScaleFactor,
 };

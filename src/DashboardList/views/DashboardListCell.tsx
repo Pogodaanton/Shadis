@@ -207,6 +207,9 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
           alt={title}
           onError={onImageError}
           onLoad={onImageLoaded}
+          style={{
+            height: thumb_height,
+          }}
         />
       </Link>
       <Checkbox

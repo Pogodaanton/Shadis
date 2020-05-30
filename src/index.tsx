@@ -3,10 +3,10 @@ import ReactDOM from "react-dom";
 import App from "./App/App";
 import "./index.scss";
 import "./i18n";
-import * as serviceWorker from "./serviceWorker";
 import PogodaDesignToolkitProvider from "./_DesignSystem/Toolkit/DesignSystem";
 import { ToastProvider } from "react-toast-notifications";
 import loadable from "@loadable/component";
+import * as serviceWorkers from "./_CustomWorkers";
 
 const Toast = loadable(() =>
   import(/* webpackChunkName: "Toast" */ "./_DesignSystem/Toast/Toast")
@@ -28,7 +28,13 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
+/**
+ * Registering custom service workers
+ */
+serviceWorkers.registerAll();
+
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// import * as serviceWorker from "./serviceWorker";
+// serviceWorker.unregister();

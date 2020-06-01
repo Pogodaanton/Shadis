@@ -56,6 +56,8 @@ const BaseToast = (props: ToastProps) => {
   delete defaultToastProps.managedClasses;
   delete defaultToastProps.title;
 
+  defaultToastProps.appearance = props.appearance || "info";
+
   const title = () => {
     switch (props.appearance) {
       case "error":

@@ -10,15 +10,15 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 // Rewrap data assuming it is a JSON request
 if (empty($_POST)) {
-  $_POST = json_decode(file_get_contents("php://input"));
+  $_POST = json_decode(file_get_contents("php://input"), true);
   if (json_last_error() !== JSON_ERROR_NONE) {
     error("Could note decode JSON data: (" . json_last_error() . ") " . json_last_error_msg());
   }
 }
 
-$token = $_POST->token;
-$selection = $_POST->selection;
-$action = $_POST->action;
+$token = $_POST["token"];
+$selection = $_POST["selection"];
+$action = $_POST["action"];
 
 /**
  * Login check
@@ -86,6 +86,7 @@ function generate_string_types($array)
 
 if ($action === "delete") {
   $db->request("DELETE FROM `" . $table_prefix . "files` WHERE id IN (" . generate_q_marks($selection) . ")", generate_string_types($selection), ...$selection);
+  $db->request("DELETE FROM `" . $table_prefix . "file_tasks` WHERE id IN (" . generate_q_marks($selection) . ")", generate_string_types($selection), ...$selection);
   $uploads_folder = dirname(__FILE__) . "/../uploads/";
   $dir_contents = array_diff(scandir($uploads_folder), array('..', '.'));
 
@@ -103,7 +104,7 @@ if ($action === "delete") {
     }
   }
 } elseif ($action === "editTitle") {
-  $value = $_POST->value;
+  $value = $_POST["value"];
 
   if (!isset($value) || !is_string($value)) {
     error("Missing input! Arguments needed: (selection or token), action and value", 400);

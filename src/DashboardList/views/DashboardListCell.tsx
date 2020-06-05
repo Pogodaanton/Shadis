@@ -37,14 +37,29 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     "&:hover, &$dashboardListCell__checked": {
       "& $dashboardListCell_metadata": {
         transform: "translateY(0%)",
-        transition: "transform .2s .1s cubic-bezier(0.1, 0.9, 0.2, 1)",
+        transition: "transform .2s cubic-bezier(0.1, 0.9, 0.2, 1)",
       },
       "& $dashboardListCell_checkbox": {
+        opacity: "1",
+      },
+      "& > a::after": {
         opacity: "1",
       },
     },
     "& > a": {
       display: "block",
+      "&::after": {
+        content: '""',
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        top: "0",
+        left: "0",
+        background:
+          "linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0) 55px, rgba(0,0,0,0))",
+        opacity: "0",
+        transition: "opacity 0.08s",
+      },
     },
   },
   dashboardListCell_image: {
@@ -83,7 +98,7 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     left: "10px",
     zIndex: "2",
     opacity: "0",
-    transition: "opacity 0.08s .1s",
+    transition: "opacity 0.08s",
   },
   dashboardListCell_overlay: {
     display: "none",
@@ -154,9 +169,6 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
   const { t } = useTranslation("dashboard");
   const cellRef = useRef<HTMLDivElement>(null);
 
-  // i18n-ize the title; `untitled` will call a translation string
-  title = title === "" || title === "untitled" || !title ? t("untitled") : title;
-
   // We already know the thumbnail size, so we take over the work of <CellMeasurer />
   if (!props.cache.has(props.index, 0)) {
     props.cache.set(props.index, 0, 200, thumb_height);
@@ -210,14 +222,14 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
         height: thumb_height,
       }}
     >
+      {showPlayIcon && (
+        <FaPlayCircle className={props.managedClasses.dashboardListCell_playIcon} />
+      )}
       <Link to={`/${id}/`} onClick={shouldExecuteclick}>
-        {showPlayIcon && (
-          <FaPlayCircle className={props.managedClasses.dashboardListCell_playIcon} />
-        )}
         <img
           className={props.managedClasses.dashboardListCell_image}
           src={`${window.location.origin}/${id}.thumb.jpg`}
-          alt={title}
+          alt={!title || title === "untitled" ? t("untitled") : title}
           onError={onImageError}
           onLoad={onImageLoaded}
           style={{
@@ -233,14 +245,16 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
         checked={props.selected}
       />
       <div className={props.managedClasses.dashboardListCell_overlay} />
-      <footer
-        className={props.managedClasses.dashboardListCell_metadata}
-        tabIndex={0}
-        // Make sure that small images are still selectable
-        style={thumb_height < 45 ? { display: "none" } : {}}
-      >
-        <Label tabIndex={-1}>{title}</Label>
-      </footer>
+      {title && title !== "untitled" && (
+        <footer
+          className={props.managedClasses.dashboardListCell_metadata}
+          tabIndex={0}
+          // Make sure that small images are still selectable
+          style={thumb_height < 45 ? { display: "none" } : {}}
+        >
+          <Label tabIndex={-1}>{title}</Label>
+        </footer>
+      )}
     </motion.div>
   );
 };

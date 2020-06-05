@@ -60,52 +60,15 @@ class ImagePreprocessor
   }
 
   /**
-   * Generates a thumbnail for the image.
-   * The function assumes that the image has already been put to the uploads directory.
-   */
-  private function generate_thumbnail()
-  {
-    // We need to use type from the file array directly, since jpg !== jpeg
-    $type = substr($this->file["type"], 6);
-    $image_path = $GLOBALS["upload_directory"] . $this->file_id . "." . $this->file_extension;
-
-    // Using an array to make this part more readable
-    $exec_array = array(
-      $GLOBALS["imagick_path"],
-      "convert",
-      $image_path,
-      "-filter Triangle",
-      "-define " . $type . ":size=" . $this->file_width . "x" . $this->file_height,
-      "-thumbnail '" . $this->thumbnail_width . "'",
-      "-background white",
-      "-alpha Background",
-      "-unsharp 0.25x0.25+8+0.065",
-      "-dither None",
-      "-sampling-factor 4:2:0",
-      "-quality 82",
-      "-define jpeg:fancy-upsampling=off",
-      "-interlace none",
-      "-colorspace RGB",
-      "-strip",
-      $this->thumbnail_path,
-      "2>&1",
-    );
-
-    // Combining arguments into exec string
-    exec(implode(" ", $exec_array));
-
-    // Setting the thumbnail_height according to the newly generated image
-    $this->thumbnail_height = exec($GLOBALS["imagick_path"] . " identify -ping -format '%h' " . $this->thumbnail_path);
-    return true;
-  }
-
-  /**
    * Executes every task needed for uploading the image
    * @return array Available keys: "file_width", "file_height", "thumbnail_height"
    */
   public function upload()
   {
-    if (!$this->generate_thumbnail()) {
+    try {
+      $image_path = $GLOBALS["upload_directory"] . $this->file_id . "." . $this->file_extension;
+      $this->thumbnail_height = generate_thumbnail($this->thumbnail_path, $image_path, $this->file["type"]);
+    } catch (Exception $err) {
       throw new ErrorException("Generating image thumbnail did not succeed.");
     }
 

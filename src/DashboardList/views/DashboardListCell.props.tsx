@@ -9,6 +9,7 @@ export interface DashboardListCellClassNameContract {
   dashboardListCell: string;
   dashboardListCell__checked?: string;
   dashboardListCell_image: string;
+  dashboardListCell_playIcon: string;
   dashboardListCell_metadata: string;
   dashboardListCell_checkbox: string;
   dashboardListCell_overlay?: string;

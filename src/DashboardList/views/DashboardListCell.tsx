@@ -13,6 +13,7 @@ import {
   applyElevation,
   ElevationMultiplier,
   applyElevatedCornerRadius,
+  applyPillCornerRadius,
 } from "@microsoft/fast-components-styles-msft";
 import { useTranslation } from "react-i18next";
 import {
@@ -24,6 +25,7 @@ import { parseColorHexRGBA } from "@microsoft/fast-colors";
 import { classNames } from "@microsoft/fast-web-utilities";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { FaPlayCircle } from "react-icons/fa";
 
 const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> = {
   dashboardListCell: {
@@ -32,7 +34,7 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     ...applyElevatedCornerRadius(),
     ...applyElevation(ElevationMultiplier.e4),
     cursor: "pointer",
-    "&:hover": {
+    "&:hover, &$dashboardListCell__checked": {
       "& $dashboardListCell_metadata": {
         transform: "translateY(0%)",
         transition: "transform .2s .1s cubic-bezier(0.1, 0.9, 0.2, 1)",
@@ -40,9 +42,6 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
       "& $dashboardListCell_checkbox": {
         opacity: "1",
       },
-    },
-    "&$dashboardListCell__checked $dashboardListCell_metadata": {
-      transform: "translateY(0%)",
     },
     "& > a": {
       display: "block",
@@ -85,9 +84,6 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     zIndex: "2",
     opacity: "0",
     transition: "opacity 0.08s .1s",
-    ".selecting &": {
-      opacity: "1",
-    },
   },
   dashboardListCell_overlay: {
     display: "none",
@@ -110,6 +106,18 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     "& $dashboardListCell_overlay": {
       display: "block",
     },
+  },
+  dashboardListCell_playIcon: {
+    position: "absolute",
+    width: "20px",
+    height: "auto",
+    top: "10px",
+    left: "10px",
+    margin: "auto",
+    color: "#fff",
+    background: neutralForegroundRest,
+    filter: "drop-shadow(0px 0px 1px black)",
+    ...applyPillCornerRadius(),
   },
 };
 
@@ -142,7 +150,7 @@ const onImageError: React.ReactEventHandler<HTMLImageElement> = ({ currentTarget
  * Renders a cell and sets its height in the CellMeasurementCache
  */
 const CellRenderer: React.FC<DashboardListCellProps> = props => {
-  let { id, title, thumb_height } = props.data;
+  let { id, title, thumb_height, extension } = props.data;
   const { t } = useTranslation("dashboard");
   const cellRef = useRef<HTMLDivElement>(null);
 
@@ -162,6 +170,8 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
       });
     }
   }
+
+  const showPlayIcon = extension === "mp4";
 
   const onCheckmarkChange = (
     e: React.ChangeEvent<HTMLInputElement> & React.MouseEvent
@@ -201,6 +211,9 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
       }}
     >
       <Link to={`/${id}/`} onClick={shouldExecuteclick}>
+        {showPlayIcon && (
+          <FaPlayCircle className={props.managedClasses.dashboardListCell_playIcon} />
+        )}
         <img
           className={props.managedClasses.dashboardListCell_image}
           src={`${window.location.origin}/${id}.thumb.jpg`}

@@ -15,6 +15,7 @@ export interface ListDataItem {
   thumb_height: number;
   timestamp: number;
   title: string;
+  extension: string;
 }
 
 /**

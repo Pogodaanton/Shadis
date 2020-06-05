@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__FILE__) . "/../output.inc.php";
+require_once dirname(__FILE__) . "/../db.inc.php";
 
 class VideoPreprocessor
 {
@@ -52,14 +53,14 @@ class VideoPreprocessor
   }
 
   /**
-   * Generates a thumbnail for the video.
+   * Generates a temporary thumbnail for the video.
    */
-  private function generate_thumbnail()
+  private function generate_temp_thumbnail()
   {
     $this->thumbnail_height =  $this->thumbnail_width * ($this->file_height / $this->file_width);
 
     // Path to the play icon
-    $icon_path = dirname(__FILE__) . "/../../static/media/play.png";
+    // $icon_path = dirname(__FILE__) . "/../../static/media/play.png";
 
     // Using an array to make this part more readable
     $exec_array = array(
@@ -68,7 +69,7 @@ class VideoPreprocessor
       "-size " . $this->thumbnail_width . "x" . $this->thumbnail_height . "",
       "\( xc: +noise Random -channel G  -separate -level 0%,100%,2.0 \)",
       "\( xc:white -alpha set -channel A -evaluate set 30%  \) -composite",
-      "$icon_path -gravity Center -composite",
+      // "$icon_path -gravity Center -composite",
       $this->thumbnail_path,
       "2>&1",
     );
@@ -79,14 +80,29 @@ class VideoPreprocessor
   }
 
   /**
+   * Since we cannot access any single frame of a video with
+   * plain PHP, we let the client generate the thumbnails for us.
+   * 
+   * For that, we compile the ids of each video that needs a proper
+   * thumbnail and let the client handle the rest.
+   */
+  private function add_thumbnail_generation_task()
+  {
+    $sql = "INSERT INTO `" . $GLOBALS["table_prefix"] . "file_tasks` (id, thumbnail) VALUEs (?,?)";
+    $GLOBALS["db"]->request($sql, "si", $this->file_id, 1);
+  }
+
+  /**
    * Executes every task needed for uploading the video
    * @return array Available keys: "file_width", "file_height", "thumbnail_height"
    */
   public function upload()
   {
-    if (!$this->generate_thumbnail()) {
-      throw new ErrorException("Generating video thumbnail did not succeed.");
+    if (!$this->generate_temp_thumbnail()) {
+      throw new ErrorException("Generating temporary video thumbnail did not succeed.");
     }
+
+    $this->add_thumbnail_generation_task();
 
     return array(
       "file_width" => $this->file_width,

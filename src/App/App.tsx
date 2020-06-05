@@ -5,6 +5,14 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { AppContainerClassNameContract, AppContainerProps } from "./App.props";
 import AnimatedRoutes from "./AnimatedRoutes";
+import loadable, { LoadableComponent } from "@loadable/component";
+import { isLoggedIn } from "../_DesignSystem";
+
+const VideoThumbnailGenerator: LoadableComponent<{}> = loadable(() =>
+  import(
+    /* webpackChunkName: "VideoThumbnailGenerator" */ "../_Workers/VideoThumbnailGenerator/VideoThumbnailGenerator"
+  )
+);
 
 const styles: ComponentStyles<AppContainerClassNameContract, DesignSystem> = {
   container: {
@@ -25,6 +33,7 @@ const AppContainer: React.ComponentType<AppContainerProps> = ({ managedClasses }
         <Route path={["/:id", "/"]} component={AnimatedRoutes} />
       </Suspense>
     </Router>
+    {isLoggedIn && <VideoThumbnailGenerator />}
   </Background>
 );
 

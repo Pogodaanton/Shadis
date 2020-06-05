@@ -6,7 +6,6 @@ import "./i18n";
 import PogodaDesignToolkitProvider from "./_DesignSystem/Toolkit/DesignSystem";
 import { ToastProvider } from "react-toast-notifications";
 import loadable from "@loadable/component";
-import * as serviceWorkers from "./_CustomWorkers";
 
 const Toast = loadable(() =>
   import(/* webpackChunkName: "Toast" */ "./_DesignSystem/Toast/Toast")
@@ -27,11 +26,6 @@ ReactDOM.render(
   </PogodaDesignToolkitProvider>,
   document.getElementById("root")
 );
-
-/**
- * Registering custom service workers
- */
-serviceWorkers.registerAll();
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

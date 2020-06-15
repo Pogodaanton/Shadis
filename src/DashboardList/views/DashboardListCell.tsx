@@ -37,7 +37,7 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     "&:hover, &$dashboardListCell__checked": {
       "& $dashboardListCell_metadata": {
         transform: "translateY(0%)",
-        transition: "transform .2s cubic-bezier(0.1, 0.9, 0.2, 1)",
+        transition: "transform .2s .1s cubic-bezier(0.1, 0.9, 0.2, 1)",
       },
       "& $dashboardListCell_checkbox": {
         opacity: "1",
@@ -79,7 +79,7 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     padding: "10px",
     boxSizing: "border-box",
     textAlign: "center",
-    background: des => parseColorHexRGBA(backgroundColor(des) + "cc").toStringWebRGBA(),
+    background: des => parseColorHexRGBA(backgroundColor(des) + "ee").toStringWebRGBA(),
     transform: "translateY(100%)",
     transition: "transform .2s cubic-bezier(0.9, 0.1, 1, 0.2)",
     outline: "none",

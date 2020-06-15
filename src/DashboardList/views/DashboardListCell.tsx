@@ -131,6 +131,7 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     margin: "auto",
     color: "#fff",
     background: neutralForegroundRest,
+    opacity: "0.7",
     filter: "drop-shadow(0px 0px 1px black)",
     ...applyPillCornerRadius(),
   },

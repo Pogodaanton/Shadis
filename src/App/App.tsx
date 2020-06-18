@@ -14,11 +14,11 @@ const VideoThumbnailGenerator: LoadableComponent<{}> = loadable(() =>
   )
 );
 
-const VideoGifGenerator: LoadableComponent<{}> = loadable(() =>
-  import(
-    /* webpackChunkName: "VideoGifGenerator" */ "../_Workers/VideoGifGenerator/VideoGifGenerator"
-  )
-);
+//const VideoGifGenerator: LoadableComponent<{}> = loadable(() =>
+//  import(
+//    /* webpackChunkName: "VideoGifGenerator" */ "../_Workers/VideoGifGenerator/VideoGifGenerator"
+//  )
+//);
 
 const styles: ComponentStyles<AppContainerClassNameContract, DesignSystem> = {
   container: {

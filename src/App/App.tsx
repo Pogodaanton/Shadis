@@ -14,6 +14,12 @@ const VideoThumbnailGenerator: LoadableComponent<{}> = loadable(() =>
   )
 );
 
+const VideoGifGenerator: LoadableComponent<{}> = loadable(() =>
+  import(
+    /* webpackChunkName: "VideoGifGenerator" */ "../_Workers/VideoGifGenerator/VideoGifGenerator"
+  )
+);
+
 const styles: ComponentStyles<AppContainerClassNameContract, DesignSystem> = {
   container: {
     display: "flex",
@@ -34,6 +40,7 @@ const AppContainer: React.ComponentType<AppContainerProps> = ({ managedClasses }
       </Suspense>
     </Router>
     {isLoggedIn && <VideoThumbnailGenerator />}
+    {/*isLoggedIn && <VideoGifGenerator />*/}
   </Background>
 );
 

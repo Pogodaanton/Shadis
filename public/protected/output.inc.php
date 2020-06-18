@@ -81,3 +81,30 @@ function generate_thumbnail(string $destination, string $image_path, string $mim
   // Setting the thumbnail_height according to the newly generated image
   return exec($GLOBALS["imagick_path"] . " identify -ping -format '%h' " . $destination);
 }
+
+/**
+ * Generates an optimized GIF from an input image.
+ * @param string $destination Destination path of the thumbnail.
+ * @param string $image_path A path to the image in question.
+ * @return string Width and height of the thumbnail; the width is always 200.
+ */
+function generate_gif(string $destination, string $image_path)
+{
+  // Using an array to make this part more readable
+  $exec_array = array(
+    $GLOBALS["imagick_path"],
+    "convert",
+    $image_path,
+    "-colorspace RGB",
+    "-ordered-dither o8x8,8,8,4",
+    "+map",
+    $destination,
+    "2>&1",
+  );
+
+  // Combining arguments into exec string
+  exec(implode(" ", $exec_array));
+
+  // Setting the thumbnail_height according to the newly generated image
+  return exec($GLOBALS["imagick_path"] . " identify -ping -format '%wx%h' " . $destination);
+}

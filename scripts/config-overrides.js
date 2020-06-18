@@ -74,7 +74,7 @@ module.exports = {
 
     /**
      * Force copy everything to build directory
-     * and include getID3
+     * and include getID3 & gif.js
      */
     try {
       config.plugins.push(
@@ -139,6 +139,12 @@ module.exports = {
             from: "submodules/getID3/getid3/*audio.mp3*",
             to: "protected/getID3",
             flatten: true,
+          },
+          {
+            from: "submodules/gif.js/",
+            to: "static/js",
+            ignore: ["*.old.*"],
+            force: true,
           },
         ])
       );

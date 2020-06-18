@@ -73,7 +73,12 @@ const BaseToast = (props: ToastProps) => {
     <div className={props.managedClasses.toast_element}>
       <DefaultToast {...defaultToastProps}>
         <span className={props.managedClasses.toast_title}>{props.title || title()}</span>
-        <span className={props.managedClasses.toast_content}>{props.children}</span>
+        <span
+          className={props.managedClasses.toast_content}
+          data-content={typeof props.children === "string" ? props.children : ""}
+        >
+          {props.children}
+        </span>
       </DefaultToast>
     </div>
   );

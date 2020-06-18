@@ -17,4 +17,5 @@ export interface ToastProps
   extends ManagedClasses<ToastClassNameContract>,
     OriginalToastProps {
   title?: string;
+  progressPercentage?: number;
 }

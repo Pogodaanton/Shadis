@@ -5,14 +5,18 @@ import "./index.scss";
 import "./i18n";
 import PogodaDesignToolkitProvider from "./_DesignSystem/Toolkit/DesignSystem";
 import { ToastProvider } from "react-toast-notifications";
-import loadable from "@loadable/component";
+import Toast from "./_DesignSystem/Toast/StaticToast/Toast";
+import ToastContainer from "./_DesignSystem/Toast/ToastContainer/ToastContainer";
+// import loadable from "@loadable/component";
 
-const Toast = loadable(() =>
-  import(/* webpackChunkName: "Toast" */ "./_DesignSystem/Toast/Toast")
-);
-const ToastContainer = loadable(() =>
-  import(/* webpackChunkName: "Toast" */ "./_DesignSystem/Toast/ToastContainer")
-);
+//const Toast = loadable(() =>
+//  import(/* webpackChunkName: "Toast" */ "./_DesignSystem/Toast/StaticToast/Toast")
+//);
+//const ToastContainer = loadable(() =>
+//  import(
+//    /* webpackChunkName: "Toast" */ "./_DesignSystem/Toast/ToastContainer/ToastContainer"
+//  )
+//);*/
 
 ReactDOM.render(
   <PogodaDesignToolkitProvider>

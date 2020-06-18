@@ -1,4 +1,5 @@
 // We need to declare userData as part of the window object
+
 interface Window {
   /**
    * The backend sets a global "userData" object
@@ -34,3 +35,4 @@ interface Window {
 }
 
 declare module "react-resize-aware";
+declare module "gif.js";

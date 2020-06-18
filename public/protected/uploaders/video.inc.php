@@ -82,14 +82,16 @@ class VideoPreprocessor
   /**
    * Since we cannot access any single frame of a video with
    * plain PHP, we let the client generate the thumbnails for us.
-   * 
    * For that, we compile the ids of each video that needs a proper
    * thumbnail and let the client handle the rest.
+   * 
+   * We also let the client know that the video is not available in
+   * GIF form, as it still needs to be generated.
    */
-  private function add_thumbnail_generation_task()
+  private function add_additional_generation_tasks()
   {
-    $sql = "INSERT INTO `" . $GLOBALS["table_prefix"] . "file_tasks` (id, thumbnail) VALUEs (?,?)";
-    $GLOBALS["db"]->request($sql, "si", $this->file_id, 1);
+    $sql = "INSERT INTO `" . $GLOBALS["table_prefix"] . "file_tasks` (id, thumbnail, gif) VALUEs (?,?,?)";
+    $GLOBALS["db"]->request($sql, "sii", $this->file_id, 1, 1);
   }
 
   /**
@@ -102,7 +104,7 @@ class VideoPreprocessor
       throw new ErrorException("Generating temporary video thumbnail did not succeed.");
     }
 
-    $this->add_thumbnail_generation_task();
+    $this->add_additional_generation_tasks();
 
     return array(
       "file_width" => $this->file_width,

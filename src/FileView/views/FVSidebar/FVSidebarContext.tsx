@@ -7,7 +7,12 @@ import { debounce } from "lodash-es";
 /**
  * The width of the sidebar by default
  */
-const defaultSidebarWidth: number = 400;
+const defaultSidebarWidth = 400;
+
+/**
+ * Breakpoint for displaying mobile layout
+ */
+const mobileBreakpoint = 850;
 
 /**
  * A react context that broadcasts positional data like
@@ -22,7 +27,7 @@ const FVSidebarProvider: React.ComponentType<{ fileData: Window["fileData"] }> =
   const sidebarWidth = useMotionValue(defaultSidebarWidth);
   const sidebarPos = useMotionValue(0);
   const [isSidebarVisible, setSidebarVisibility] = useState(false);
-  const isSidebarFloating = useWindowBreakpoint(850, "max-width", true);
+  const isSidebarFloating = useWindowBreakpoint(mobileBreakpoint, "max-width", true);
   const [fileTitle, setFileTitle] = useState(fileData ? fileData.title : "");
 
   /**
@@ -35,6 +40,26 @@ const FVSidebarProvider: React.ComponentType<{ fileData: Window["fileData"] }> =
     listener();
     return sidebarPos.onChange(debounce(listener, 25));
   }, [isSidebarFloating, sidebarPos]);
+
+  /**
+   * Toasts get in the way if the sidebar is opened,
+   * this might not be the most elegant solution, but
+   * it's good enough to move the toasts with the sidebar.
+   */
+  useEffect(() => {
+    // Toasts are shown differently on smaller displays
+    if (window.innerWidth <= mobileBreakpoint) return;
+
+    const listener = (pos: number) => {
+      const toastManagerDOM = document.getElementsByClassName("toastManager");
+      if (toastManagerDOM.length > 0)
+        Array.prototype.forEach.call(toastManagerDOM, el => {
+          if ("style" in el) el.style.transform = `translateX(${pos * -1 || 0}px)`;
+        });
+    };
+
+    return sidebarPos.onChange(listener);
+  }, [sidebarPos]);
 
   const sidebarValues: ISidebarData = useMemo(
     () => ({

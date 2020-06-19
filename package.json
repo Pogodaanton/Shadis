@@ -47,6 +47,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-toast-notifications": "^2.4.0",
+    "react-toastify": "^6.0.5",
     "react-virtualized": "^9.21.2",
     "rewire": "^5.0.0",
     "string-replace-loader": "^2.3.0",

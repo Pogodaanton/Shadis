@@ -6,7 +6,7 @@ import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { AppContainerClassNameContract, AppContainerProps } from "./App.props";
 import AnimatedRoutes from "./AnimatedRoutes";
 import loadable, { LoadableComponent } from "@loadable/component";
-import { isLoggedIn } from "../_DesignSystem";
+import { isLoggedIn, ToastManager } from "../_DesignSystem";
 
 const VideoThumbnailGenerator: LoadableComponent<{}> = loadable(() =>
   import(
@@ -39,6 +39,7 @@ const AppContainer: React.ComponentType<AppContainerProps> = ({ managedClasses }
         <Route path={["/:id", "/"]} component={AnimatedRoutes} />
       </Suspense>
     </Router>
+    <ToastManager limit={8} />
     {isLoggedIn && <VideoThumbnailGenerator />}
     {/*isLoggedIn && <VideoGifGenerator />*/}
   </Background>

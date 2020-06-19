@@ -16,6 +16,7 @@ import useToasts from "./Toast/useToasts";
 import ProgressIcon from "./ProgressIcon/ProgressIcon";
 import useMotionValueFactory from "./Hooks/useMotionValueFactory";
 import { useScaleFactor } from "./Hooks/useScaleFactor";
+import { ToastManager, toast } from "./Toasts/toast";
 
 export {
   Button,
@@ -35,4 +36,6 @@ export {
   RouteInterceptionManager,
   useRouteInterception,
   useScaleFactor,
+  ToastManager,
+  toast,
 };

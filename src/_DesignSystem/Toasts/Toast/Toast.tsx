@@ -57,10 +57,11 @@ const styles: ComponentStyles<ToastClassNameContract, DesignSystem> = {
     textAlign: "center",
     justifyContent: "center",
     width: "30px",
-    "> svg": {
+    "& > svg": {
       display: "inline-block",
       verticalAlign: "text-top",
       fill: "currentColor",
+      zIndex: "1",
     },
     "$toast__success &": {
       backgroundColor: "#36B37E",

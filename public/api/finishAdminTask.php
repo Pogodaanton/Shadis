@@ -94,10 +94,12 @@ switch ($type) {
       }
     }
 
-    // Generate optimized gif from upload and delete temporary image
+    // // Generate optimized gif from upload and delete temporary image
+    // // generate_gif($GLOBALS["upload_directory"] . $file_id . ".gif", $stitch_path);
+    // // unlink($stitch_path);
+
     // MySQL update entry happens with the next switch case, since there is no `break`
-    generate_gif($GLOBALS["upload_directory"] . $file_id . ".gif", $stitch_path);
-    unlink($stitch_path);
+    rename($stitch_path, $GLOBALS["upload_directory"] . $file_id . ".gif");
 
   case "video-gif-too-big":
     $file_id = $_POST["id"];

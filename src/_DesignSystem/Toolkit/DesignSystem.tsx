@@ -8,7 +8,10 @@ import {
   state,
   ContextData,
 } from "./DesignSystem.props";
-import { createColorPalette } from "@microsoft/fast-components-styles-msft";
+import {
+  createColorPalette,
+  neutralLayerL1,
+} from "@microsoft/fast-components-styles-msft";
 import { parseColor } from "@microsoft/fast-colors";
 
 export const DesignToolkit = React.createContext<ContextData>(null);
@@ -55,18 +58,23 @@ class DesignToolkitProvider extends Component<props, state> {
       ? StandardLuminance.DarkMode
       : StandardLuminance.LightMode;
 
+    const updatedDesignSystem = {
+      ...this.state.designSystem,
+      ...accentColors,
+      baseLayerLuminance: updatedLuminance,
+      backgroundColor: updatedThemeColor,
+      cornerRadius: 5,
+    };
+
+    // Update sitewide background-color according to new theme
+    document.body.style.backgroundColor = neutralLayerL1(updatedDesignSystem as any);
+
     this.setState({
       contextData: {
         ...this.state.contextData,
         theme: isLightMode ? ThemeName.dark : ThemeName.light,
       },
-      designSystem: {
-        ...this.state.designSystem,
-        ...accentColors,
-        baseLayerLuminance: updatedLuminance,
-        backgroundColor: updatedThemeColor,
-        cornerRadius: 5,
-      },
+      designSystem: updatedDesignSystem,
     });
   };
 

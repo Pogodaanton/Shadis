@@ -3,14 +3,8 @@ import ReactDOM from "react-dom";
 import App from "./App/App";
 import "./index.scss";
 import "./i18n";
-import PogodaDesignToolkitProvider from "./_DesignSystem/Toolkit/DesignSystem";
 
-ReactDOM.render(
-  <PogodaDesignToolkitProvider>
-    <App />
-  </PogodaDesignToolkitProvider>,
-  document.getElementById("root")
-);
+ReactDOM.render(<App />, document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

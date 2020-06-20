@@ -3,7 +3,7 @@ import {
   useRouteInterception,
 } from "./RouterBlocker/RouteInterceptor";
 import { useWindowBreakpoint } from "./Hooks/useWindowBreakpoint";
-import { DesignToolkit, isLoggedIn } from "./Toolkit/DesignSystem";
+import DesignToolkitProvider, { DesignToolkit, isLoggedIn } from "./Toolkit/DesignSystem";
 import { Button, ButtonAppearance } from "./Button/Button";
 import Header, { headerHeight } from "./Header/Header";
 import Logo from "./Logo/Logo";
@@ -28,6 +28,7 @@ export {
   ProgressIcon,
   applyBackdropBackground,
   DesignToolkit,
+  DesignToolkitProvider,
   useMotionValueFactory,
   useWindowBreakpoint,
   isLoggedIn,

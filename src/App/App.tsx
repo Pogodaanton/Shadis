@@ -1,12 +1,11 @@
 import React, { Suspense } from "react";
-import { Background } from "@microsoft/fast-components-react-msft";
-import { DesignSystem, neutralLayerL1 } from "@microsoft/fast-components-styles-msft";
+import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { AppContainerClassNameContract, AppContainerProps } from "./App.props";
 import AnimatedRoutes from "./AnimatedRoutes";
 import loadable, { LoadableComponent } from "@loadable/component";
-import { isLoggedIn, ToastManager } from "../_DesignSystem";
+import { isLoggedIn } from "../_DesignSystem";
 
 const VideoThumbnailGenerator: LoadableComponent<{}> = loadable(() =>
   import(
@@ -33,16 +32,15 @@ const styles: ComponentStyles<AppContainerClassNameContract, DesignSystem> = {
 };
 
 const AppContainer: React.ComponentType<AppContainerProps> = ({ managedClasses }) => (
-  <Background className={managedClasses.container} value={neutralLayerL1}>
+  <div className={managedClasses.container}>
     <Router>
       <Suspense fallback={null}>
         <Route path={["/:id", "/"]} component={AnimatedRoutes} />
       </Suspense>
     </Router>
-    <ToastManager limit={8} />
     {isLoggedIn && <VideoThumbnailGenerator />}
     {/*isLoggedIn && <VideoGifGenerator />*/}
-  </Background>
+  </div>
 );
 
 export default manageJss(styles)(AppContainer);

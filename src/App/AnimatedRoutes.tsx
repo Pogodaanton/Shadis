@@ -5,7 +5,7 @@ import { RouteChildrenProps } from "react-router-dom";
 import React, { useRef, useState, useEffect } from "react";
 import axios from "../_interceptedAxios";
 import { AnimatePresence, AnimateSharedLayout } from "framer-motion";
-import { isLoggedIn, toast } from "../_DesignSystem";
+import { isLoggedIn, toast, DesignToolkitProvider } from "../_DesignSystem";
 import { useTranslation } from "react-i18next";
 import { History } from "history";
 
@@ -25,6 +25,14 @@ const NotFound: LoadableComponent<{}> = loadable(() =>
 // Due to the HOC It is somewhat hard to assign the proper props to it
 const Dashboard: LoadableComponent<any> = loadable(() =>
   import(/* webpackChunkName: "Dashboard" */ "../Dashboard/Dashboard")
+);
+
+// Since react-toastify uses an event-based approach, lazy-loading
+// the container should not cause problems
+const ToastManager: LoadableComponent<any> = loadable(() =>
+  import(
+    /* webpackChunkName: "ToastManager" */ "../_DesignSystem/Toasts/ToastManager/ToastManager"
+  )
 );
 
 // Type guards to check for data states
@@ -119,14 +127,17 @@ const AnimatedRoutes: React.FC<RouteChildrenProps<{ id: string }>> = ({
       type="crossfade"
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
-      {isDashboardVisible && <Dashboard key="dashboard" frozen={!!match.params.id} />}
-      <AnimatePresence exitBeforeEnter>
-        {isValidFile && isFileDataNotEmpty(fileData) && (
-          <ViewRef.current fileData={fileData} key={match.params.id} />
-        )}
-        {is404 && <NotFound key="notFound" />}
-        {!match.params.id && !isLoggedIn && <Login key="login" />}
-      </AnimatePresence>
+      <DesignToolkitProvider>
+        {isDashboardVisible && <Dashboard key="dashboard" frozen={!!match.params.id} />}
+        <AnimatePresence exitBeforeEnter>
+          {isValidFile && isFileDataNotEmpty(fileData) && (
+            <ViewRef.current fileData={fileData} key={match.params.id} />
+          )}
+          {is404 && <NotFound key="notFound" />}
+          {!match.params.id && !isLoggedIn && <Login key="login" />}
+        </AnimatePresence>
+        <ToastManager limit={8} />
+      </DesignToolkitProvider>
     </AnimateSharedLayout>
   );
 };

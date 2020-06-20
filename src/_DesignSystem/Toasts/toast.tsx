@@ -1,5 +1,10 @@
 import React from "react";
-import { toast as originalToast, ToastContent, ToastOptions } from "react-toastify";
+import {
+  toast as originalToast,
+  ToastContent,
+  ToastOptions,
+  UpdateOptions,
+} from "react-toastify";
 import ToastManager from "./ToastManager/ToastManager";
 
 /**
@@ -8,7 +13,7 @@ import ToastManager from "./ToastManager/ToastManager";
  * Since react-toastify does not support a title value out of the box,
  * we need to manually add the title value to every toast call.
  */
-const prepareContent = (title: string, content: ToastContent) => () => (
+const prepareContent = (title: ToastContent, content: ToastContent) => () => (
   <>
     <span>{title}</span>
     {content && <span>{content}</span>}
@@ -68,10 +73,22 @@ toast.warning = toast.warn = (
   options?: ToastOptions
 ) => originalToast.warning(prepareContent(title, content), options);
 
+toast.update = (
+  id: React.ReactText,
+  options: UpdateOptions & { title?: ToastContent; content?: ToastContent }
+) => {
+  const updateObj: UpdateOptions = options;
+  delete updateObj.render;
+
+  if (options.title || options.content)
+    updateObj.render = prepareContent(options.title || "", options.content || "");
+
+  return originalToast.update(id, updateObj);
+};
+
 toast.dismiss = originalToast.dismiss;
 toast.clearWaitingQueue = originalToast.clearWaitingQueue;
 toast.isActive = originalToast.isActive;
-toast.update = originalToast.update;
 toast.done = originalToast.done;
 toast.onChange = originalToast.onChange;
 toast.configure = originalToast.configure;

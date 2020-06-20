@@ -14,6 +14,7 @@ import {
   ElevationMultiplier,
   applyElevatedCornerRadius,
   applyPillCornerRadius,
+  neutralFillInputRest,
 } from "@microsoft/fast-components-styles-msft";
 import { useTranslation } from "react-i18next";
 import {
@@ -129,10 +130,10 @@ const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> 
     top: "10px",
     left: "10px",
     margin: "auto",
-    color: "#fff",
+    color: neutralFillInputRest,
     background: neutralForegroundRest,
     opacity: "0.7",
-    filter: "drop-shadow(0px 0px 1px black)",
+    filter: des => `drop-shadow(0px 0px 1px ${neutralFillInputRest(des)})`,
     ...applyPillCornerRadius(),
   },
 };

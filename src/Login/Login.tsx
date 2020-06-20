@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { Button, ButtonAppearance, Logo, iconToGlyph } from "../_DesignSystem";
+import { Button, ButtonAppearance, Logo, iconToGlyph, toast } from "../_DesignSystem";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { LoginClassNameContract, LoginProps } from "./Login.props";
 import { FaSignInAlt, FaUserAlt, FaKey } from "react-icons/fa";
 import { TextAction, TextFieldType } from "@microsoft/fast-components-react-msft";
 import axios from "../_interceptedAxios";
-import { useToasts } from "../_DesignSystem";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 
@@ -36,7 +35,6 @@ const styles: ComponentStyles<LoginClassNameContract, DesignSystem> = {
 
 const Login: React.FC<LoginProps> = props => {
   const { t, i18n } = useTranslation("common");
-  const { addToast } = useToasts();
   const [isDebounced, setDebounce] = useState(false);
 
   /**
@@ -56,10 +54,7 @@ const Login: React.FC<LoginProps> = props => {
       } catch (err) {
         setTimeout(() => {
           setDebounce(false);
-          addToast(i18n.t(err.i18n, err.message), {
-            appearance: "error",
-            title: i18n.t("error.loginGeneric") + ":",
-          });
+          toast.error(i18n.t("error.loginGeneric") + ":", i18n.t(err.i18n, err.message));
           console.error("User could not log in:\n", `(${err.code}) - ${err.message}`);
         }, 1000);
       }

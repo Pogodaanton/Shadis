@@ -1,14 +1,14 @@
 /* eslint-disable no-restricted-globals */
 import axios from "../../_interceptedAxios";
-import { AddToast } from "react-toast-notifications";
+import { ToastContent, ToastOptions } from "react-toastify";
 
 const ctx: Worker = self as any;
 let IDList: { id: string }[] = [];
 
-const addToast: AddToast = (content, options) => {
+const addToast = (content: ToastContent, title: ToastContent, options: ToastOptions) => {
   ctx.postMessage({
     task: "addToast",
-    arguments: [content, options],
+    arguments: [content, title, options],
   });
 };
 
@@ -44,7 +44,7 @@ ctx.addEventListener("message", ({ data }) => {
             console.log("Web Worker does not have anything to do.");
           }
         } catch (err) {
-          addToast("error.requestTaskList", { appearance: "error" });
+          addToast("error.requestTaskList", "", { type: "error" });
           console.log("error.requestTaskList", "\n", err.message);
         }
       })();
@@ -68,7 +68,7 @@ ctx.addEventListener("message", ({ data }) => {
           IDList.shift();
           generateNextThumbnail();
         } catch (err) {
-          addToast("error.requestTaskList", { appearance: "error" });
+          addToast("error.requestTaskList", "", { type: "error" });
           console.log("error.requestTaskList", "\n", err.message);
         }
       })();

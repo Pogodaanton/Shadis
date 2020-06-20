@@ -12,7 +12,6 @@ import {
   applyBackdropBackground,
 } from "./Utils/stylesheetModifiers";
 import { iconToGlyph } from "./Utils/iconToGlyph";
-import useToasts from "./Toast/useToasts";
 import ProgressIcon from "./ProgressIcon/ProgressIcon";
 import useMotionValueFactory from "./Hooks/useMotionValueFactory";
 import { useScaleFactor } from "./Hooks/useScaleFactor";
@@ -25,7 +24,6 @@ export {
   Logo,
   ButtonAppearance,
   iconToGlyph,
-  useToasts,
   applyCenteredFlexbox,
   ProgressIcon,
   applyBackdropBackground,

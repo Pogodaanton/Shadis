@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import VideoWorker from "worker-loader!./video.worker.ts";
-import { useToasts } from "react-toast-notifications";
+import { toast } from "../../_DesignSystem";
 
 let worker: VideoWorker = null;
 
@@ -15,8 +15,6 @@ let worker: VideoWorker = null;
  *       fulness of a worker for a job like this.
  */
 const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
-  const { addToast } = useToasts();
-
   useEffect(() => {
     if (typeof Worker === "undefined") return;
     if (!worker) worker = new VideoWorker();
@@ -69,7 +67,7 @@ const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
       if (typeof data === "object" && "task" in data && "arguments" in data) {
         switch (data.task) {
           case "addToast":
-            addToast(data.arguments[0], data.arguments[1]);
+            toast(data.arguments[0], data.arguments[1], data.arguments[3]);
             break;
           case "getFirstFrame":
             if (typeof data.arguments === "string") {
@@ -93,7 +91,7 @@ const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
       if (worker.addEventListener) worker.removeEventListener("message", taskHandler);
       else worker.onmessage = null;
     };
-  }, [addToast]);
+  }, []);
 
   useEffect(() => {
     worker.postMessage("fetchList");

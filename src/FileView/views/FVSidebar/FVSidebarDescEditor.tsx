@@ -12,7 +12,7 @@ import {
 } from "@microsoft/fast-components-react-msft";
 import { FaCheck, FaExclamationTriangle } from "react-icons/fa";
 import axios from "../../../_interceptedAxios";
-import { useToasts } from "../../../_DesignSystem";
+import { toast } from "../../../_DesignSystem";
 import { useTranslation } from "react-i18next";
 import { SidebarData } from "./FVSidebarContext";
 
@@ -46,7 +46,6 @@ const FVSidebarDescEditor: React.ComponentType<FVSidebarDescEditorProps> = ({
   managedClasses,
   fileData,
 }) => {
-  const { addToast } = useToasts();
   const { t } = useTranslation("common");
   const { setFileTitle, fileTitle } = useContext(SidebarData);
   const [loadingState, setLoadingState] = useState<
@@ -81,10 +80,7 @@ const FVSidebarDescEditor: React.ComponentType<FVSidebarDescEditorProps> = ({
     } catch (err) {
       clearTimeout(deferredLoading);
       setLoadingState("error");
-      addToast(t(err.i18n, err.message), {
-        appearance: "error",
-        title: t("error.requestGeneric") + ":",
-      });
+      toast.error(t("error.requestGeneric") + ":", t(err.i18n, err.message));
       console.log(`${t("error.requestGeneric")}:\n`, `(${err.code}) - ${err.message}`);
     }
   };

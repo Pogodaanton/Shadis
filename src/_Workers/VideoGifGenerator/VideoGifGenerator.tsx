@@ -1,8 +1,7 @@
 import React, { useEffect, useCallback, useRef, useState } from "react";
-import { useToasts } from "../../_DesignSystem";
+import { toast } from "../../_DesignSystem";
 import gifJS from "gif.js";
 import axios from "../../_interceptedAxios";
-import { Progress } from "@microsoft/fast-components-react-msft";
 
 /**
  * gif.js can use a faster quantization through WASM
@@ -20,12 +19,8 @@ const chunkSize = 1024 * 1024;
 const desiredFramerate = 8;
 
 /**
- * Percentage to compare current percentage to
- */
-let lastText = "";
-
-/**
  * Gif.js instance
+ * NOTE: Worker scripts are not automatically terminated!
  */
 const gif = new gifJS({
   workerScript:
@@ -43,8 +38,6 @@ const gif = new gifJS({
 });
 
 const VideoGifGenerator: React.ComponentType<{}> = props => {
-  const { addToast, updateToast, removeToast } = useToasts();
-
   /**
    * An array containing video IDs that need GIF equivalents.
    */
@@ -86,7 +79,6 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
      */
     const seekVideo = (time: number, seekSummand: number) => {
       const seekHandler = () => {
-        console.log("Loaded Data at " + videoEl.currentTime + "!");
         videoEl.removeEventListener("seeked", seekHandler);
 
         // Setting progress for toast
@@ -94,7 +86,6 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
 
         // Start GIF rendering if there is no frame to add anymore
         if (videoEl.currentTime >= videoEl.duration) {
-          console.log("Finished at " + videoEl.currentTime + ", now rendering!");
           gif.render();
           document.body.removeChild(videoEl);
           return;
@@ -109,7 +100,6 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
     };
 
     videoEl.addEventListener("loadedmetadata", () => {
-      console.log("Loaded Metadata!", videoEl.duration);
       const seekSummand = 1 / desiredFramerate;
 
       gif.abort();
@@ -147,6 +137,8 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
    */
   const uploadGif = useCallback(
     (gifBlob: Blob) => {
+      const maxChunkAmount = gifBlob.size / chunkSize;
+
       const uploadGifChunk = async (chunkNum: number) => {
         const curID = taskList.current[0].id;
         const postData = new FormData();
@@ -169,8 +161,24 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
         postData.append("data", !isStitchRequest ? blobChunk : null);
 
         try {
-          await axios.post(window.location.origin + "/api/finishAdminTask.php", postData);
+          await axios.post(
+            window.location.origin + "/api/finishAdminTask.php",
+            postData,
+            {
+              onUploadProgress: p => {
+                const uploadPercent = (p.loaded * 100) / p.total;
+                const chunkCompletePercent = 34 / maxChunkAmount;
+                const progress =
+                  (uploadPercent * chunkCompletePercent) / 100 +
+                  66 +
+                  chunkCompletePercent * chunkNum;
+                setProgress(progress);
+              },
+            }
+          );
 
+          if (isStitchRequest)
+            console.log("Wow, we're at chunk " + chunkNum + " / " + maxChunkAmount);
           if (!isStitchRequest) uploadGifChunk(chunkNum + 1);
           else shiftToNextGif();
         } catch (err) {
@@ -180,14 +188,14 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
             return;
           }
 
-          addToast("error.gifUpload", { appearance: "error" });
+          toast.error("error.gifUpload");
           console.log("error.gifUpload", "\n", err.message, err, typeof err);
         }
       };
 
       uploadGifChunk(0);
     },
-    [addToast, shiftToNextGif]
+    [shiftToNextGif]
   );
 
   useEffect(() => {
@@ -197,17 +205,18 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
           params: { type: "video-gif" },
         });
 
-        if (res.data) {
+        if (typeof res.data.length !== "undefined" && res.data.length > 0) {
+          console.log(res.data);
           taskList.current = res.data;
           generateGif(taskList.current[0].id);
         }
       } catch (err) {
-        addToast("error.requestTaskList", { appearance: "error" });
+        toast.error("error.requestTaskList");
         console.log("error.requestTaskList", "\n", err.message);
       }
     })();
     return () => {};
-  }, [addToast, generateGif]);
+  }, [generateGif]);
 
   useEffect(() => {
     const gifFinishHandler = uploadGif;
@@ -225,24 +234,15 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
 
   useEffect(() => {
     let toastId: string = null;
-    addToast(
-      <Progress minValue={0} maxValue={100} />,
-      {
-        title: `Spinning up GIF generator...`,
-        appearance: "info",
-        autoDismiss: false,
-      },
-      (id: string) => {
-        setToastId(id);
-        toastId = id;
-      }
-    );
+    toastId =
+      toast("Spinning up GIF generator...", "", { progress: 0, type: "info" }) + "";
+    setToastId(toastId);
 
     return () => {
-      if (toastId) removeToast(toastId);
+      if (toastId) toast.dismiss(toastId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [removeToast, addToast]);
+  }, []);
 
   useEffect(() => {
     if (!toastId || !curFileId) return;
@@ -253,13 +253,10 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
     if (progressPercentage >= 33) title = `Generating ${curFileId}.gif...`;
     if (progressPercentage >= 66) title = `Uploading ${curFileId}.gif...`;
 
-    if (title !== lastText) {
-      lastText = title;
-      updateToast(toastId, { title } as any);
-    }
+    toast.update(toastId, { progress: progressPercentage, title });
 
     console.log(`${title} - ${progressPercentage}%`);
-  }, [curFileId, progressPercentage, toastId, updateToast]);
+  }, [curFileId, progressPercentage, toastId]);
 
   return null;
 };

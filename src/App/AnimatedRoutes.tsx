@@ -5,7 +5,7 @@ import { RouteChildrenProps } from "react-router-dom";
 import React, { useRef, useState, useEffect } from "react";
 import axios from "../_interceptedAxios";
 import { AnimatePresence, AnimateSharedLayout } from "framer-motion";
-import { useToasts, isLoggedIn } from "../_DesignSystem";
+import { isLoggedIn, toast } from "../_DesignSystem";
 import { useTranslation } from "react-i18next";
 import { History } from "history";
 
@@ -45,7 +45,6 @@ const isFileDataNotEmpty = (toDetermine: FileData): toDetermine is Window["fileD
  */
 const useFilePrefetcher = (id: string, history: History<{}>) => {
   const [fileData, setFileData] = useState<FileData>(null);
-  const { addToast } = useToasts();
   const { t } = useTranslation("common");
 
   useEffect(() => {
@@ -61,7 +60,7 @@ const useFilePrefetcher = (id: string, history: History<{}>) => {
           setFileData(res.data);
         }
       } catch (err) {
-        addToast(t("error.requestFile", { id }), { appearance: "error" });
+        toast.error(t("error.requestFile", { id }));
         console.log(t("error.requestFile", { id }), "\n", err.message);
         history.replace("/");
       }
@@ -75,7 +74,7 @@ const useFilePrefetcher = (id: string, history: History<{}>) => {
 
     if (id) fetchFileData(id);
     else setFileData(null);
-  }, [addToast, history, id, t]);
+  }, [history, id, t]);
 
   return fileData;
 };

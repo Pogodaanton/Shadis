@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { DashboardClassNameContract, DashboardProps } from "./Dashboard.props";
-import { useToasts, Header } from "../_DesignSystem";
+import { Header, toast } from "../_DesignSystem";
 import { withDropzone } from "../FullscreenDropzone/FullscreenDropzone";
 import axios from "../_interceptedAxios";
 import { useTranslation } from "react-i18next";
@@ -29,7 +29,6 @@ const styles: ComponentStyles<DashboardClassNameContract, DesignSystem> = {
 const Dashboard: React.FC<DashboardProps> = props => {
   const [listData, setListData] = useState<ListDataItem[]>(null);
   const [isFrozen, setFrozenState] = useState<boolean>(false);
-  const { addToast } = useToasts();
   const { t } = useTranslation("dashboard");
 
   /**
@@ -46,16 +45,13 @@ const Dashboard: React.FC<DashboardProps> = props => {
         const res = await axios.get(window.location.origin + "/api/getAll.php");
         setListData(res.data);
       } catch (err) {
-        addToast(t(err.i18n, err.message), {
-          appearance: "error",
-          title: t("error.listGeneric") + ":",
-        });
+        toast.error(t("error.listGeneric") + ":", t(err.i18n, err.message));
         console.log(`${t("error.listGeneric")}:\n`, `(${err.code}) - ${err.message}`);
       }
     };
 
     updateFileList();
-  }, [addToast, t]);
+  }, [t]);
 
   const onDeleteSelected = async (selection: string[]) => {
     try {
@@ -64,18 +60,12 @@ const Dashboard: React.FC<DashboardProps> = props => {
         action: "delete",
       });
 
-      addToast("", {
-        appearance: "success",
-        title: t("selectedDeleted", { count: selection.length }),
-      });
+      toast.success(t("selectedDeleted", { count: selection.length }));
       setListData(
         listData.filter(obj => selection.findIndex(id => id === obj.id) === -1)
       );
     } catch (err) {
-      addToast(t(err.i18n, err.message), {
-        appearance: "error",
-        title: t("error.requestGeneric") + ":",
-      });
+      toast.error(t("error.requestGeneric") + ":", t(err.i18n, err.message));
       console.log(`${t("error.requestGeneric")}:\n`, `(${err.code}) - ${err.message}`);
     }
   };

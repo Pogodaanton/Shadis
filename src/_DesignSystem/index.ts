@@ -16,6 +16,7 @@ import ProgressIcon from "./ProgressIcon/ProgressIcon";
 import useMotionValueFactory from "./Hooks/useMotionValueFactory";
 import { useScaleFactor } from "./Hooks/useScaleFactor";
 import { ToastManager, toast } from "./Toasts/toast";
+import TabBar from "./Tabs/TabBar/TabBar";
 
 export {
   Button,
@@ -37,4 +38,5 @@ export {
   useScaleFactor,
   ToastManager,
   toast,
+  TabBar,
 };

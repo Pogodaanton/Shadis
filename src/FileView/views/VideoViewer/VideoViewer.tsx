@@ -134,16 +134,27 @@ const VideoViewer: React.ComponentType<VideoViewerProps> = ({
     }
   }, [id, t]);
 
+  const onVideoAppear = useCallback(() => {
+    const videoEl = videoRef.current;
+    if (videoEl && videoEl.src) {
+      videoEl.currentTime = 0;
+    }
+  }, []);
+
   const tabContentItems: TabPanel[] = useMemo(
     () => [
-      { id: "video", children: <video muted autoPlay loop ref={videoRef} /> },
+      {
+        id: "video",
+        children: <video muted autoPlay loop ref={videoRef} />,
+        onLoad: onVideoAppear,
+      },
       {
         id: "gif",
         children: <img alt={t("gif.alt")} ref={imgRef} />,
         onLoad: onGifAppear,
       },
     ],
-    [onGifAppear, t]
+    [onGifAppear, onVideoAppear, t]
   );
 
   return (

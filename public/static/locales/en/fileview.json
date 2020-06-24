@@ -8,5 +8,10 @@
   "size": "Size",
   "untitled": "-",
   "download": "Download File",
-  "source": "View Original"
+  "source": "View Original",
+  "gif": {
+    "alt": "Animated GIF image of the video",
+    "load": "Loading GIF image...",
+    "loadError": "Sorry, we could not open this image!"
+  }
 }

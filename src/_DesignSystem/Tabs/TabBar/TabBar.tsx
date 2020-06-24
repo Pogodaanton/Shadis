@@ -75,7 +75,7 @@ const TabBar: React.ComponentType<TabBarProps> = React.memo(
     /**
      * Stylesheet for the active tab indicator
      */
-    const [activeIndicatorStyles, setAactiveIndicatorStyles] = useState<
+    const [activeIndicatorStyles, setActiveIndicatorStyles] = useState<
       React.CSSProperties
     >({});
 
@@ -177,15 +177,23 @@ const TabBar: React.ComponentType<TabBarProps> = React.memo(
     useEffect(() => {
       if (!activeId) return;
       const activeItem = items.find(getActiveState);
-      tabEventEmitter.emit(`${id}-change`, activeItem);
+      const setNewId = setActiveId;
+      tabEventEmitter.emit(`${id}-change`, activeItem.id);
 
       /**
        * Sends necessary tabbar data to new subscribers.
        */
       const subHandler = () => tabEventEmitter.emit(`${id}-subPub`, activeItem);
       tabEventEmitter.on(`${id}-sub`, subHandler);
+
+      /**
+       * Programatic change listener.
+       * Used to change both tabbar and tabcontent state at once.
+       */
+      tabEventEmitter.on(`${id}-update`, setNewId);
       return () => {
         tabEventEmitter.off(`${id}-sub`, subHandler);
+        tabEventEmitter.off(`${id}-update`, setNewId);
       };
     }, [activeId, getActiveState, id, items]);
 
@@ -231,7 +239,7 @@ const TabBar: React.ComponentType<TabBarProps> = React.memo(
             width;
         }
 
-        setAactiveIndicatorStyles({
+        setActiveIndicatorStyles({
           transform: `scaleX(${width}) translateX(${posX}px)`,
         });
       }

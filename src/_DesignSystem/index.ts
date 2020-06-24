@@ -17,6 +17,7 @@ import useMotionValueFactory from "./Hooks/useMotionValueFactory";
 import { useScaleFactor } from "./Hooks/useScaleFactor";
 import { ToastManager, toast } from "./Toasts/toast";
 import TabBar from "./Tabs/TabBar/TabBar";
+import TabViewer from "./Tabs/TabViewer/TabViewer";
 
 export {
   Button,
@@ -39,4 +40,5 @@ export {
   ToastManager,
   toast,
   TabBar,
+  TabViewer,
 };

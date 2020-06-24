@@ -1273,6 +1273,11 @@
   resolved "https://registry.yarnpkg.com/@microsoft/fast-components-class-name-contracts-base/-/fast-components-class-name-contracts-base-4.6.4.tgz#13954c50fffb8d8b5a4e6cf3a406923bc47e9749"
   integrity sha512-Jnf7qzGKJbUexKENrnMEO//m9iDwTMTYoWgPojM6NTsrGCuRKX+nDLU/w/2I6XH9dTPDBO5wP5acgC5cvGljIQ==
 
+"@microsoft/fast-components-class-name-contracts-base@^4.7.2":
+  version "4.7.2"
+  resolved "https://registry.yarnpkg.com/@microsoft/fast-components-class-name-contracts-base/-/fast-components-class-name-contracts-base-4.7.2.tgz#1eb44a1eca7bc2067c04f6df986516b5ca315e40"
+  integrity sha512-Jjg70AUvqQ7gjV2W0s/SmWta+rBfroJOuqAtSP2Bwf66maUBQlD/GBevBc/Ny5JlUrjTk8Mus1Mfbrzp4J6Qqw==
+
 "@microsoft/fast-components-class-name-contracts-msft@^4.8.4":
   version "4.8.4"
   resolved "https://registry.yarnpkg.com/@microsoft/fast-components-class-name-contracts-msft/-/fast-components-class-name-contracts-msft-4.8.4.tgz#b11d1521a84033d47cc91ffebcad6c3881a41ba0"
@@ -7991,6 +7996,11 @@ onetime@^5.1.0:
   dependencies:
     mimic-fn "^2.1.0"
 
+onfire.js@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/onfire.js/-/onfire.js-2.0.1.tgz#76ac5a440e17ecd81aa4c287df02af368576dad8"
+  integrity sha512-Fwl7tXwnzBSwedaJkF3Zx1KKcGyQvpPw8Y8mTu7ZLE+6TMFv2W5TONW3DwDejp8vivXZSlb7dxjlld2jT1YW8Q==
+
 open@^7.0.2:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/open/-/open-7.0.3.tgz#db551a1af9c7ab4c7af664139930826138531c48"
@@ -9608,10 +9618,10 @@ react-scripts@3.4.1:
   optionalDependencies:
     fsevents "2.1.2"
 
-react-toastify@^6.0.5:
-  version "6.0.5"
-  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-6.0.5.tgz#6435b2bf6a298863bc71342dcc88e8283cdb4630"
-  integrity sha512-1YXSb6Jr478c1TJEyVpxLHFvtmeXGMvdpZc0fke/7lK+MoLBC+NFgB74bq+C2SZe6LdK+K1voEURJoY88WqWvA==
+react-toastify@^6.0.6:
+  version "6.0.6"
+  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-6.0.6.tgz#7409ef8e89d12492308a8e561317031b5d90615e"
+  integrity sha512-NdHiMhj76Z877kZlXuelVfJONslvpmDTL95FVAoBy2kkU75hiqR5+pu1GdJZfRWPhen9ecdb58d3HmefaJ06Yw==
   dependencies:
     classnames "^2.2.6"
     prop-types "^15.7.2"

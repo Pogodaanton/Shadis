@@ -1,6 +1,7 @@
 import {
   neutralForegroundHover,
   neutralForegroundActive,
+  neutralFillActive,
 } from "@microsoft/fast-components-styles-msft";
 /**
  * Code taken from "@microsoft/fast-components-styles-msft"
@@ -74,6 +75,9 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
   button: {
     padding: format("6px {0}", horizontalSpacing(focusOutlineWidth)),
     background: "transparent",
+    "body:not(.js-focus-visible) &:focus": {
+      borderColor: "transparent",
+    },
   },
   button__primary: {
     fill: accentForegroundCut,
@@ -157,6 +161,7 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
     background: "transparent",
     color: neutralForegroundRest,
     fill: neutralForegroundRest,
+    outline: "none",
     "&:hover:enabled, a&:not($button__disabled):hover": {
       background: neutralFillHover,
       color: neutralForegroundHover,
@@ -167,12 +172,15 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
     },
     "&:active:enabled, a&:not($button__disabled):active": {
       color: neutralForegroundActive,
-      background: "transparent",
+      background: neutralFillActive,
     },
     ...applyFocusVisible<DesignSystem>({
       ...highContrastOutlineFocus,
       "border-color": neutralFocus,
     }),
+    "body:not(.js-focus-visible) &:focus": {
+      borderColor: "transparent",
+    },
   },
   button__iconOnly: {
     padding: "8px",

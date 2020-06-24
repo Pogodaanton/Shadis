@@ -19,6 +19,7 @@ import FVSidebarProvider from "./views/FVSidebar/FVSidebarContext";
 import FVSidebarToggleButton from "./views/FVSidebar/FVSidebarToggleButton";
 import VideoViewer from "./views/VideoViewer/VideoViewer";
 import ThumbnailViewer from "./views/ThumbnailViewer/ThumbnailViewer";
+import { classNames } from "@microsoft/fast-web-utilities";
 
 const FVSidebar: LoadableComponent<FVSidebarProps> = FullscreenLoader(
   import(/* webpackChunkName: "FVSidebar" */ "./views/FVSidebar/FVSidebar")
@@ -62,13 +63,23 @@ const headerStyles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
     zIndex: "40",
   },
   header_left: {},
+  header_right: {
+    flexShrink: "0",
+  },
+  "@media (max-width: 1270px)": {
+    header_center: {
+      ".fileView-hasGif &": {
+        position: "initial",
+      },
+    },
+  },
 };
 
 const FileView: React.FC<FileViewProps> = ({
   managedClasses,
   fileData,
 }: FileViewProps) => {
-  const { extension } = fileData;
+  const { extension, has_gif } = fileData;
 
   /**
    * Helper function as ref to prevent it from updating after
@@ -98,7 +109,9 @@ const FileView: React.FC<FileViewProps> = ({
   return (
     <FVSidebarProvider fileData={fileData}>
       <RouteInterceptionManager>
-        <div className={managedClasses.fileView}>
+        <div
+          className={classNames(managedClasses.fileView, ["fileView-hasGif", has_gif])}
+        >
           <motion.div
             className={managedClasses.fileViewBackground}
             initial={{ opacity: 0 }}
@@ -110,7 +123,13 @@ const FileView: React.FC<FileViewProps> = ({
               position="absolute"
               jssStyleSheet={headerStyles}
               centerContent={<HeaderCenterContent />}
-              rightSideContent={<HeaderRightContent onMagnify={onMagnify.current} />}
+              rightSideContent={
+                <HeaderRightContent
+                  onMagnify={onMagnify.current}
+                  isVideo={isVideo}
+                  hasGif={has_gif}
+                />
+              }
             />
             <FVSidebarToggleButton />
           </motion.div>

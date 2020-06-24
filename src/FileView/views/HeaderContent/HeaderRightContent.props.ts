@@ -12,4 +12,6 @@ export interface HeaderRightContentProps
   extends ManagedClasses<HeaderRightContentClassNameContract> {
   onMagnify?: React.MouseEventHandler;
   onShare?: React.MouseEventHandler;
+  isVideo?: boolean;
+  hasGif?: boolean;
 }

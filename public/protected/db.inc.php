@@ -94,7 +94,14 @@ class db
     {
         $sql = "SELECT id, width, height, thumb_height, extension, title, timestamp FROM `" . $GLOBALS["table_prefix"] . "files` WHERE id=?";
         $result = $this->request($sql, "s", $uid);
-        return $result->fetch_assoc();
+        $array = $result->fetch_assoc();
+
+        // Add has_gif key to array
+        if ($array["extension"] === "mp4" && file_exists($GLOBALS["upload_directory"] . $array["id"] . ".gif")) {
+            $array["has_gif"] = true;
+        }
+
+        return $array;
     }
 }
 

@@ -3,9 +3,7 @@ import { TabBarProps, TabBarClassNameContract, TabItem } from "./TabBar.props";
 import {
   DesignSystem,
   accentFillActive,
-  accentFillHover,
   neutralFillHover,
-  neutralFillActive,
 } from "@microsoft/fast-components-styles-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import Tab from "../Tab/Tab";
@@ -21,7 +19,6 @@ import {
 } from "@microsoft/fast-web-utilities";
 import tabEventEmitter from "../TabEvents";
 import { TabClassNameContract } from "../Tab/Tab.props";
-import { parseColorHexRGBA } from "@microsoft/fast-colors";
 
 const styles: ComponentStyles<TabBarClassNameContract, DesignSystem> = {
   tabBar: {

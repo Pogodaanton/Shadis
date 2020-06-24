@@ -31,6 +31,7 @@ interface Window {
     title: string;
     timestamp: number;
     fromServer?: boolean;
+    has_gif?: boolean;
   };
 }
 

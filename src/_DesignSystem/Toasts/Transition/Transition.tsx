@@ -18,6 +18,10 @@ const styles: ComponentStyles<ToastTransitionClassNameContract, DesignSystem> = 
     from: {
       transform: "translate3d(110%, 0, 0)",
       visibility: "visible",
+      opacity: "0",
+    },
+    "40%": {
+      opacity: "1",
     },
     to: {
       transform: "translate3d(0%, 0, 0)",

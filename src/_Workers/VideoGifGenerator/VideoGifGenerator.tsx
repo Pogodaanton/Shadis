@@ -73,7 +73,6 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
 
     const videoEl = document.createElement("video");
     videoEl.style.display = "none";
-    videoEl.preload = "metadata";
     videoEl.autoplay = false;
 
     /**

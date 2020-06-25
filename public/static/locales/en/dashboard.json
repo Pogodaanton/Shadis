@@ -7,6 +7,8 @@
   "deleteSelected_plural": "Delete selected items",
   "selectedDeleted": "Successfully deleted {{count}} item",
   "selectedDeleted_plural": "Successfully deleted {{count}} items",
+  "generate": "Generate GIF",
+  "generate_plural": "Generate GIFs",
   "upload": {
     "title": "Upload a file",
     "select": "Select File",

@@ -7,14 +7,18 @@ import {
   DesignSystem,
   neutralForegroundRest,
   neutralLayerL2,
+  neutralFillStealthHover,
 } from "@microsoft/fast-components-styles-msft";
+import { ButtonClassNameContract } from "@microsoft/fast-components-class-name-contracts-msft";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { Button, ButtonAppearance, isLoggedIn } from "../../../_DesignSystem";
-import { FaDownload, FaExternalLinkSquareAlt } from "react-icons/fa";
+import { FaDownload, FaLink, FaImage, FaVideo } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { Hypertext } from "@microsoft/fast-components-react-msft";
 import { designSystemContext } from "@microsoft/fast-jss-manager-react/dist/context";
 import loadable from "@loadable/component";
+import { IconType } from "react-icons/lib";
+import FVSidebarConvertButton from "./FVSidebarConvertButton";
 
 const FVSidebarDeleteButton = loadable(() => import("./FVSidebarDeleteButton"));
 
@@ -46,15 +50,15 @@ const styles: ComponentStyles<FVSidebarFooterClassNameContract, DesignSystem> = 
     display: "flex",
     fontSize: "14px",
     "& > button, & > a": {
+      display: "flex",
       background: "transparent",
       fontWeight: "600",
-      flexGrow: "1",
+      flex: "1 1 0px",
       padding: "45px 15px 45px 15px",
-      display: "flex",
       flexDirection: "column",
       alignContent: "center",
       borderRadius: "0",
-      "& > svg": {
+      "& > svg, & > div": {
         marginBottom: "12px",
         marginLeft: "8px",
         width: "25px",
@@ -64,8 +68,42 @@ const styles: ComponentStyles<FVSidebarFooterClassNameContract, DesignSystem> = 
   },
 };
 
+const overlapIconButtonStyles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
+  button__disabled: {},
+  button: {
+    "& > div": {
+      position: "relative",
+      "& > svg": {
+        width: "25px",
+        height: "25px",
+        "&:last-child": {
+          backgroundColor: neutralLayerL2,
+          padding: "0px 2px",
+          position: "absolute",
+          width: "16px",
+          height: "16px",
+          right: "-8px",
+          bottom: "-6px",
+        },
+      },
+    },
+    "&:hover:enabled, a&:not($button__disabled):hover": {
+      "& > div > svg:last-child": {
+        backgroundColor: neutralFillStealthHover,
+      },
+    },
+  },
+};
+
 // Other possible color for later use:
 // #1399dc
+
+const OverlapIcon: (overlappingIcon: IconType) => IconType = Icon => props => (
+  <div className={props.className}>
+    <FaLink />
+    <Icon />
+  </div>
+);
 
 /**
  * Footer part of FVSidebar.
@@ -112,13 +150,28 @@ const FVSidebarFooter: React.ComponentType<FVSidebarFooterProps> = ({
           {t("download")}
         </Button>
         <Button
+          jssStyleSheet={fileData.has_gif ? overlapIconButtonStyles : null}
           appearance={ButtonAppearance.stealth}
-          icon={FaExternalLinkSquareAlt}
+          icon={fileData.has_gif ? OverlapIcon(FaVideo) : FaLink}
           href={`${window.location.origin}/${fileData.id}.${fileData.extension}`}
           target="_blank"
         >
-          {t("source")}
+          {fileData.has_gif ? t("sourceVideo") : t("source")}
         </Button>
+        {fileData.has_gif ? (
+          <Button
+            jssStyleSheet={overlapIconButtonStyles}
+            appearance={ButtonAppearance.stealth}
+            icon={OverlapIcon(FaImage)}
+            href={`${window.location.origin}/${fileData.id}.gif`}
+            target="_blank"
+          >
+            {t("sourceGif")}
+          </Button>
+        ) : (
+          isLoggedIn &&
+          fileData.extension === "mp4" && <FVSidebarConvertButton fileData={fileData} />
+        )}
       </div>
     </footer>
   );

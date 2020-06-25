@@ -8,7 +8,9 @@
   "size": "Size",
   "untitled": "-",
   "download": "Download File",
-  "source": "View Original",
+  "source": "Direct Link",
+  "sourceVideo": "Video Link",
+  "sourceGif": "GIF Link",
   "gif": {
     "alt": "Animated GIF image of the video",
     "load": "Loading GIF image...",

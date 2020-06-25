@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useRef, useState } from "react";
 import { toast } from "../../_DesignSystem";
 import gifJS from "gif.js";
 import axios from "../../_interceptedAxios";
+import gifGenEventEmitter from "./VideoGifGeneratorEvents";
 
 /**
  * gif.js can use a faster quantization through WASM
@@ -39,22 +40,27 @@ const gif = new gifJS({
 
 const VideoGifGenerator: React.ComponentType<{}> = props => {
   /**
-   * An array containing video IDs that need GIF equivalents.
+   * An array containing videos that need GIF equivalents.
    */
-  const taskList = useRef<{ id: string }[]>([]);
+  const taskList = useRef<Window["fileData"][]>([]);
+
+  /**
+   * An array containing every finished conversion in this session.
+   */
+  const finishedList = useRef<Window["fileData"][]>([]);
 
   /**
    * Current progress with the conversion of a video
    */
-  type progressPercentage = number;
-  const [progressPercentage, setProgress] = useState(null);
+  type progressPercentage = number | null;
+  const [progressPercentage, setProgress] = useState<number | null>(null);
 
   /**
    * ID of the toast that is used to display the progress
    * of generating and uploading a GIF
    */
-  type toastId = string;
-  const [toastId, setToastId] = useState<string>(null);
+  type toastId = string | null;
+  const [toastId, setToastId] = useState<string | null>(null);
   const [curFileId, setCurFileId] = useState(null);
 
   /**
@@ -123,7 +129,13 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
    */
   const shiftToNextGif = useCallback(() => {
     taskList.current.shift();
-    if (taskList.current.length <= 0) return;
+
+    // Reset if finished
+    if (taskList.current.length <= 0) {
+      setCurFileId(null);
+      return;
+    }
+
     generateGif(taskList.current[0].id);
   }, [generateGif]);
 
@@ -177,8 +189,6 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
             }
           );
 
-          if (isStitchRequest)
-            console.log("Wow, we're at chunk " + chunkNum + " / " + maxChunkAmount);
           if (!isStitchRequest) uploadGifChunk(chunkNum + 1);
           else shiftToNextGif();
         } catch (err) {
@@ -198,6 +208,10 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
     [shiftToNextGif]
   );
 
+  /**
+   * Retrieve list of videos not having a GIF equivalent
+   */
+  /*
   useEffect(() => {
     (async () => {
       try {
@@ -206,7 +220,6 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
         });
 
         if (typeof res.data.length !== "undefined" && res.data.length > 0) {
-          console.log(res.data);
           taskList.current = res.data;
           generateGif(taskList.current[0].id);
         }
@@ -217,7 +230,37 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
     })();
     return () => {};
   }, [generateGif]);
+  */
 
+  /**
+   * Enqueuing listeners.
+   *
+   * We use a custom EventEmitter instance in order to communicate
+   * with other components easily without using contexts and forcing
+   * everything to rerender constantly.
+   */
+  useEffect(() => {
+    const addFileToQueue = (fileData: Window["fileData"]) => {
+      // Don't enqueue a duplicate unnecessarily
+      const dupe = (data: Window["fileData"]) => fileData.id === data.id;
+      if (
+        taskList.current.findIndex(dupe) > -1 ||
+        finishedList.current.findIndex(dupe) > -1
+      ) {
+        return;
+      }
+
+      taskList.current.push(fileData);
+      if (!curFileId) generateGif(taskList.current[0].id);
+    };
+
+    gifGenEventEmitter.on("add", addFileToQueue);
+    return () => gifGenEventEmitter.off("add", addFileToQueue);
+  }, [curFileId, generateGif]);
+
+  /**
+   * Gif.js listeners
+   */
   useEffect(() => {
     const gifFinishHandler = uploadGif;
     const handleGifProgress = (progress: number) => {
@@ -232,20 +275,40 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
     };
   }, [uploadGif]);
 
+  /**
+   * Toast notification dispatcher.
+   *
+   * It enqueues a toast if a GIF is being generated and dismisses
+   * it after every enqueued video has been processed.
+   */
   useEffect(() => {
     let toastId: string = null;
-    toastId =
-      toast("Spinning up GIF generator...", "", { progress: 0, type: "info" }) + "";
-    setToastId(toastId);
+
+    // Create toast if a GIF is being generated
+    if (!toastId && curFileId) {
+      toastId =
+        toast("Spinning up GIF generator...", "", { progress: 0, type: "info" }) + "";
+      setToastId(toastId);
+    }
+
+    // Dismiss unused toasts
+    if (toastId && !curFileId) {
+      toast.dismiss(toastId);
+      toastId = null;
+      setToastId(null);
+      return;
+    }
 
     return () => {
       if (toastId) toast.dismiss(toastId);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [curFileId]);
 
+  /**
+   * Toast notification progress indicator
+   */
   useEffect(() => {
-    if (!toastId || !curFileId) return;
+    if (!toastId && !curFileId) return;
 
     let title = "";
     if (progressPercentage < 33)
@@ -254,8 +317,6 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
     if (progressPercentage >= 66) title = `Uploading ${curFileId}.gif...`;
 
     toast.update(toastId, { progress: progressPercentage, title });
-
-    console.log(`${title} - ${progressPercentage}%`);
   }, [curFileId, progressPercentage, toastId]);
 
   return null;

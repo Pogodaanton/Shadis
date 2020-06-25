@@ -29,11 +29,7 @@ const DropzoneUploadManager = (props: DropzoneUploadManagerProps) => {
 
   const manageDropDataChange = useCallback(() => {
     const { dropData } = props;
-    if (dropData.acceptedFiles.length <= 0) {
-      console.log("bingo");
-    }
 
-    console.log("manageDropDataChange");
     const acceptedUploadList = dropData.acceptedFiles.map(file => {
       return {
         key: uniqueId(new Date().getTime() + ""),
@@ -56,7 +52,6 @@ const DropzoneUploadManager = (props: DropzoneUploadManagerProps) => {
       ...acceptedUploadList,
       ...rejectedUploadList,
     ];
-    console.log(updatedUploadList);
     changeUploadList(updatedUploadList);
   }, [props, uploadList]);
 
@@ -70,8 +65,6 @@ const DropzoneUploadManager = (props: DropzoneUploadManagerProps) => {
       }),
     []
   );
-
-  //
 
   // Props change listener
   useEffect(() => {
@@ -102,20 +95,6 @@ const DropzoneUploadManager = (props: DropzoneUploadManagerProps) => {
         )}
     </div>
   );
-  /*
-  return (
-    (dropData.acceptedFiles.length > 0 || dropData.rejectedFiles.length > 0) && (
-      <Fragment>
-        <FaExclamationTriangle className={props.managedClasses.dropzoneUploadManagerIcon} />
-        <Heading tag={HeadingTag.h1} size={2}>
-          {t("upload.error.title")}
-        </Heading>
-        <Heading tag={HeadingTag.h2} size={5}>
-          {errorMessage}
-        </Heading>
-      </Fragment>
-    )
-  );*/
 };
 
 export default manageJss(styles)(DropzoneUploadManager);

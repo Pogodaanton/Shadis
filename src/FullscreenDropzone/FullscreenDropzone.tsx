@@ -50,12 +50,19 @@ const FullscreenDropzoneStyles: ComponentStyles<
     justifyContent: "space-between",
     outline: "none",
     marginBottom: "20px",
+    flexShrink: "0",
+    "& > h1": {
+      lineHeight: "40px",
+    },
   },
   fullscreenDropzoneDialogContent_buttons: {
     display: "flex",
     alignItems: "center",
     "& > *:first-child": {
-      marginRight: "10px",
+      marginRight: "15px",
+    },
+    "& > *:last-child": {
+      margin: "0",
     },
   },
 };

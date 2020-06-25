@@ -14,7 +14,7 @@ import {
 import { iconToGlyph } from "./Utils/iconToGlyph";
 import ProgressIcon from "./ProgressIcon/ProgressIcon";
 import useMotionValueFactory from "./Hooks/useMotionValueFactory";
-import { useScaleFactor } from "./Hooks/useScaleFactor";
+import { useScaleFactor, getScaleFactorByConstraints } from "./Hooks/useScaleFactor";
 import { ToastManager, toast } from "./Toasts/toast";
 import TabBar from "./Tabs/TabBar/TabBar";
 import TabViewer from "./Tabs/TabViewer/TabViewer";
@@ -37,6 +37,7 @@ export {
   RouteInterceptionManager,
   useRouteInterception,
   useScaleFactor,
+  getScaleFactorByConstraints,
   ToastManager,
   toast,
   TabBar,

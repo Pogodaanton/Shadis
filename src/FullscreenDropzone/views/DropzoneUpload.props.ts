@@ -5,7 +5,9 @@ import { ManagedClasses } from "@microsoft/fast-jss-manager-react";
  */
 export interface DropzoneUploadClassNameContract {
   dropzoneUpload?: string;
-  dropzoneUpload_image?: string;
+  dropzoneUpload_rejectIcon?: string;
+  dropzoneUpload_preview?: string;
+  dropzoneUpload_background?: string;
   dropzoneUpload_details?: string;
   dropzoneUpload_error?: string;
   dropzoneUpload_progress?: string;

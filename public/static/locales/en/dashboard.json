@@ -18,7 +18,7 @@
     "dropDescription": "You can upload an image by dragging it into here.",
     "error": {
       "title": "Uh-Oh, an error happened!",
-      "unsupported": "This filetype cannot be uploaded.\nSupported types are: jpg, png, gif"
+      "unsupported": "This filetype cannot be uploaded.\nSupported types are: jpg, png, gif, mp4"
     },
     "aria": {
       "dialogLabel": "Upload dialog"

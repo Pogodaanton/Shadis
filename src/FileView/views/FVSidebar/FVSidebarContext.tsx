@@ -3,6 +3,7 @@ import { useMotionValue } from "framer-motion";
 import { ISidebarData } from "./FVSidebarContext.props";
 import { useWindowBreakpoint } from "../../../_DesignSystem";
 import { debounce } from "lodash-es";
+import EventEmitter from "onfire.js";
 
 /**
  * The width of the sidebar by default
@@ -19,6 +20,12 @@ const mobileBreakpoint = 850;
  * the position of the sidebar.
  */
 export const SidebarData = React.createContext<ISidebarData>(null);
+
+/**
+ * Alternative method of communicating across components.
+ * This does not re-render every component on each message it recieves.
+ */
+export const SidebarEventEmitter: EventEmitter = new EventEmitter();
 
 const FVSidebarProvider: React.ComponentType<{ fileData: Window["fileData"] }> = ({
   children,

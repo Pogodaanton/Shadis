@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { FileViewClassNameContract, FileViewProps } from "./FileView.props";
 import {
@@ -82,12 +82,6 @@ const FileView: React.FC<FileViewProps> = ({
   const { extension, has_gif } = fileData;
 
   /**
-   * Helper function as ref to prevent it from updating after
-   * each re-render
-   */
-  const onMagnify = useRef<React.MouseEventHandler>(() => {});
-
-  /**
    * Used to decide whether to show ImageViewer or VideoViewer
    */
   const [isVideo] = useState<boolean>(extension === "mp4");
@@ -102,9 +96,6 @@ const FileView: React.FC<FileViewProps> = ({
       document.body.style.overflow = "visible";
     };
   }, []);
-
-  // Callback used after mounting ImageViewer
-  const setZoomRef = (ref: React.MouseEventHandler) => (onMagnify.current = ref);
 
   return (
     <FVSidebarProvider fileData={fileData}>
@@ -123,13 +114,7 @@ const FileView: React.FC<FileViewProps> = ({
               position="absolute"
               jssStyleSheet={headerStyles}
               centerContent={<HeaderCenterContent />}
-              rightSideContent={
-                <HeaderRightContent
-                  onMagnify={onMagnify.current}
-                  isVideo={isVideo}
-                  hasGif={has_gif}
-                />
-              }
+              rightSideContent={<HeaderRightContent isVideo={isVideo} hasGif={has_gif} />}
             />
             <FVSidebarToggleButton />
           </motion.div>
@@ -137,7 +122,7 @@ const FileView: React.FC<FileViewProps> = ({
             {isVideo ? (
               <VideoViewer fileData={fileData} />
             ) : (
-              <ImageViewer fileData={fileData} zoomRef={setZoomRef} />
+              <ImageViewer fileData={fileData} />
             )}
           </ThumbnailViewer>
           <FVSidebar fileData={fileData} />

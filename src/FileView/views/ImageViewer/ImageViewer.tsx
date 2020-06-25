@@ -21,7 +21,7 @@ import { headerHeight, useRouteInterception } from "../../../_DesignSystem";
 import { classNames } from "@microsoft/fast-web-utilities";
 import ImageViewerSlider from "./ImageViewerSlider";
 import { TweenProps, spring } from "popmotion";
-import { SidebarData } from "../FVSidebar/FVSidebarContext";
+import { SidebarData, SidebarEventEmitter } from "../FVSidebar/FVSidebarContext";
 import { ThumbnailContext, ssrContainer } from "../ThumbnailViewer/ThumbnailViewer";
 
 const applyCenteredAbsolute: CSSRules<DesignSystem> = {
@@ -252,10 +252,11 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
    * Calling ref function prop to pass on the handleToggle
    * function as a way to externally toggle the transform mode
    */
-  useLayoutEffect(() => {
-    zoomRef(() => setTransformState(!inTransformMode));
-    return () => zoomRef(() => {});
-  }, [inTransformMode, zoomRef]);
+  useEffect(() => {
+    const toggleZoom = () => setTransformState(!inTransformMode);
+    SidebarEventEmitter.on("toggle-zoom", toggleZoom);
+    return () => SidebarEventEmitter.off("toggle-zoom", toggleZoom);
+  }, [inTransformMode]);
 
   /**
    * To keep the image centered if it is bigger than the viewport

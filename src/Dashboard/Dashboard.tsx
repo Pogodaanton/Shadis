@@ -10,6 +10,7 @@ import { ListDataItem, DashboardListProps } from "../DashboardList/DashboardList
 import { FullscreenLoader } from "../Loader";
 import { LoadableComponent } from "@loadable/component";
 import { DashboardEmptyProps } from "./views/DashboardEmpty.props";
+import DashboardHeaderRight from "./views/DashboardHeaderRight";
 
 const DashboardList: LoadableComponent<DashboardListProps> = FullscreenLoader(
   import("../DashboardList/DashboardList")
@@ -72,7 +73,7 @@ const Dashboard: React.FC<DashboardProps> = props => {
 
   return (
     <div className={isFrozen ? props.managedClasses.dashboard__frozen : ""}>
-      <Header position="fixed" />
+      <Header position="fixed" rightSideContent={<DashboardHeaderRight />} />
       {listData === null ? null : listData.length === 0 ? (
         <DashboardEmpty />
       ) : (

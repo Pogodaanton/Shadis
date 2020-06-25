@@ -39,7 +39,7 @@ const FVSidebarContent: React.ComponentType<FVSidebarContentProps> = memo(
   ({ managedClasses, fileData }) => {
     const { t } = useTranslation("fileview");
     const uploaded = new Date(fileData.timestamp * 1000);
-    const title = fileData.title === "untitled" ? "-" : fileData.title;
+    const title = !fileData.title || fileData.title === "untitled" ? "-" : fileData.title;
 
     return (
       <div className={managedClasses.fv_sidebarContent}>

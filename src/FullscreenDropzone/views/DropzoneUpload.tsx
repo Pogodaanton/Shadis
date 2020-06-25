@@ -230,8 +230,6 @@ const DropzoneUpload: React.ComponentType<DropzoneUploadProps> = React.memo(
       const ctx = canvas.getContext("2d");
       const ctxBg = canvasBgRef.current.getContext("2d");
 
-      console.log(preview, file.type, canvasRef.current, type);
-
       if (type === "image") {
         const img = new Image();
         img.addEventListener("load", () => {
@@ -250,9 +248,9 @@ const DropzoneUpload: React.ComponentType<DropzoneUploadProps> = React.memo(
           const seekHandler = () => {
             video.removeEventListener("seeked", seekHandler);
             video.pause();
-            console.log("seeked!");
             alignImageToCanvas(video, video.videoWidth, video.videoHeight, ctx);
             coverCanvasWithImage(video, video.videoWidth, video.videoHeight, ctxBg);
+            document.body.removeChild(video);
           };
           video.addEventListener("seeked", seekHandler);
           video.currentTime = 0;

@@ -182,6 +182,11 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
       borderColor: "transparent",
     },
   },
+  button__stealth: {
+    "body:not(.js-focus-visible) &:focus": {
+      borderColor: "transparent",
+    },
+  },
   button__iconOnly: {
     padding: "8px",
     margin: "5px",

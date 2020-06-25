@@ -25,35 +25,50 @@ const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
         const ctx = canvasEl.getContext("2d");
         const videoEl = document.createElement("video");
         videoEl.style.position = canvasEl.style.position = "fixed";
+        videoEl.style.display = canvasEl.style.display = "none";
         videoEl.preload = "metadata";
+        videoEl.autoplay = false;
         videoEl.addEventListener("loadeddata", () => {
+          const cleanup = () => {
+            document.body.removeChild(canvasEl);
+            document.body.removeChild(videoEl);
+          };
+
+          const seekHandler = () => {
+            videoEl.removeEventListener("seeked", seekHandler);
+            videoEl.pause();
+            ctx.drawImage(videoEl, 0, 0, videoEl.videoWidth, videoEl.videoHeight);
+
+            try {
+              // Generate a final JPEG blob
+              canvasEl.toBlob(imgBlob => {
+                // We need an ArrayBuffer, so that we can send it to the worker
+                const reader = new FileReader();
+                reader.addEventListener("loadend", () => {
+                  if (reader.result instanceof ArrayBuffer) {
+                    cleanup();
+                    resolve({
+                      arrayBuffer: reader.result,
+                      id,
+                    });
+                  }
+                });
+                reader.readAsArrayBuffer(imgBlob);
+              }, "image/jpeg");
+            } catch (err) {
+              console.log(
+                "Unknown error while generating a video thumbnail. This procedure might not be supported by the browser. The worker will be terminated."
+              );
+              console.error(err);
+              worker.terminate();
+              cleanup();
+            }
+          };
           canvasEl.width = videoEl.videoWidth;
           canvasEl.height = videoEl.videoHeight;
-          videoEl.style.bottom = canvasEl.style.bottom = -1 * videoEl.videoHeight + "px";
-          ctx.drawImage(videoEl, 0, 0, videoEl.videoWidth, videoEl.videoHeight);
-
-          try {
-            // Generate a final JPEG blob
-            canvasEl.toBlob(imgBlob => {
-              // We need an ArrayBuffer, so that we can send it to the worker
-              const reader = new FileReader();
-              reader.addEventListener("loadend", () => {
-                if (reader.result instanceof ArrayBuffer) {
-                  resolve({
-                    arrayBuffer: reader.result,
-                    id,
-                  });
-                }
-              });
-              reader.readAsArrayBuffer(imgBlob);
-            }, "image/jpeg");
-          } catch (err) {
-            console.log(
-              "Unknown error while generating a video thumbnail. This procedure might not be supported by the browser. The worker will be terminated."
-            );
-            console.error(err);
-            worker.terminate();
-          }
+          videoEl.addEventListener("seeked", seekHandler);
+          videoEl.currentTime = 0;
+          videoEl.play();
         });
 
         // NOTE: MP4 is hardcoded, keep that in mind

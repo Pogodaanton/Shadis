@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App/App";
+import "focus-visible/dist/focus-visible";
 import "./index.scss";
 import "./i18n";
 

@@ -12,6 +12,7 @@ import Logo from "../Logo/Logo";
 import { Link } from "react-router-dom";
 import { classNames } from "@microsoft/fast-web-utilities";
 import { applyBackdropBackground } from "../Utils/stylesheetModifiers";
+import { useTranslation } from "react-i18next";
 
 /**
  * Hardcoded height of the header.
@@ -87,6 +88,7 @@ const styles: ComponentStyles<HeaderClassNameContract, DesignSystem> = {
 };
 
 const HeaderBase: React.FC<HeaderProps> = props => {
+  const { t } = useTranslation("common");
   return (
     <header
       className={classNames(
@@ -96,8 +98,8 @@ const HeaderBase: React.FC<HeaderProps> = props => {
       )}
     >
       <div className={"header-left " + props.managedClasses.header_left}>
-        <Link to="/">
-          <Logo size="45" alt="Go to Homepage" />
+        <Link to="/" title={t("gotoDashboard")}>
+          <Logo size="45" alt={t("gotoDashboard")} />
         </Link>
         <Paragraph size={2}>Shadis</Paragraph>
         {props.leftContent || null}

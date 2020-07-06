@@ -16,6 +16,7 @@ import { parseColorHexRGBA } from "@microsoft/fast-colors";
 import { designSystemContext } from "@microsoft/fast-jss-manager-react/dist/context";
 import { ButtonClassNameContract } from "../../../_DesignSystem/Button/Button.props";
 import { Button } from "../../../_DesignSystem";
+import { useTranslation } from "react-i18next";
 
 /**
  * The position on the x-axis where the button is placed by default
@@ -58,6 +59,7 @@ const FVSidebarToggleButton: React.ComponentType<FVSidebarToggleButtonProps> = (
   const { isSidebarVisible, setSidebarVisibility, sidebarPos } = useContext(SidebarData);
   const [isButtonHover, setButtonHover] = useState(false);
   const designCtx = useContext(designSystemContext) as DesignSystem;
+  const { t } = useTranslation("fileview");
 
   /**
    * Moves the button into the sidebar when opened.
@@ -124,6 +126,8 @@ const FVSidebarToggleButton: React.ComponentType<FVSidebarToggleButtonProps> = (
         )}
         onClick={() => setSidebarVisibility(!isSidebarVisible)}
         jssStyleSheet={customCaretStyle}
+        aria-label={isSidebarVisible ? t("hideInspector") : t("openInspector")}
+        title={isSidebarVisible ? t("hideInspector") : t("openInspector")}
       />
     </motion.div>
   );

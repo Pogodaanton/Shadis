@@ -1,8 +1,9 @@
 {
   "loginButton": "Log in",
+  "logoutButton": "Log out",
   "username": "Username",
   "password": "Password",
-  "goto": "Go to page {{name}}",
+  "gotoDashboard": "Go to dashboard",
   "error": {
     "loginGeneric": "Couldn't log you in",
     "loginMissingData": "Username or password missing!",
@@ -23,5 +24,11 @@
   "notFound": {
     "title": "Nothing to see here!",
     "description": "This page has either been removed or never existed before."
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "useLight": "Use light theme",
+    "useDark": "Use dark theme"
   }
 }

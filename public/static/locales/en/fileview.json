@@ -1,5 +1,8 @@
 {
   "inspector": "File Inspector",
+  "openInspector": "Open inspector",
+  "hideInspector": "Hide inspector",
+  "toggleZoom": "Toggle zoom",
   "description": "Description",
   "width": "Width",
   "height": "Height",
@@ -14,6 +17,7 @@
   "gif": {
     "alt": "Animated GIF image of the video",
     "load": "Loading GIF image...",
-    "loadError": "Sorry, we could not open this image!"
+    "loadError": "Sorry, we could not open this image!",
+    "toggle": "Toggle between video and GIF view"
   }
 }

@@ -10,14 +10,12 @@ import { CustomApplyAcrylic } from "./stylesheetModifiers.types";
 /**
  * Appends CSS parameters that create a centered flexbox
  */
-export const applyCenteredFlexbox = (): CSSRules<DesignSystem> => {
-  return {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-};
+export const applyCenteredFlexbox = (): CSSRules<DesignSystem> => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+});
 
 /**
  * Generates an acrylic backdrop with the given background functon.

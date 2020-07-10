@@ -161,6 +161,7 @@ const styles: ComponentStyles<ButtonClassNameContract, DesignSystem> = {
     background: "transparent",
     color: neutralForegroundRest,
     fill: neutralForegroundRest,
+    fontWeight: "500",
     outline: "none",
     "&:hover:enabled, a&:not($button__disabled):hover": {
       background: neutralFillHover,

@@ -6,7 +6,7 @@ import {
 } from "./FullscreenLoader.props";
 import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
-import { ColorRGBA64 } from "@microsoft/fast-colors";
+import { createPortal } from "react-dom";
 
 const styles: ComponentStyles<
   FullscreenLoadingIndicatorClassNameContract,
@@ -18,28 +18,29 @@ const styles: ComponentStyles<
     alignItems: "center",
     justifyContent: "center",
     position: "fixed",
-    background: new ColorRGBA64(0, 0, 0, 0.6).toStringWebRGBA(),
+    background: "rgba(0,0,0,0.6)",
     width: "100%",
     height: "100%",
     zIndex: "100",
     color: "white",
+    top: "0",
+    left: "0",
     "& span": {
       "font-size": "2em",
     },
   },
 };
 
-class FullscreenLoadingIndicator extends React.Component<
-  FullscreenLoadingIndicatorProps
-> {
-  render(): JSX.Element {
-    return (
-      <div className={this.props.managedClasses.fsLoaderBackdrop}>
-        <span>Loading...</span>
-      </div>
-    );
-  }
-}
+const FullscreenLoadingIndicator: React.ComponentType<FullscreenLoadingIndicatorProps> = ({
+  managedClasses,
+}) => {
+  return createPortal(
+    <div className={managedClasses.fsLoaderBackdrop}>
+      <span>Loading...</span>
+    </div>,
+    document.body
+  );
+};
 
 const StyledFullscreenLoadingIndicator = manageJss(styles)(FullscreenLoadingIndicator);
 

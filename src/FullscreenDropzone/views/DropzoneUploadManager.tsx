@@ -7,6 +7,8 @@ import {
 import { DesignSystem } from "@microsoft/fast-components-styles-msft";
 import DropzoneUpload from "./DropzoneUpload";
 import { uniqueId } from "lodash-es";
+import DropzoneDrag from "./DropzoneDrag";
+import { classNames } from "@microsoft/fast-web-utilities";
 
 const styles: ComponentStyles<DropzoneUploadManagerClassNameContract, DesignSystem> = {
   dropzoneUploadManager: {
@@ -18,8 +20,9 @@ const styles: ComponentStyles<DropzoneUploadManagerClassNameContract, DesignSyst
       marginBottom: "20px",
     },
   },
-  dropzoneUploadManager_hidden: {
-    display: "none",
+  dropzoneUploadManager__empty: {
+    zIndex: "-1",
+    opacity: "0.5",
   },
 };
 
@@ -74,9 +77,16 @@ const DropzoneUploadManager = (props: DropzoneUploadManagerProps) => {
     }
   }, [props.dropData, dropData, manageDropDataChange]);
 
+  const hasUploads = uploadList.length > 0;
+
   return (
-    <div className={props.managedClasses.dropzoneUploadManager}>
-      {uploadList.length > 0 &&
+    <div
+      className={classNames(props.managedClasses.dropzoneUploadManager, [
+        props.managedClasses.dropzoneUploadManager__empty,
+        !hasUploads,
+      ])}
+    >
+      {hasUploads ? (
         uploadList.map(
           (obj: {
             key: string;
@@ -92,7 +102,10 @@ const DropzoneUploadManager = (props: DropzoneUploadManagerProps) => {
               onRemoveRequest={removeUploadItem(obj.key)}
             />
           )
-        )}
+        )
+      ) : (
+        <DropzoneDrag />
+      )}
     </div>
   );
 };

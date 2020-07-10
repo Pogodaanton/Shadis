@@ -21,6 +21,12 @@ import { Button } from "../_DesignSystem";
 import DropzoneUploadManager from "./views/DropzoneUploadManager";
 import { useTranslation } from "react-i18next";
 import { FaTimes } from "react-icons/fa";
+import EventEmitter from "onfire.js";
+
+/**
+ * Cross-component event event manager for toggling the dialog visibility
+ */
+export const EEDropzone: EventEmitter = new EventEmitter();
 
 const FullscreenDropzoneStyles: ComponentStyles<
   FullscreenDropzoneClassNameContract,
@@ -97,12 +103,13 @@ const FullscreenDropzone = (
   WrappedComponent: React.ComponentClass | React.FunctionComponent
 ): React.FC<FullscreenDropzoneProps> => {
   return props => {
+    let lastDropTarget: EventTarget = null;
+
     const [isUploadDialogVisible, setDialogVisibility] = useState(false);
     const [isDragActive, setDragState] = useState(false);
     const [preventDialogHiding, setDialogHidingPrevention] = useState(false);
     const [dropData, setDropData] = useState({ acceptedFiles: [], rejectedFiles: [] });
     const { t } = useTranslation("dashboard");
-    let lastDropTarget: EventTarget = null;
 
     /**
      * Callback function for showing the upload modal if a draggable appears in the viewport.
@@ -136,6 +143,15 @@ const FullscreenDropzone = (
     };
 
     /**
+     * Callback function for showing the upload modal if the upload button in the header was clicked.
+     */
+    const onHeaderButtonClick = () => {
+      setDialogHidingPrevention(true);
+      setDragState(false);
+      setDialogVisibility(true);
+    };
+
+    /**
      * We send the data down to a separate component which handles all uploads.
      */
     const onDrop: <T extends File>(
@@ -151,22 +167,24 @@ const FullscreenDropzone = (
       [preventDialogHiding]
     );
 
-    const close = () => {
+    const close = useCallback(() => {
       setDialogHidingPrevention(false);
       setDragState(false);
       setDialogVisibility(false);
-    };
+    }, []);
 
     /**
-     * Setting up and removing event listeners on mounting and demounting
+     * Setting up and removing event listeners
      */
     useEffect(() => {
       window.addEventListener("dragover", onDocumentDragOver);
       window.addEventListener("dragleave", onDocumentDragLeave);
+      EEDropzone.on("open", onHeaderButtonClick);
 
       return () => {
         window.removeEventListener("dragover", onDocumentDragOver);
         window.removeEventListener("dragleave", onDocumentDragLeave);
+        EEDropzone.off("open", onHeaderButtonClick);
       };
     });
 

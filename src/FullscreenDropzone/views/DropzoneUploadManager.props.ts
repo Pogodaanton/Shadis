@@ -5,7 +5,7 @@ import { ManagedClasses } from "@microsoft/fast-jss-manager-react";
  */
 export interface DropzoneUploadManagerClassNameContract {
   dropzoneUploadManager: string;
-  dropzoneUploadManager_hidden: string;
+  dropzoneUploadManager__empty?: string;
 }
 
 /**

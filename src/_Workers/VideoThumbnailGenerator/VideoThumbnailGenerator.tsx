@@ -1,28 +1,25 @@
-import React, { useEffect } from "react";
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import VideoWorker from "worker-loader!./video.worker.ts";
+import React, { useEffect, useCallback, useRef } from "react";
 import { toast } from "../../_DesignSystem";
-import { basePath } from "../../_interceptedAxios";
-
-let worker: VideoWorker = null;
-const { baseDirectory } = window;
+import axios, { basePath, getApiPath } from "../../_interceptedAxios";
 
 /**
  * - Retrieve a list of missing thumbnails
  * - Load the first frame of each video in question
  * - Pass the frames to a web worker which then uploads them back as thumbnail candidates
  * - Server saves an optimized copy of them
- *
- * NOTE: This code might be a candidate for refactoring. e.g.: One could question the use-
- *       fulness of a worker for a job like this.
  */
 const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
-  useEffect(() => {
-    if (typeof Worker === "undefined") return;
-    if (!worker) worker = new VideoWorker();
+  /**
+   * An array containing videos that need GIF equivalents.
+   */
+  const taskList = useRef<Window["fileData"][]>([]);
 
-    const getFirstFrame = (id: string) =>
-      new Promise<{ arrayBuffer: ArrayBuffer; id: string }>(resolve => {
+  /**
+   * Loads the first frame of the video and pass it on as the new thumbnail
+   */
+  const generateThumbnailFromVideo = useCallback(
+    (id: string) =>
+      new Promise<ArrayBuffer>(resolve => {
         const canvasEl = document.createElement("canvas");
         const ctx = canvasEl.getContext("2d");
         const videoEl = document.createElement("video");
@@ -49,10 +46,7 @@ const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
                 reader.addEventListener("loadend", () => {
                   if (reader.result instanceof ArrayBuffer) {
                     cleanup();
-                    resolve({
-                      arrayBuffer: reader.result,
-                      id,
-                    });
+                    resolve(reader.result);
                   }
                 });
                 reader.readAsArrayBuffer(imgBlob);
@@ -62,7 +56,6 @@ const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
                 "Unknown error while generating a video thumbnail. This procedure might not be supported by the browser. The worker will be terminated."
               );
               console.error(err);
-              worker.terminate();
               cleanup();
             }
           };
@@ -77,42 +70,77 @@ const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
         videoEl.src = `${basePath}/${id}.mp4#t=0.1`;
         document.body.appendChild(canvasEl);
         document.body.appendChild(videoEl);
-      });
+      }),
+    []
+  );
 
-    const taskHandler = (ev: MessageEvent) => {
-      const { data } = ev;
-      if (typeof data === "object" && "task" in data && "arguments" in data) {
-        switch (data.task) {
-          case "addToast":
-            toast(data.arguments[0], data.arguments[1], data.arguments[3]);
-            break;
-          case "getFirstFrame":
-            if (typeof data.arguments === "string") {
-              getFirstFrame(data.arguments).then(obj => {
-                worker.postMessage({ task: "setFrame", arguments: obj, baseDirectory }, [
-                  obj.arrayBuffer,
-                ]);
-              });
-            }
-            break;
-          default:
-            break;
-        }
+  /**
+   * Uploads an image as a thumbnail to the server and assigns it to the given file id
+   */
+  const uploadThumbnail = useCallback(
+    async (id: Window["fileData"]["id"], arrayBuffer: ArrayBuffer) => {
+      try {
+        const imageBlob: Blob = new Blob([arrayBuffer], { type: "image/jpeg" });
+        const postData = new FormData();
+
+        postData.append("type", "video-thumbnail");
+        postData.append("id", id);
+        postData.append("data", imageBlob);
+
+        await axios.post(getApiPath("finishAdminTask"), postData);
+        return true;
+      } catch (err) {
+        toast.error("error.requestTaskList");
+        console.log("error.requestTaskList", "\n", err.message);
+        return true;
       }
-    };
+    },
+    []
+  );
 
-    if (worker.addEventListener) worker.addEventListener("message", taskHandler);
-    else worker.onmessage = taskHandler;
+  /**
+   * Loops through every video which needs a new thumbnail,
+   * generates them and uploads them
+   */
+  const loopThroughAllVideos = useCallback(async () => {
+    if (taskList.current.length <= 0) return;
 
-    return () => {
-      if (worker.addEventListener) worker.removeEventListener("message", taskHandler);
-      else worker.onmessage = null;
-    };
-  }, []);
+    try {
+      const curId: Window["fileData"]["id"] = taskList.current[0].id;
+      const arrayBuffer: ArrayBuffer = await generateThumbnailFromVideo(curId);
+      await uploadThumbnail(curId, arrayBuffer);
+    } catch (err) {
+      console.log("error.thumbnailGeneration", "\n", err.message || err.toString());
+    }
 
+    taskList.current.shift();
+    loopThroughAllVideos();
+  }, [generateThumbnailFromVideo, uploadThumbnail]);
+
+  /**
+   * Retrieve a list of videos not having a proper thumbnail
+   */
   useEffect(() => {
-    worker.postMessage({ task: "fetchList", baseDirectory });
-  }, []);
+    // Don't reload the list unnecessarily
+    if (taskList.current.length > 0) return () => {};
+
+    (async () => {
+      try {
+        const res = await axios.get(getApiPath("getAdminTasks"), {
+          params: { type: "video-gif" },
+        });
+
+        if (typeof res.data.length !== "undefined" && res.data.length > 0) {
+          taskList.current = res.data;
+          loopThroughAllVideos();
+        }
+      } catch (err) {
+        toast.error("error.requestTaskList");
+        console.log("error.requestTaskList", "\n", err.message);
+      }
+    })();
+    return () => {};
+  }, [loopThroughAllVideos]);
 
   return null;
 };

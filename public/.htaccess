@@ -4,17 +4,22 @@ IndexIgnore *
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
+  # RewriteBase /
 
   # Force trailing slash
   RewriteCond %{REQUEST_URI} /+[^\.]+$
   RewriteRule ^(.+[^/])$ %{REQUEST_URI}/ [R=301,L]
 
   # Rewrite jpg/png/gif/webp file access to uploads folder
+  # Only rewrite in base directory
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{DOCUMENT_ROOT}/uploads/$1.$2 -f
-  RewriteRule ^(.+)\.(jpg|png|gif|webp|mp4)$ uploads/$1.$2 [L]
+  RewriteRule ^([^\/]+)\.(jpg|png|gif|webp|mp4)$ uploads/$1.$2 [L]
+
+  # Rewrite requests going into an unknown /static/ folder
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.+)\/(static)\/(.+) static/$3 [L]
 
   # Don't rewrite files or directories
   RewriteRule ^index.php$ - [L]
@@ -22,7 +27,7 @@ IndexIgnore *
   RewriteCond %{REQUEST_FILENAME} !-d
 
   # Rewrite everything else to index.php to allow html5 state links
-  RewriteRule . /index.php [L]
+  RewriteRule . index.php [L]
 
 </IfModule>
 

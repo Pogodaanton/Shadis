@@ -2,8 +2,10 @@ import React, { useEffect } from "react";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import VideoWorker from "worker-loader!./video.worker.ts";
 import { toast } from "../../_DesignSystem";
+import { basePath } from "../../_interceptedAxios";
 
 let worker: VideoWorker = null;
+const { baseDirectory } = window;
 
 /**
  * - Retrieve a list of missing thumbnails
@@ -72,7 +74,7 @@ const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
         });
 
         // NOTE: MP4 is hardcoded, keep that in mind
-        videoEl.src = `${window.location.origin}/${id}.mp4#t=0.1`;
+        videoEl.src = `${basePath}/${id}.mp4#t=0.1`;
         document.body.appendChild(canvasEl);
         document.body.appendChild(videoEl);
       });
@@ -87,7 +89,7 @@ const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
           case "getFirstFrame":
             if (typeof data.arguments === "string") {
               getFirstFrame(data.arguments).then(obj => {
-                worker.postMessage({ task: "setFrame", arguments: obj }, [
+                worker.postMessage({ task: "setFrame", arguments: obj, baseDirectory }, [
                   obj.arrayBuffer,
                 ]);
               });
@@ -109,7 +111,7 @@ const VideoThumbnailGenerator: React.ComponentType<{}> = props => {
   }, []);
 
   useEffect(() => {
-    worker.postMessage("fetchList");
+    worker.postMessage({ task: "fetchList", baseDirectory });
   }, []);
 
   return null;

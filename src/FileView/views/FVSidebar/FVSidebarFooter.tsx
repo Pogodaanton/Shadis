@@ -19,6 +19,7 @@ import { designSystemContext } from "@microsoft/fast-jss-manager-react/dist/cont
 import loadable from "@loadable/component";
 import { IconType } from "react-icons/lib";
 import FVSidebarConvertButton from "./FVSidebarConvertButton";
+import { basePath } from "../../../_interceptedAxios";
 
 const FVSidebarDeleteButton = loadable(() => import("./FVSidebarDeleteButton"));
 
@@ -143,7 +144,7 @@ const FVSidebarFooter: React.ComponentType<FVSidebarFooterProps> = ({
         <Button
           appearance={ButtonAppearance.stealth}
           icon={FaDownload}
-          href={`${window.location.origin}/${fileData.id}.${fileData.extension}`}
+          href={`${basePath}/${fileData.id}.${fileData.extension}`}
           target="_blank"
           download
         >
@@ -153,7 +154,7 @@ const FVSidebarFooter: React.ComponentType<FVSidebarFooterProps> = ({
           jssStyleSheet={fileData.has_gif ? overlapIconButtonStyles : null}
           appearance={ButtonAppearance.stealth}
           icon={fileData.has_gif ? OverlapIcon(FaVideo) : FaLink}
-          href={`${window.location.origin}/${fileData.id}.${fileData.extension}`}
+          href={`${basePath}/${fileData.id}.${fileData.extension}`}
           target="_blank"
         >
           {fileData.has_gif ? t("sourceVideo") : t("source")}
@@ -163,7 +164,7 @@ const FVSidebarFooter: React.ComponentType<FVSidebarFooterProps> = ({
             jssStyleSheet={overlapIconButtonStyles}
             appearance={ButtonAppearance.stealth}
             icon={OverlapIcon(FaImage)}
-            href={`${window.location.origin}/${fileData.id}.gif`}
+            href={`${basePath}/${fileData.id}.gif`}
             target="_blank"
           >
             {t("sourceGif")}

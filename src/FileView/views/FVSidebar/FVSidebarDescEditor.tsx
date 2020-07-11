@@ -11,7 +11,7 @@ import {
   ProgressClassNameContract,
 } from "@microsoft/fast-components-react-msft";
 import { FaCheck, FaExclamationTriangle } from "react-icons/fa";
-import axios from "../../../_interceptedAxios";
+import axios, { getApiPath } from "../../../_interceptedAxios";
 import { toast } from "../../../_DesignSystem";
 import { useTranslation } from "react-i18next";
 import { SidebarData } from "./FVSidebarContext";
@@ -68,7 +68,7 @@ const FVSidebarDescEditor: React.ComponentType<FVSidebarDescEditorProps> = ({
     const deferredLoading = setTimeout(() => setLoadingState("loading"), 500);
 
     try {
-      await axios.post(window.location.origin + "/api/edit.php", {
+      await axios.post(getApiPath("edit"), {
         selection: fileData.id,
         value,
         action: "editTitle",

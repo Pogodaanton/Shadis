@@ -2,7 +2,7 @@ import React from "react";
 import { FVSidebarFooterProps } from "./FVSidebarFooter.props";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import axios from "../../../_interceptedAxios";
+import axios, { getApiPath } from "../../../_interceptedAxios";
 import { Button, ButtonAppearance, toast } from "../../../_DesignSystem";
 import { FaTrash } from "react-icons/fa";
 
@@ -17,7 +17,7 @@ const FVSidebarDeleteButton: React.ComponentType<FVSidebarFooterProps> = ({
 
   const onDelete = async () => {
     try {
-      await axios.post(window.location.origin + "/api/edit.php", {
+      await axios.post(getApiPath("edit"), {
         selection: fileData.id,
         action: "delete",
       });

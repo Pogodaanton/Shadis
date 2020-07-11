@@ -33,9 +33,12 @@ ctx.addEventListener("message", ({ data }) => {
     case "fetchList":
       (async () => {
         try {
-          const res = await axios.get(self.location.origin + "/api/getAdminTasks.php", {
-            params: { type: "video-thumbnail" },
-          });
+          const res = await axios.get(
+            self.location.origin + data.baseDirectory + "/api/getAdminTasks.php",
+            {
+              params: { type: "video-thumbnail" },
+            }
+          );
 
           if (res.data) {
             IDList = res.data;
@@ -64,7 +67,10 @@ ctx.addEventListener("message", ({ data }) => {
           postData.append("id", id);
           postData.append("data", imageBlob);
 
-          await axios.post(self.location.origin + "/api/finishAdminTask.php", postData);
+          await axios.post(
+            self.location.origin + data.baseDirectory + "/api/finishAdminTask.php",
+            postData
+          );
           IDList.shift();
           generateNextThumbnail();
         } catch (err) {

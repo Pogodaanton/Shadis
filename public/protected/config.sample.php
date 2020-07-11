@@ -38,14 +38,6 @@ define("UPLOAD_TOKEN", "your_secret_upload_token_here");
 $table_prefix = "shadis_";
 
 /**
- * Base directory of Shadis
- *
- * If you put Shadis in a location other than root,
- * modify this variable to the specific subdirectory.
- */
-$base_directory = "/";
-
-/**
  * Path to the upload directory of Shadis
  *
  * If you want to save the upload path elsewhere, make sure

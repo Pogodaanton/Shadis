@@ -9,6 +9,7 @@ import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { isLoggedIn, headerHeight, useScaleFactor } from "../../../_DesignSystem";
 import { motion } from "framer-motion";
 import { useViewportDimensions } from "../ImageViewer/useViewportDimensions";
+import { basePath } from "../../../_interceptedAxios";
 
 const styles: ComponentStyles<ThumbnailViewerClassNameContract, DesignSystem> = {
   viewer: {
@@ -172,7 +173,7 @@ const ThumbnailViewer: React.ComponentType<ThumbnailViewerProps> = ({
             onAnimationStart={onMagicAnimStart}
             onAnimationComplete={onMagicAnimEnd}
             alt={title}
-            src={`${window.location.origin}/${id}.thumb.jpg`}
+            src={`${basePath}/${id}.thumb.jpg`}
             style={{
               width: defaultWidth,
               height: defaultHeight,

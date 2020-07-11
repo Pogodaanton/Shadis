@@ -11,6 +11,7 @@ interface Window {
    * @memberof Window
    */
   userData?: { username: string };
+
   /**
    * THe backend sets a global "fileData" object
    * which provides everything necessary
@@ -33,6 +34,11 @@ interface Window {
     fromServer?: boolean;
     has_gif?: boolean;
   };
+
+  /**
+   * The project's root path, defined by the server
+   */
+  baseDirectory?: string;
 }
 
 declare module "react-resize-aware";

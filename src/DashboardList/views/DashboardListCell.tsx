@@ -27,6 +27,7 @@ import { classNames } from "@microsoft/fast-web-utilities";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { FaPlayCircle } from "react-icons/fa";
+import { basePath } from "../../_interceptedAxios";
 
 const styles: ComponentStyles<DashboardListCellClassNameContract, DesignSystem> = {
   dashboardListCell: {
@@ -230,7 +231,7 @@ const CellRenderer: React.FC<DashboardListCellProps> = props => {
       <Link to={`/${id}/`} onClick={shouldExecuteclick}>
         <img
           className={props.managedClasses.dashboardListCell_image}
-          src={`${window.location.origin}/${id}.thumb.jpg`}
+          src={`${basePath}/${id}.thumb.jpg`}
           alt={!title || title === "untitled" ? t("untitled") : title}
           onError={onImageError}
           onLoad={onImageLoaded}

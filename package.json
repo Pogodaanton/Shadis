@@ -63,6 +63,7 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test"
   },
+  "homepage": "./",
   "config-overrides-path": "scripts/config-overrides",
   "browserslist": {
     "production": [

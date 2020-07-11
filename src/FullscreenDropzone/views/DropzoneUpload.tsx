@@ -23,7 +23,7 @@ import {
 } from "@microsoft/fast-components-styles-msft";
 import { parseColorHexRGBA } from "@microsoft/fast-colors";
 import { ProgressIcon, getScaleFactorByConstraints } from "../../_DesignSystem";
-import axios from "../../_interceptedAxios";
+import axios, { getApiPath } from "../../_interceptedAxios";
 
 const DropzoneUploadStyles: ComponentStyles<
   DropzoneUploadClassNameContract,
@@ -194,11 +194,9 @@ const DropzoneUpload: React.ComponentType<DropzoneUploadProps> = React.memo(
       setUploadState(true);
 
       try {
-        const res = await axios.post(
-          window.location.origin + "/api/upload.php",
-          formData,
-          { onUploadProgress }
-        );
+        const res = await axios.post(getApiPath("upload"), formData, {
+          onUploadProgress,
+        });
         setResData(res.data);
       } catch (err) {
         console.log("An error happened!\n", err);

@@ -1,5 +1,12 @@
 <?php
+require_once "./protected/output.inc.php";
 session_start();
+
+/**
+ * Determines in which directory Shadis is located in
+ */
+$base_directory = dirname($_SERVER['SCRIPT_NAME']);
+$homepage = url_origin($_SERVER) . $base_directory;
 
 $uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $segments = explode('/', trim($uri_path, '/'));
@@ -9,7 +16,6 @@ $title = "Shadis";
 if (!empty($segments[0])) {
   if (strlen($segments[0]) === 8) {
     require_once "./protected/db.inc.php";
-    require_once "./protected/output.inc.php";
     $file_data = $db->request_file($segments[0]);
     $title = ($file_data["title"] !== "" ? ($file_data["title"] . " - ") : "") . $file_data["id"] . " - Shadis";
   }
@@ -20,20 +26,23 @@ if (!empty($segments[0])) {
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/static/media/favicon.ico" />
+  <link rel="icon" href="<?php echo $homepage . "/static/media/favicon.ico"; ?>" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <meta content="noindex" name="robots">
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/static/media/logo192.png" />
+  <link rel="apple-touch-icon" href="<?php echo $homepage . "/static/media/logo192.png"; ?>" />
   <!--
     manifest.json provides metadata used when your web app is installed on a
     user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
   -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <title>Shadis</title>
+  <link rel="manifest" href="<?php echo $homepage . "/manifest.json"; ?>" />
+  <title><?php echo $title; ?></title>
   <meta name="title" content="<?php echo $title; ?>">
   <meta name="description" content="Share and host your favourite screenshots and screencaptures on your own server!">
   <?php
+  echo '<script>var baseDirectory = ';
+  echo json_encode($base_directory);
+  echo '</script>';
   if (isset($_SESSION["u_id"])) {
     $user_data = array("username" => $_SESSION["u_name"]);
     echo '<script>var userData = ';
@@ -42,8 +51,7 @@ if (!empty($segments[0])) {
   }
   if (!is_null($file_data)) :
     $file_data["fromServer"] = true;
-    $origin_url = url_origin($_SERVER);
-    $file_url = $origin_url . "/" . $file_data["id"] . "." . $file_data["extension"];
+    $file_url = $homepage . "/" . $file_data["id"] . "." . $file_data["extension"];
 
     echo '<script>var fileData = ';
     echo json_encode($file_data);
@@ -77,7 +85,7 @@ if (!empty($segments[0])) {
     <meta property="og:image" content="<?php echo $file_url; ?>">
     <meta property="og:image:width" content="<?php echo $file_data["width"]; ?>">
     <meta property="og:image:height" content="<?php echo $file_data["height"]; ?>">
-    <meta property="og:url" content="<?php echo $origin_url . "/" . $file_data["id"] . "/"; ?>">
+    <meta property="og:url" content="<?php echo $homepage . "/" . $file_data["id"] . "/"; ?>">
 
     <!-- Twitter Metadata -->
     <meta name="twitter:card" content="summary_large_image">

@@ -8,6 +8,7 @@ import { SidebarData } from "../FVSidebar/FVSidebarContext";
 import { useTranslation } from "react-i18next";
 import { TabPanel } from "../../../_DesignSystem/Tabs/TabViewer/TabViewer.props";
 import tabEventEmitter from "../../../_DesignSystem/Tabs/TabEvents";
+import { basePath } from "../../../_interceptedAxios";
 
 const styles: ComponentStyles<VideoViewerClassNameContract, DesignSystem> = {
   videoViewer: {
@@ -80,7 +81,7 @@ const VideoViewer: React.ComponentType<VideoViewerProps> = ({
 
         addEntryFinishListener(() => {
           videoEl.addEventListener("canplaythrough", listener);
-          videoEl.src = `${window.location.origin}/${id}.${extension}`;
+          videoEl.src = `${basePath}/${id}.${extension}`;
         });
 
         return () => {
@@ -130,7 +131,7 @@ const VideoViewer: React.ComponentType<VideoViewerProps> = ({
         toastId = toast.info(t("gif.load"), "", { progress: 0 });
       }, 500) as any;
 
-      imgEl.src = `${window.location.origin}/${id}.gif`;
+      imgEl.src = `${basePath}/${id}.gif`;
     }
   }, [id, t]);
 

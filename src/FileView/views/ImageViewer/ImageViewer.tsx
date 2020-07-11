@@ -23,6 +23,7 @@ import ImageViewerSlider from "./ImageViewerSlider";
 import { TweenProps, spring } from "popmotion";
 import { SidebarData, SidebarEventEmitter } from "../FVSidebar/FVSidebarContext";
 import { ThumbnailContext, ssrContainer } from "../ThumbnailViewer/ThumbnailViewer";
+import { basePath } from "../../../_interceptedAxios";
 
 const applyCenteredAbsolute: CSSRules<DesignSystem> = {
   position: "absolute",
@@ -123,7 +124,7 @@ const ImageViewer: React.ComponentType<ImageViewerProps> = ({
 
       addEntryFinishListener(() => {
         image.addEventListener("load", listener);
-        image.src = `${window.location.origin}/${id}.${extension}`;
+        image.src = `${basePath}/${id}.${extension}`;
 
         if (fromServer) {
           if (image.complete) listener();

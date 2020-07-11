@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useRef, useState } from "react";
 import { toast } from "../../_DesignSystem";
 import gifJS from "gif.js";
-import axios from "../../_interceptedAxios";
+import axios, { getApiPath, basePath } from "../../_interceptedAxios";
 import gifGenEventEmitter from "./VideoGifGeneratorEvents";
 
 /**
@@ -25,9 +25,7 @@ const desiredFramerate = 8;
  */
 const gif = new gifJS({
   workerScript:
-    window.location.origin +
-    "/static/js/" +
-    (canWasm ? "gif.worker-wasm.js" : "gif.worker.js"),
+    basePath + "/static/js/" + (canWasm ? "gif.worker-wasm.js" : "gif.worker.js"),
   workers: 4,
   quality: 8,
   // globalPalette: true,
@@ -118,7 +116,7 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
     });
 
     // NOTE: MP4 is hardcoded!
-    videoEl.src = `${window.location.origin}/${fileID}.mp4`;
+    videoEl.src = `${basePath}/${fileID}.mp4`;
     document.body.appendChild(videoEl);
   }, []);
 
@@ -172,21 +170,17 @@ const VideoGifGenerator: React.ComponentType<{}> = props => {
         postData.append("data", !isStitchRequest ? blobChunk : null);
 
         try {
-          await axios.post(
-            window.location.origin + "/api/finishAdminTask.php",
-            postData,
-            {
-              onUploadProgress: p => {
-                const uploadPercent = (p.loaded * 100) / p.total;
-                const chunkCompletePercent = 34 / maxChunkAmount;
-                const progress =
-                  (uploadPercent * chunkCompletePercent) / 100 +
-                  66 +
-                  chunkCompletePercent * chunkNum;
-                setProgress(progress);
-              },
-            }
-          );
+          await axios.post(getApiPath("finishAdminTask"), postData, {
+            onUploadProgress: p => {
+              const uploadPercent = (p.loaded * 100) / p.total;
+              const chunkCompletePercent = 34 / maxChunkAmount;
+              const progress =
+                (uploadPercent * chunkCompletePercent) / 100 +
+                66 +
+                chunkCompletePercent * chunkNum;
+              setProgress(progress);
+            },
+          });
 
           if (!isStitchRequest) uploadGifChunk(chunkNum + 1);
           else shiftToNextGif();

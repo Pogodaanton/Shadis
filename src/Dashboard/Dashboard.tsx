@@ -4,7 +4,7 @@ import manageJss, { ComponentStyles } from "@microsoft/fast-jss-manager-react";
 import { DashboardClassNameContract, DashboardProps } from "./Dashboard.props";
 import { Header, toast } from "../_DesignSystem";
 import { withDropzone } from "../FullscreenDropzone/FullscreenDropzone";
-import axios from "../_interceptedAxios";
+import axios, { getApiPath } from "../_interceptedAxios";
 import { useTranslation } from "react-i18next";
 import { ListDataItem, DashboardListProps } from "../DashboardList/DashboardList.props";
 import { FullscreenLoader } from "../Loader";
@@ -43,7 +43,7 @@ const Dashboard: React.FC<DashboardProps> = props => {
   useEffect(() => {
     const updateFileList = async () => {
       try {
-        const res = await axios.get(window.location.origin + "/api/getAll.php");
+        const res = await axios.get(getApiPath("getAll"));
         setListData(res.data);
       } catch (err) {
         toast.error(t("error.listGeneric") + ":", t(err.i18n, err.message));
@@ -56,7 +56,7 @@ const Dashboard: React.FC<DashboardProps> = props => {
 
   const onDeleteSelected = async (selection: string[]) => {
     try {
-      await axios.post(window.location.origin + "/api/edit.php", {
+      await axios.post(getApiPath("edit"), {
         selection,
         action: "delete",
       });

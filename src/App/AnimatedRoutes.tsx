@@ -3,7 +3,7 @@ import { FileViewProps, FileData } from "../FileView/FileView.props";
 import { FullscreenLoader } from "../Loader";
 import { RouteChildrenProps } from "react-router-dom";
 import React, { useRef, useState, useEffect } from "react";
-import axios from "../_interceptedAxios";
+import axios, { getApiPath } from "../_interceptedAxios";
 import { AnimatePresence, AnimateSharedLayout } from "framer-motion";
 import { isLoggedIn, toast, DesignToolkitProvider } from "../_DesignSystem";
 import { useTranslation } from "react-i18next";
@@ -58,7 +58,7 @@ const useFilePrefetcher = (id: string, history: History<{}>) => {
   useEffect(() => {
     const fetchFileData = async (id: string) => {
       try {
-        const res = await axios.get(window.location.origin + "/api/get.php", {
+        const res = await axios.get(getApiPath("get"), {
           params: { id },
         });
 

@@ -15,6 +15,32 @@ process.on("unhandledRejection", err => {
   throw err;
 });
 
+/**
+ * Rewire publicPath generator
+ *
+ * .htaccess reroutes requests of any undefined `static` directory to the `static`
+ * folder found in project root. Thus, we can make `publicPath` a relative value.
+ */
+require("react-dev-utils/getPublicUrlOrPath");
+require.cache[require.resolve("react-dev-utils/getPublicUrlOrPath")].exports = (
+  isEnvDevelopment,
+  homepage
+) => {
+  const { URL } = require("url");
+  const stubDomain = "https://create-react-app.dev";
+
+  if (homepage) {
+    // strip last slash if exists
+    homepage = homepage.endsWith("/") ? homepage : homepage + "/";
+
+    // validate if `homepage` is a URL or path like and use just pathname
+    const validHomepagePathname = new URL(homepage, stubDomain).pathname;
+    return homepage.startsWith(".") ? homepage : validHomepagePathname;
+  }
+
+  return "/";
+};
+
 const fs = require("fs-extra");
 const paths = require("react-scripts/config/paths");
 const path = require("path");
@@ -27,8 +53,8 @@ const chalk = require("chalk");
 /**
  * Rewire compilation success screen
  */
-const reactDevUtils = rewire("react-dev-utils/WebpackDevServerUtils");
-reactDevUtils.__set__("printInstructions", (appName, urls, useYarn) => {
+const webpackDevUtils = rewire("react-dev-utils/WebpackDevServerUtils");
+webpackDevUtils.__set__("printInstructions", (appName, urls, useYarn) => {
   console.log();
   console.log(
     chalk.cyan("ℹ️   The development bundle was output to " + chalk.bold("dist"))
@@ -133,7 +159,7 @@ const urls = {
 };
 
 // Create a webpack compiler that is configured with custom messages.
-const compiler = reactDevUtils.createCompiler({
+const compiler = webpackDevUtils.createCompiler({
   appName,
   config,
   devSocket,

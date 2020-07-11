@@ -1,4 +1,5 @@
 import axiosInstance, { AxiosInstance, AxiosError } from "axios";
+import { APIMethod } from "./index.types";
 
 export interface CustomError {
   code: number;
@@ -6,6 +7,10 @@ export interface CustomError {
   i18n: string;
 }
 
+/**
+ * A special instance of Axios which has a built-in
+ * error handler specifically made for API calls to shadis' backend server.
+ */
 const axios: AxiosInstance = axiosInstance.create();
 axios.interceptors.response.use(
   res => res,
@@ -21,5 +26,17 @@ axios.interceptors.response.use(
     }
   }
 );
+
+/**
+ * Retrieves the root path of the client
+ */
+export const basePath: URL["href"] = window.location.origin + window.baseDirectory;
+
+/**
+ * Generates a URL that can be used to request data from the backend API
+ */
+export const getApiPath = (path: APIMethod): URL["href"] => {
+  return basePath + "/api/" + path + ".php";
+};
 
 export default axios;

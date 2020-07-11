@@ -33,7 +33,7 @@ const styles: ComponentStyles<AppContainerClassNameContract, DesignSystem> = {
 
 const AppContainer: React.ComponentType<AppContainerProps> = ({ managedClasses }) => (
   <div className={managedClasses.container}>
-    <Router>
+    <Router basename={window.baseDirectory}>
       <Suspense fallback={null}>
         <Route path={["/:id", "/"]} component={AnimatedRoutes} />
       </Suspense>

@@ -23,7 +23,7 @@ i18n
     ns: [...defaultNs, ...(isLoggedIn ? ["dashboard"] : [])],
     defaultNS: "common",
     backend: {
-      loadPath: "/static/locales/{{lng}}/{{ns}}.json",
+      loadPath: "./static/locales/{{lng}}/{{ns}}.json",
     },
     detection: {
       lookupQuerystring: "lang",

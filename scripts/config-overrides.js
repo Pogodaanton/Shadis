@@ -1,7 +1,8 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const LiveReloadPlugin = require("webpack-livereload-plugin");
+const fs = require("fs");
 const path = require("path");
-const chalk = require("chalk");
+const color = require("chalk").default;
 
 /**
  * Terminates the process with an error message and alerts the user
@@ -11,7 +12,6 @@ const chalk = require("chalk");
  * @param {Error} err A caught `Error` instance.
  */
 function overrideError(stepMsg, err = new Error("Unknown error!")) {
-  const color = chalk.default;
   console.log(color.magenta(stepMsg));
   console.log(
     "This might be due to a change in react-scripts' config since the last update of this override function."
@@ -77,6 +77,22 @@ module.exports = {
      * and include getID3 & gif.js
      */
     try {
+      // Abort compiling if getid3 is missing
+      if (
+        !fs.existsSync(path.resolve(__dirname, "../submodules/getID3/getid3/getid3.php"))
+      ) {
+        console.log("");
+        console.log("");
+        console.log(color.underline(color.magenta('Submodule "getID3" was not found!')));
+        console.log("Make sure you have also downloaded getID3 when using git clone.");
+        console.log("You will most likely be able to fix this problem by doing:");
+        console.log("");
+        console.log("> " + color.yellow("git submodule update --init --recursive"));
+        console.log("");
+        console.log("");
+        process.exit(1);
+      }
+
       config.plugins.push(
         new CopyWebpackPlugin([
           /**
@@ -87,7 +103,7 @@ module.exports = {
            */
           {
             from: "public/",
-            ignore: ["index.php", "*.old.*"],
+            ignore: ["index.php", "*.old.*", "**/*.old.*"],
             force: true,
           },
           {

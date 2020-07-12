@@ -2,6 +2,9 @@ ErrorDocument 404 /
 ErrorDocument 403 /
 IndexIgnore *
 
+# Prohibiting access to /protected
+RedirectMatch 404 ^/protected/?$
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   # RewriteBase /

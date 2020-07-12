@@ -15,31 +15,8 @@ process.on("unhandledRejection", err => {
   throw err;
 });
 
-/**
- * Rewire publicPath generator
- *
- * .htaccess reroutes requests of any undefined `static` directory to the `static`
- * folder found in project root. Thus, we can make `publicPath` a relative value.
- */
-require("react-dev-utils/getPublicUrlOrPath");
-require.cache[require.resolve("react-dev-utils/getPublicUrlOrPath")].exports = (
-  isEnvDevelopment,
-  homepage
-) => {
-  const { URL } = require("url");
-  const stubDomain = "https://create-react-app.dev";
-
-  if (homepage) {
-    // strip last slash if exists
-    homepage = homepage.endsWith("/") ? homepage : homepage + "/";
-
-    // validate if `homepage` is a URL or path like and use just pathname
-    const validHomepagePathname = new URL(homepage, stubDomain).pathname;
-    return homepage.startsWith(".") ? homepage : validHomepagePathname;
-  }
-
-  return "/";
-};
+// Running modifications that are shared across watch.js and build.js
+require("./common");
 
 const fs = require("fs-extra");
 const paths = require("react-scripts/config/paths");

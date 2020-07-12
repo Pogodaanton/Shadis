@@ -129,15 +129,17 @@ const FVSidebarFooter: React.ComponentType<FVSidebarFooterProps> = ({
       }}
     >
       <div className={managedClasses.fv_sidebarFooter_links}>
-        <Hypertext href={window.location.origin}>
+        <Hypertext href="https://github.com/Pogodaanton/Shadis#readme">
           {t("common:hyperlinks.about")}
         </Hypertext>
-        <Hypertext href={window.location.origin}>
+        <Hypertext href="https://github.com/Pogodaanton/Shadis/raw/master/NOTICES">
           {t("common:hyperlinks.thirdParty")}
         </Hypertext>
+        {/*}
         <Hypertext href={window.location.origin}>
           {t("common:hyperlinks.changeLanguage")}
         </Hypertext>
+    {*/}
       </div>
       <div className={managedClasses.fv_sidebarFooter_buttons}>
         {isLoggedIn && <FVSidebarDeleteButton fileData={fileData} />}

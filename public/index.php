@@ -6,11 +6,29 @@ session_start();
  * Determines in which directory Shadis is located in
  */
 $base_directory = dirname($_SERVER['SCRIPT_NAME']);
+
+/**
+ * Full public url for project root
+ */
 $homepage = url_origin($_SERVER) . $base_directory;
 
+/**
+ * Determine whether subdirectory is a valid file ID.
+ * We remove every subdirectory until project root, so that the server knows how deeply the client really is located.
+ */
 $uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri_path = substr($uri_path, strlen($base_directory) > 1 ? strlen($base_directory) : 0);
 $segments = explode('/', trim($uri_path, '/'));
+
+/**
+ * Array containing data about the currently visited file.
+ * Null if no file page is being visited at the moment. 
+ */
 $file_data = null;
+
+/**
+ * Title used for various meta-tags 
+ */
 $title = "Shadis";
 
 if (!empty($segments[0])) {

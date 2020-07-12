@@ -25,6 +25,9 @@ The contents in the `build` directory can then be deployed to a PHP web-server.
 You can execute the SQL queries shown below in order to create the needed tables manually.
 Feel free to change the table names; just keep in mind that you need to assign them in `config.php` later on.
 
+<details>
+  <summary>Click me to show the SQL queries</summary>
+
 ```sql
 CREATE TABLE IF NOT EXISTS `shadis`.`shadis_users`(
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -60,6 +63,8 @@ CREATE TABLE IF NOT EXISTS `shadis`.`shadis_file_tasks`(
   UNIQUE (`id`)
 ) ENGINE = MyISAM;
 ```
+
+</details>
 
 ## Configuring
 

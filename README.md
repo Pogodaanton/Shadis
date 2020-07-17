@@ -1,11 +1,23 @@
 # Shadis
 
-Shadis is a self-hosting service for video and image uploads from [ShareX](https://getsharex.com/). Its highlight features are:
+Shadis is a self-hostable platform for video and image uploads from screencapturing software like [ShareX](https://getsharex.com/). Its highlight features are:
 
 - An elegant and functional user interface for presenting your files
 - Password-protected dashboard for managing your uploads
 - Straightforward system for converting videos to GIFs
-- Twitter and OpenGraph metadata for instant visibility of the images and videos in URL-Cards of popular messaging programs like Slack, Discord, Skype, etc.
+- Twitter and OpenGraph metadata for instant visibility of the images and videos in URL-cards of popular messaging programs like Slack, Discord, Skype, etc.
+
+## Requirements
+
+This project was built for webspace hosts in mind. These providers usually don't grant shell access, nor do they they allow the installation of additional software. Hence, the minimum requirements for Shadis are the following:
+
+- Apache
+- MySQL
+- PHP
+- ImageMagick
+
+> Hosting providers typically don't boast with their ImageMagick support, so make sure to dig around in their support pages first.
+> A list of providers which are known to have ImageMagick preinstalled can be seen [here](https://www.whoishostingthis.com/compare/imagemagick/).
 
 # Getting Started
 
@@ -117,7 +129,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## Learn More
 
-The inner workings of the system are described inside the code on the respective places. Here are links to the documentation of awesome third-party products Shadis is using:
+The inner workings of the system are described in the codebase. Here are links to the documentation of awesome third-party products Shadis is using:
 
 - [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
 - [React Library](https://reactjs.org/)
@@ -126,3 +138,4 @@ The inner workings of the system are described inside the code on the respective
 - [getID3](https://www.getid3.org/)
 - [gif.js](https://github.com/jnordberg/gif.js#readme)
 - [react-virtualized](https://github.com/bvaughn/react-virtualized#documentation)
+- [ImageMagick](https://imagemagick.org/Usage/)

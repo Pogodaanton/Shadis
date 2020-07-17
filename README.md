@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `shadis`.`shadis_users`(
   `username` VARCHAR(50) NOT NULL UNIQUE,
   `password` VARCHAR(255) NOT NULL,
   PRIMARY KEY(`id`)
-) ENGINE = MyISAM;
+);
 ```
 
 ```sql
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `shadis`.`shadis_files`(
   PRIMARY KEY(`id`),
   UNIQUE (`id`),
   UNIQUE (`token`)
-) ENGINE = MyISAM;
+);
 ```
 
 ```sql
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `shadis`.`shadis_file_tasks`(
   `thumbnail` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY(`id`),
   UNIQUE (`id`)
-) ENGINE = MyISAM;
+);
 ```
 
 </details>

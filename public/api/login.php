@@ -2,9 +2,13 @@
 session_start();
 require_once "../protected/db.inc.php";
 require_once "../protected/output.inc.php";
+require_once "../protected/input.inc.php";
 
-$username = $_POST["username"];
-$password = $_POST["password"];
+// Request method can only be POST
+$input->whitelist_request_method("POST");
+
+$username = $input->post("username");
+$password = $input->post("password");
 
 if (!empty($_SESSION["u_id"])) {
     error("You are already logged in!");

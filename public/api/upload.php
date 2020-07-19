@@ -1,19 +1,22 @@
 <?php
 require_once "../protected/config.php";
+require_once "../protected/input.inc.php";
 require_once "../protected/output.inc.php";
 session_start();
 
-$loggedIn = isset($_SESSION["u_id"]);
-$secret = $_POST["secret"];
-$file = $_FILES["data"];
+// Request method can only be POST
+$input->whitelist_request_method("POST");
+
+$secret = $input->post("secret");
+$file = $input->files("data");
 
 // Check if key set or logged in
-if ((!isset($secret) || $secret !== UPLOAD_TOKEN) && !$loggedIn) {
+if ((!isset($secret) || $secret !== UPLOAD_TOKEN) && !isset($_SESSION["u_id"])) {
   error("Unauthorized", 401);
 }
 
 // Size must not exceed 2gb
-if ($file["size"] > 1.342e+8 || !isset($file["size"])) {
+if (!isset($file) || !isset($file["size"]) || $file["size"] > 1.342e+8) {
   error("Either no file was provided or the size exceeded the predefined limit of the server.");
 }
 
@@ -23,7 +26,7 @@ if ($file["error"] > 0) {
 }
 
 require_once "../protected/uploaders/file.inc.php";
-$uploader = new FileUploader($file, $_POST["title"], $_POST["timestamp"]);
+$uploader = new FileUploader($file, $input->post("title"), $input->post("timestamp"));
 $uploader->upload();
 $urls = $uploader->get_url_info();
 

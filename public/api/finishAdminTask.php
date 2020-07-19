@@ -1,14 +1,14 @@
 <?php
 require_once "../protected/config.php";
 require_once "../protected/db.inc.php";
+require_once "../protected/input.inc.php";
 require_once "../protected/output.inc.php";
+
 header("Content-type: application/json");
 session_start();
 
-// Request can only be GET
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-  error("Only POST request allowed!", 401);
-}
+// Request can only be POST
+$input->whitelist_request_method("POST");
 
 // Login check
 if (!isset($_SESSION["u_id"])) {
@@ -16,12 +16,12 @@ if (!isset($_SESSION["u_id"])) {
 }
 
 // Make sure arguments exist
-$type = $_POST["type"];
+$type = $input->post("type");
 if (!isset($type)) error("Missing argument \"type\".", 401);
 
 switch ($type) {
   case "video-thumbnail":
-    $file_id = $_POST["id"];
+    $file_id = $input->post("id");
     if (!isset($file_id)) error("Missing argument \"id\".", 401);
 
     // Uploaded file size must not exceed 2gb
@@ -38,8 +38,8 @@ switch ($type) {
 
   case "video-gif-upload":
   case "video-gif-stitch":
-    $file_id = $_POST["id"];
-    $chunk_number = $_POST["chunkNum"];
+    $file_id = $input->post("id");
+    $chunk_number = $input->post("chunkNum");
     if (!isset($file_id)) error("Missing argument \"id\".", 401);
     if (!isset($chunk_number)) error("Missing argument \"chunkNum\".", 401);
 
@@ -102,7 +102,7 @@ switch ($type) {
     rename($stitch_path, $GLOBALS["upload_directory"] . $file_id . ".gif");
 
   case "video-gif-too-big":
-    $file_id = $_POST["id"];
+    $file_id = $input->post("id");
     $sql = "UPDATE `" . $GLOBALS["table_prefix"] . "file_tasks` SET gif=0 WHERE id=?";
     $db->request($sql, "s", $file_id);
     break;

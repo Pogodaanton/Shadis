@@ -1,24 +1,20 @@
 <?php
 require_once "../protected/db.inc.php";
 require_once "../protected/output.inc.php";
+require_once "../protected/input.inc.php";
 session_start();
 
-// Request can only be GET
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-  error("Only POST request allowed!", 401);
-}
+// Request can only be POST
+$input->whitelist_request_method("POST");
 
 // Rewrap data assuming it is a JSON request
 if (empty($_POST)) {
-  $_POST = json_decode(file_get_contents("php://input"), true);
-  if (json_last_error() !== JSON_ERROR_NONE) {
-    error("Could note decode JSON data: (" . json_last_error() . ") " . json_last_error_msg());
-  }
+  $_POST = $input->read_as_json();
 }
 
-$token = $_POST["token"];
-$selection = $_POST["selection"];
-$action = $_POST["action"];
+$token = $input->post("token");
+$selection = $input->post("selection");
+$action = $input->post("action");
 
 /**
  * Login check
@@ -104,7 +100,7 @@ if ($action === "delete") {
     }
   }
 } elseif ($action === "editTitle") {
-  $value = $_POST["value"];
+  $value = $input->post("value");
 
   if (!isset($value) || !is_string($value)) {
     error("Missing input! Arguments needed: (selection or token), action and value", 400);

@@ -1,12 +1,11 @@
 <?php
 require_once "../protected/db.inc.php";
+require_once "../protected/input.inc.php";
 require_once "../protected/output.inc.php";
 session_start();
 
 // Request can only be GET
-if ($_SERVER["REQUEST_METHOD"] !== "GET") {
-  error("Only GET request allowed!", 401);
-}
+$input->whitelist_request_method("GET");
 
 // Login check
 if (!isset($_SESSION["u_id"])) {
@@ -14,7 +13,7 @@ if (!isset($_SESSION["u_id"])) {
 }
 
 // Make sure arguments exist
-$type = $_GET["type"];
+$type = $input->get("type");
 
 if (!isset($type)) {
   error("Missing argument \"type\".", 401);

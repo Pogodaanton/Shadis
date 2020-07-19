@@ -1,5 +1,4 @@
 import { IconType } from "react-icons/lib";
-import { Omit } from "utility-types";
 import {
   ButtonClassNameContract as MSFTButtonClassNameContract,
   ManagedClasses,

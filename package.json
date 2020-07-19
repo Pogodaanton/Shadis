@@ -5,14 +5,14 @@
   "dependencies": {
     "@allpro/react-router-pause": "^1.1.3",
     "@loadable/component": "^5.12.0",
-    "@microsoft/fast-colors": "^5.0.8",
-    "@microsoft/fast-components-class-name-contracts-base": "^4.7.2",
-    "@microsoft/fast-components-react-base": "^4.25.10",
-    "@microsoft/fast-components-react-msft": "^4.30.10",
-    "@microsoft/fast-components-styles-msft": "^4.28.9",
-    "@microsoft/fast-jss-manager-react": "^4.7.2",
-    "@microsoft/fast-jss-utilities": "^4.7.12",
-    "@microsoft/fast-web-utilities": "^4.4.5",
+    "@microsoft/fast-colors": "^5.1.0",
+    "@microsoft/fast-components-class-name-contracts-base": "^4.8.0",
+    "@microsoft/fast-components-react-base": "^4.27.0",
+    "@microsoft/fast-components-react-msft": "^4.32.0",
+    "@microsoft/fast-components-styles-msft": "^4.29.0",
+    "@microsoft/fast-jss-manager-react": "^4.8.0",
+    "@microsoft/fast-jss-utilities": "^4.8.0",
+    "@microsoft/fast-web-utilities": "^4.6.0",
     "@popmotion/easing": "^1.0.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -61,7 +61,8 @@
     "start": "node scripts/watch.js",
     "serve": "node scripts/watch.js",
     "build": "node scripts/build.js",
-    "test": "react-app-rewired test"
+    "test": "react-app-rewired test",
+    "notice-gen": "npx generate-license-file --input package.json --output NOTICES"
   },
   "config-overrides-path": "scripts/config-overrides",
   "browserslist": {

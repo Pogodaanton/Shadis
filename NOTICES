@@ -673,20 +673,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following NPM packages may be included in this product:
 
- - @microsoft/fast-colors@5.0.8
- - @microsoft/fast-components-class-name-contracts-base@4.6.4
- - @microsoft/fast-components-class-name-contracts-base@4.7.2
- - @microsoft/fast-components-class-name-contracts-msft@4.8.4
- - @microsoft/fast-components-foundation-react@3.1.8
- - @microsoft/fast-components-react-base@4.25.10
- - @microsoft/fast-components-react-msft@4.30.10
- - @microsoft/fast-components-styles-msft@4.28.9
- - @microsoft/fast-jss-manager-react@4.7.2
- - @microsoft/fast-jss-manager@4.1.16
- - @microsoft/fast-jss-utilities@4.7.12
- - @microsoft/fast-react-utilities@1.1.5
- - @microsoft/fast-tooling@0.3.1
- - @microsoft/fast-web-utilities@4.4.5
+ - @microsoft/fast-colors@5.1.0
+ - @microsoft/fast-components-class-name-contracts-base@4.8.0
+ - @microsoft/fast-components-class-name-contracts-msft@4.9.0
+ - @microsoft/fast-components-foundation-react@3.2.0
+ - @microsoft/fast-components-react-base@4.27.0
+ - @microsoft/fast-components-react-msft@4.32.0
+ - @microsoft/fast-components-styles-msft@4.29.0
+ - @microsoft/fast-jss-manager-react@4.8.0
+ - @microsoft/fast-jss-manager@4.2.0
+ - @microsoft/fast-jss-utilities@4.8.0
+ - @microsoft/fast-react-utilities@1.2.0
+ - @microsoft/fast-tooling@0.7.0
+ - @microsoft/fast-web-utilities@4.6.0
  - @types/eslint-visitor-keys@1.0.0
  - @types/minimatch@3.0.3
 
@@ -21405,36 +21404,6 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
------------
-
-The following NPM package may be included in this product:
-
- - utility-types@2.1.0
-
-This package contains the following license and notice below:
-
-MIT License
-
-Copyright (c) 2016 Piotr Witek <piotrek.witek@gmail.com> (http://piotrwitek.github.io)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 -----------
 

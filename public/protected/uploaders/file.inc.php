@@ -145,9 +145,12 @@ class FileUploader
       $this->db->request_upload($this->file_id, $this->file_token, $this->file_extension, $this->timestamp, $this->file_title, $file_preprocessor_data["file_width"], $file_preprocessor_data["file_height"], $file_preprocessor_data["thumbnail_height"]);
     } catch (ErrorException $ee) {
       // Reverting steps in order to clean up failed upload
-      if (file_exists($target_name)) unlink($target_name);
+      if (file_exists($target_name)) {
+        unlink($target_name);
+      }
+
       $this->file_preprocessor->cleanup_upload_error();
-      error("Uploading unsuccessful: " . $ee);
+      error("Uploading file \"" . $this->file_id . "\" did not succeed: \n" . $ee);
     }
   }
 

@@ -68,8 +68,13 @@ class ImagePreprocessor
     try {
       $image_path = $GLOBALS["upload_directory"] . $this->file_id . "." . $this->file_extension;
       $this->thumbnail_height = generate_thumbnail($this->thumbnail_path, $image_path, $this->file["type"]);
+
+      // Rudimentary way to check whether imagemagick works...
+      if (intval($this->thumbnail_height) <= 0) {
+        throw new ErrorException("");
+      }
     } catch (Exception $err) {
-      throw new ErrorException("Generating image thumbnail did not succeed.");
+      throw new ErrorException("Generating image thumbnail did not succeed. Make sure you set the right path to ImageMagick in the config file.");
     }
 
     return array(

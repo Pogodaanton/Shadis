@@ -45,7 +45,10 @@ switch ($type) {
 
     $temp_dir = "../.temp";
     $chunk_path = $temp_dir . "/" . $file_id . "-";
-    mkdir($temp_dir);
+
+    if (!file_exists($temp_dir)) {
+      mkdir($temp_dir);
+    }
 
     if ($type === "video-gif-upload") {
       // Uploaded file size must not exceed 2gb

@@ -133,7 +133,10 @@ class FileUploader
   {
     $target_name = $GLOBALS["upload_directory"] . $this->file_id . "." . $this->file_extension;
     try {
-      mkdir($GLOBALS["upload_directory"]);
+      if (!file_exists($GLOBALS["upload_directory"])) {
+        mkdir($GLOBALS["upload_directory"]);
+      }
+
       if (!move_uploaded_file($this->file["tmp_name"], $target_name)) {
         error("Uploading image did not succeed. Check whether the destination is writeable.");
       }

@@ -9,9 +9,9 @@ Shadis is a self-hostable platform for video and image uploads from screencaptur
 
 ## Requirements
 
-This project was built for webspace hosts in mind. These providers usually don't grant shell access, nor do they they allow the installation of additional software. Hence, the minimum requirements for Shadis are the following:
+This project was built for webspace hosts in mind. These providers usually don't grant shell access, nor do they they allow the installation of additional software. Hence, the minimum requirements for Shadis in production are the following:
 
-- Apache
+- Apache HTTP Server
 - MySQL
 - PHP
 - ImageMagick
@@ -25,7 +25,7 @@ Shadis is still _in beta_ and will not be released in form of a pre-compiled pac
 
 ## Generating a production build
 
-First, download Shadis and its necessary dependencies by following the setup instructions [below](#Setup).
+First, download Shadis and its necessary dependencies by following the setup instructions [below](#Requirements).
 You should then be able to compile the code via `yarn build`. Follow the instructions in the console should an error happen while compiling.
 
 The contents in the `build` directory can then be deployed to a PHP web-server.
@@ -89,6 +89,15 @@ You can find a sample configuration file inside the subdirectory `protected`. Re
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) in the front-end and uses PHP for the back-end. You can find the front-end code in `src` and the back-end code in `public`.
 
 > This guide assumes you use `yarn` as the default package manager
+
+## Requirements
+
+- Node.js (>= 13.5.0)
+- yarn 1.x (preferred over npm)
+- Apache HTTP Server
+- MySQL
+- PHP
+- ImageMagick
 
 ## Setup
 

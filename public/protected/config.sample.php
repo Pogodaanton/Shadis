@@ -47,12 +47,13 @@ $table_prefix = "shadis_";
 $upload_directory = dirname(__FILE__) . "/../uploads/";
 
 /**
- * Path to ImageMagick executable
- * Make sure the given path is really the right one.
+ * Paths to ImageMagick executables
+ * You can often find these paths in the FAQs of hosting providers.
  *
- * Since the binary is called differently on macOS
- * than on other platforms, you also need to append
- * the name of the executable.
- * 
+ * At some hosters ImageMagick's modules are seperated in multiple executables,
+ * that's why you can assign a different path for each module. A good indication
+ * for this is if you can't find the executable "magick", but you can access
+ * "convert" or "identify" as standalone executables.
  */
-$imagick_path = "/usr/local/bin/magick";
+$imagick_path_convert = "/usr/local/bin/magick convert";
+$imagick_path_identify = "/usr/local/bin/magick identify";

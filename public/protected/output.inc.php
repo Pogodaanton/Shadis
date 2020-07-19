@@ -55,8 +55,7 @@ function generate_thumbnail(string $destination, string $image_path, string $mim
 
   // Using an array to make this part more readable
   $exec_array = array(
-    $GLOBALS["imagick_path"],
-    "convert",
+    $GLOBALS["imagick_path_convert"],
     $image_path,
     "-filter Triangle",
     "-define " . $type,
@@ -79,7 +78,7 @@ function generate_thumbnail(string $destination, string $image_path, string $mim
   exec(implode(" ", $exec_array));
 
   // Setting the thumbnail_height according to the newly generated image
-  return exec($GLOBALS["imagick_path"] . " identify -ping -format '%h' " . $destination);
+  return exec($GLOBALS["imagick_path_identify"] . " -ping -format '%h' " . $destination);
 }
 
 /**
@@ -92,8 +91,7 @@ function generate_gif(string $destination, string $image_path)
 {
   // Using an array to make this part more readable
   $exec_array = array(
-    $GLOBALS["imagick_path"],
-    "convert",
+    $GLOBALS["imagick_path_convert"],
     $image_path,
     "-colorspace RGB",
     "-ordered-dither o8x8,8,8,4",
@@ -106,5 +104,5 @@ function generate_gif(string $destination, string $image_path)
   exec(implode(" ", $exec_array));
 
   // Setting the thumbnail_height according to the newly generated image
-  return exec($GLOBALS["imagick_path"] . " identify -ping -format '%wx%h' " . $destination);
+  return exec($GLOBALS["imagick_path_identify"] . " -ping -format '%wx%h' " . $destination);
 }

@@ -44,19 +44,50 @@ if (!empty($segments[0])) {
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="<?php echo $homepage . "/static/media/favicon.ico"; ?>" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
   <meta content="noindex" name="robots">
-  <link rel="apple-touch-icon" href="<?php echo $homepage . "/static/media/logo192.png"; ?>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <!--
     manifest.json provides metadata used when your web app is installed on a
     user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
   -->
   <link rel="manifest" href="<?php echo $homepage . "/manifest.json"; ?>" />
-  <title><?php echo $title; ?></title>
-  <meta name="title" content="<?php echo $title; ?>">
-  <meta name="description" content="Share and host your favourite screenshots and screencaptures on your own server!">
+  <meta name="theme-color" content="#242424" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!--
+    Following metatags and their respective images were generated with the following command:
+    > npx pwa-asset-generator ./static/media/logo.svg ./static/media -i ./index.html -m ./manifest.json -b "#242424"
+
+    Make sure to transfer the generated iOS metatags from index.html to index.php
+  -->
+  <link rel="icon" href="<?php echo $homepage . "/static/media/favicon.ico"; ?>" />
+  <link rel="mask-icon" href="<?php echo $homepage . "/static/media/safari-pinned-tab.svg"; ?>" color="#d75e00">
+  <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $homepage . "/static/media/apple-icon-180.png"; ?>">
+  <link rel="apple-touch-icon" sizes="167x167" href="<?php echo $homepage . "/static/media/apple-icon-167.png"; ?>">
+  <link rel="apple-touch-icon" sizes="152x152" href="<?php echo $homepage . "/static/media/apple-icon-152.png"; ?>">
+  <link rel="apple-touch-icon" sizes="120x120" href="<?php echo $homepage . "/static/media/apple-icon-120.png"; ?>">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-2048-2732.jpg"; ?>" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-2732-2048.jpg"; ?>" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-1668-2388.jpg"; ?>" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-2388-1668.jpg"; ?>" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-1668-2224.jpg"; ?>" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-2224-1668.jpg"; ?>" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-1536-2048.jpg"; ?>" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-2048-1536.jpg"; ?>" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-1242-2688.jpg"; ?>" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-2688-1242.jpg"; ?>" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-1125-2436.jpg"; ?>" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-2436-1125.jpg"; ?>" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-828-1792.jpg"; ?>" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-1792-828.jpg"; ?>" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-1242-2208.jpg"; ?>" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-2208-1242.jpg"; ?>" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-750-1334.jpg"; ?>" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-1334-750.jpg"; ?>" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-640-1136.jpg"; ?>" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="<?php echo $homepage . "/static/media/apple-splash-1136-640.jpg"; ?>" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+
   <?php
   echo '<script>var baseDirectory = ';
   echo json_encode($base_directory);
@@ -94,6 +125,11 @@ if (!empty($segments[0])) {
         object-fit: scale-down;
       }
     </style>
+
+    <!-- Basic Unfurling Metadata -->
+    <title><?php echo $title; ?></title>
+    <meta name="title" content="<?php echo $title; ?>">
+    <meta name="description" content="Share and host your favourite screenshots and screencaptures on your own server!">
     <link rel="image_src" href="<?php echo $file_url; ?>">
 
     <!-- Facebook OpenGraph Metadata -->

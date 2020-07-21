@@ -1,11 +1,18 @@
-# Shadis
+![Shadis, abbreviated from: "share this!"](https://github.com/Pogodaanton/Shadis/blob/master/Shadis_Top_Banner.jpg?raw=true)
+![Shadis dashboard (left) and image viewer (right)](https://github.com/Pogodaanton/Shadis/blob/master/Shadis_Preview_Banner.jpg?raw=true)
 
+# Shadis ![GitHub](https://img.shields.io/github/license/Pogodaanton/Shadis)
 Shadis is a self-hostable platform for video and image uploads from screencapturing software like [ShareX](https://getsharex.com/). Its highlight features are:
 
 - An elegant and functional user interface for presenting your files
 - Password-protected dashboard for managing your uploads
 - Straightforward system for converting videos to GIFs
 - Twitter and OpenGraph metadata for instant visibility of the images and videos in URL-cards of popular messaging programs like Slack, Discord, Skype, etc.
+
+
+## See it yourself!
+- Shadis for screenshots: [link](https://www.pogoda.click/i/NxzEMBHd/)
+- Shadis for screencaptures: [link](https://www.pogoda.click/i/kbvORNof/)
 
 ## Requirements
 

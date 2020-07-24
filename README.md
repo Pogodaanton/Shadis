@@ -10,13 +10,13 @@ Shadis is a self-hostable platform for video and image uploads from screencaptur
 - Twitter and OpenGraph metadata for instant visibility of the images and videos in URL-cards of popular messaging programs like Slack, Discord, Skype, etc.
 
 
-## See it yourself!
+## See it for yourself!
 - Shadis for screenshots: [link](https://www.pogoda.click/i/NxzEMBHd/)
 - Shadis for screencaptures: [link](https://www.pogoda.click/i/kbvORNof/)
 
 ## Requirements
 
-This project was built for webspace hosts in mind. These providers usually don't grant shell access, nor do they they allow the installation of additional software. Hence, the minimum requirements for Shadis in production are the following:
+This project was built with webspace hosts in mind. These providers usually don't grant shell access, nor do they allow the installation of additional software. Thus, Shadis explicitly keeps the dependance on uncommon software at a minimum. The following technologies are used on the server-side:
 
 - Apache HTTP Server
 - MySQL
@@ -28,7 +28,7 @@ This project was built for webspace hosts in mind. These providers usually don't
 
 # Getting Started
 
-Shadis is still _in beta_ and will not be released in form of a pre-compiled package, until it reaches a stable stage. That said, it is **already possible** to generate fully-functional production builds.
+Shadis is still _in beta_ and will not be released as a pre-compiled package until it reaches a stable stage. That said, it already **is possible** to generate fully functional production builds.
 
 ## Generating a production build
 
@@ -93,7 +93,7 @@ You can find a sample configuration file inside the subdirectory `protected`. Re
 
 # Development
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) in the front-end and uses PHP for the back-end. You can find the front-end code in `src` and the back-end code in `public`.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) as the front-end and uses PHP as the back-end. You can find the front-end code in `src` and the back-end code in `public`.
 
 > This guide assumes you use `yarn` as the default package manager
 
